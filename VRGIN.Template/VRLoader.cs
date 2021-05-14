@@ -118,6 +118,7 @@ namespace KoikatuVR
 				// (e.g. characters, camera judging, colliders, etc.)
 				VRManager.Create<KoikatuInterpreter>(CreateContext("VRContext.xml"));
 				VR.Manager.SetMode<GenericStandingMode>();
+				VRFade.Create();
 			}
 		}
 	}

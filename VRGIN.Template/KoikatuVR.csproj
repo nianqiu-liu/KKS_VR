@@ -62,6 +62,7 @@
     <Compile Include="ConfigurableContext.cs" />
     <Compile Include="GenericSeatedMode.cs" />
     <Compile Include="GenericStandingMode.cs" />
+    <Compile Include="VRFade.cs" />
     <Compile Include="Interpreters\HSceneInterpreter.cs" />
     <Compile Include="Interpreters\KoikatuInterpreter.cs" />
     <Compile Include="Interpreters\OtherSceneInterpreter.cs" />
@@ -99,8 +100,8 @@
       <PdbFiles Include="$(OutputPath)*.pdb" />
     </ItemGroup>
     <!-- Copy plugins to the right place -->
-	<Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(OutputPath)BepInEx\%(RecursiveDir)" />
-	<Copy SourceFiles="@(DataPluginFiles)" DestinationFolder="$(OutputPath)Koikatu_Data\Plugins\%(RecursiveDir)" />
+    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(OutputPath)BepInEx\%(RecursiveDir)" />
+    <Copy SourceFiles="@(DataPluginFiles)" DestinationFolder="$(OutputPath)Koikatu_Data\Plugins\%(RecursiveDir)" />
     <!-- Remove unneeded directory -->
     <RemoveDir Directories="$(OutputPath)Plugins" />
     <!-- Copy libraries to the right place -->
