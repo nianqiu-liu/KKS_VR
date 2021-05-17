@@ -13,7 +13,7 @@ namespace KoikatuVR
 {
     public class SchoolTool : Tool
     {
-        private ActionSceneInterpreter _Interpreter;
+        private KoikatuInterpreter _Interpreter;
         private KoikatuSettings _Settings;
         private KeySet _KeySet;
         private int _KeySetIndex = 0;
@@ -65,7 +65,7 @@ namespace KoikatuVR
         {
             base.OnEnable();
 
-            _Interpreter = (VR.Interpreter as KoikatuInterpreter).SceneInterpreter as ActionSceneInterpreter;
+            _Interpreter = VR.Interpreter as KoikatuInterpreter;
         }
 
         protected override void OnLevel(int level)
@@ -162,7 +162,7 @@ namespace KoikatuVR
 
             if (_Pl2Cam)
             {
-                _Interpreter.MovePlayerToCamera();
+                IfActionScene(interpreter => interpreter.MovePlayerToCamera());
             }
         }
 
@@ -173,10 +173,10 @@ namespace KoikatuVR
                 switch (keyName)
                 {
                     case "WALK":
-                        _Interpreter.StartWalking();
+                        IfActionScene(interpreter => interpreter.StartWalking());
                         break;
                     case "DASH":
-                        _Interpreter.StartWalking(true);
+                        IfActionScene(interpreter => interpreter.StartWalking(true));
                         break;
                     case "PL2CAM":
                         _Pl2Cam = true;
@@ -196,7 +196,7 @@ namespace KoikatuVR
                         // ここでは何もせず、上げたときだけ処理する
                         break;
                     case "CROUCH":
-                        _Interpreter.Crouch();
+                        IfActionScene(interpreter => interpreter.Crouch());
                         break;
                     default:
                         VR.Input.Keyboard.KeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), keyName));
@@ -208,10 +208,10 @@ namespace KoikatuVR
                 switch (keyName)
                 {
                     case "WALK":
-                        _Interpreter.StopWalking();
+                        IfActionScene(interpreter => interpreter.StopWalking());
                         break;
                     case "DASH":
-                        _Interpreter.StopWalking();
+                        IfActionScene(interpreter => interpreter.StopWalking());
                         break;
                     case "PL2CAM":
                         _Pl2Cam = false;
@@ -226,21 +226,29 @@ namespace KoikatuVR
                         VR.Input.Mouse.MiddleButtonUp();
                         break;
                     case "LROTATION":
-                        _Interpreter.RotatePlayer(-_Settings.RotationAngle);
+                        IfActionScene(interpreter => interpreter.RotatePlayer(-_Settings.RotationAngle));
                         break;
                     case "RROTATION":
-                        _Interpreter.RotatePlayer(_Settings.RotationAngle);
+                        IfActionScene(interpreter => interpreter.RotatePlayer(_Settings.RotationAngle));
                         break;
                     case "NEXT":
                         ChangeKeySet();
                         break;
                     case "CROUCH":
-                        _Interpreter.StandUp();
+                        IfActionScene(interpreter => interpreter.StandUp());
                         break;
                     default:
                         VR.Input.Keyboard.KeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), keyName));
                         break;
                 }
+            }
+        }
+
+        private void IfActionScene(Action<ActionSceneInterpreter> a)
+        {
+            if (_Interpreter.SceneInterpreter is ActionSceneInterpreter actInterpreter)
+            {
+                a(actInterpreter);
             }
         }
 
