@@ -12,14 +12,14 @@ namespace KoikatuVR.Interpreters
         public const int HScene = 3;
         public const int NightMenuScene = 4;
 
-        private int _SceneType;
+        public int CurrentScene { get; private set; }
         public SceneInterpreter SceneInterpreter;
 
         protected override void OnAwake()
         {
             base.OnAwake();
 
-            _SceneType = NoScene;
+            CurrentScene = NoScene;
             SceneInterpreter = new OtherSceneInterpreter();
         }
 
@@ -39,7 +39,7 @@ namespace KoikatuVR.Interpreters
 
             if (GameObject.Find("TalkScene") != null)
             {
-                if (_SceneType != TalkScene)
+                if (CurrentScene != TalkScene)
                 {
                     nextSceneType = TalkScene;
                     //nextInterpreter = new TalkSceneInterpreter(); 特有の処理がないため不要
@@ -49,7 +49,7 @@ namespace KoikatuVR.Interpreters
 
             else if (GameObject.Find("HScene") != null)
             {
-                if (_SceneType != HScene)
+                if (CurrentScene != HScene)
                 {
                     nextSceneType = HScene;
                     nextInterpreter = new HSceneInterpreter();
@@ -59,7 +59,7 @@ namespace KoikatuVR.Interpreters
 
             else if (GameObject.Find("NightMenuScene") != null)
             {
-                if (_SceneType != NightMenuScene)
+                if (CurrentScene != NightMenuScene)
                 {
                     nextSceneType = NightMenuScene;
                     nextInterpreter = new NightMenuSceneInterpreter();
@@ -69,7 +69,7 @@ namespace KoikatuVR.Interpreters
 
             else if (GameObject.Find("ActionScene") != null)
             {
-                if (_SceneType != ActionScene)
+                if (CurrentScene != ActionScene)
                 {
                     nextSceneType = ActionScene;
                     nextInterpreter = new ActionSceneInterpreter();
@@ -79,7 +79,7 @@ namespace KoikatuVR.Interpreters
 
             else
             {
-                if (_SceneType != OtherScene)
+                if (CurrentScene != OtherScene)
                 {
                     nextSceneType = OtherScene;
                     //nextInterpreter = new OtherSceneInterpreter();
@@ -91,7 +91,7 @@ namespace KoikatuVR.Interpreters
             {
                 SceneInterpreter.OnDisable();
 
-                _SceneType = nextSceneType;
+                CurrentScene = nextSceneType;
                 SceneInterpreter = nextInterpreter;
                 SceneInterpreter.OnStart();
             }
