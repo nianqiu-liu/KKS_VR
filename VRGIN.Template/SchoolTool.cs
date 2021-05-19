@@ -17,6 +17,7 @@ namespace KoikatuVR
         private KoikatuSettings _Settings;
         private KeySet _KeySet;
         private int _KeySetIndex = 0;
+        private bool _InHScene = false;
 
         // 手抜きのためNumpad方式で方向を保存
         private int _PrevTouchDirection = -1;
@@ -24,10 +25,23 @@ namespace KoikatuVR
 
         private void ChangeKeySet()
         {
-            List<KeySet> keySets = _Settings.KeySets;
+            List<KeySet> keySets = KeySets();
 
             _KeySetIndex = (_KeySetIndex + 1) % keySets.Count;
             _KeySet = keySets[_KeySetIndex];
+        }
+
+        private List<KeySet> KeySets()
+        {
+            return _InHScene ? _Settings.HKeySets : _Settings.KeySets;
+        }
+
+        private void SetScene(bool inHScene)
+        {
+            _InHScene = inHScene;
+            var keySets = KeySets();
+            _KeySetIndex = 0;
+            _KeySet = keySets[0];
         }
 
         public override Texture2D Image
@@ -43,7 +57,7 @@ namespace KoikatuVR
             base.OnAwake();
 
             _Settings = (VR.Context.Settings as KoikatuSettings);
-            _KeySet = _Settings.KeySets[0];
+            SetScene(inHScene: false);
         }
 
         protected override void OnStart()
@@ -77,6 +91,12 @@ namespace KoikatuVR
         {
             base.OnUpdate();
             var device = this.Controller;
+
+            var inHScene = _Interpreter.CurrentScene == KoikatuInterpreter.HScene;
+            if (inHScene != _InHScene)
+            {
+                SetScene(inHScene);
+            }
 
             if (device.GetPressDown(ButtonMask.Trigger))
             {

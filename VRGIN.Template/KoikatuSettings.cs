@@ -34,6 +34,10 @@ namespace KoikatuVR
             {
                 settings.KeySets = new List<KeySet> { new KeySet() };
             }
+            if (settings.HKeySets.Count == 0)
+            {
+                settings.HKeySets = settings.KeySets;
+            }
 
             return settings;
         }
@@ -41,6 +45,10 @@ namespace KoikatuVR
         [XmlElement(Type = typeof(List<KeySet>))]
         public List<KeySet> KeySets { get { return _KeySets; } set { _KeySets = value; } }
         private List<KeySet> _KeySets = null;
+
+        [XmlElement(Type = typeof(List<KeySet>))]
+        public List<KeySet> HKeySets { get { return _HKeySets; } set { _HKeySets = value; } }
+        private List<KeySet> _HKeySets = null;
 
         public bool UsingHeadPos { get { return _UsingHeadPos; } set { _UsingHeadPos = value; } }
         private bool _UsingHeadPos = false;
