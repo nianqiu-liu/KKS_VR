@@ -29,11 +29,14 @@ namespace KoikatuVR.Interpreters
         {
             VRLog.Info("HScene ResetCamera");
 
-            var cam = GameObject.FindObjectOfType<CameraControl_Ver2>();
+            var camCollider = GameObject.FindObjectOfType<CameraControl_Ver2>()?.GetComponent<CapsuleCollider>();
 
-            if (cam != null)
+            if (camCollider != null)
             {
-                cam.enabled = false;
+                // Completely disable Vanish (map masking) regardless of user settings.
+                // It doesn't make sense in VR and causes weird effects
+                // (parts of walls in front of you randomly disappear).
+                camCollider.enabled = false;
                 _NeedsResetCamera = false;
 
                 VRLog.Info("succeeded");
