@@ -26,5 +26,21 @@ namespace KoikatuVR
                 return base.Tools.Concat(new Type[] { typeof(MenuTool), typeof(WarpTool), typeof(SchoolTool)});
             }
         }
+
+        protected override Controller CreateLeftController()
+        {
+            return AddComponents(base.CreateLeftController());
+        }
+
+        protected override Controller CreateRightController()
+        {
+            return AddComponents(base.CreateRightController());
+        }
+
+        private static Controller AddComponents(Controller controller)
+        {
+            controller.gameObject.AddComponent<Caress.CaressController>();
+            return controller;
+        }
     }
 }
