@@ -213,6 +213,8 @@ namespace KoikatuVR
                     case "LROTATION":
                     case "RROTATION":
                     case "NEXT":
+                    case "SCROLLUP":
+                    case "SCROLLDOWN":
                         // ここでは何もせず、上げたときだけ処理する
                         break;
                     case "CROUCH":
@@ -250,6 +252,12 @@ namespace KoikatuVR
                         break;
                     case "RROTATION":
                         IfActionScene(interpreter => interpreter.RotatePlayer(_Settings.RotationAngle));
+                        break;
+                    case "SCROLLUP":
+                        VR.Input.Mouse.VerticalScroll(1);
+                        break;
+                    case "SCROLLDOWN":
+                        VR.Input.Mouse.VerticalScroll(-1);
                         break;
                     case "NEXT":
                         ChangeKeySet();
