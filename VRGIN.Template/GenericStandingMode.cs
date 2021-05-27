@@ -46,6 +46,7 @@ namespace KoikatuVR
         private static Controller AddComponents(Controller controller)
         {
             controller.gameObject.AddComponent<Caress.CaressController>();
+            controller.gameObject.AddComponent<LocationPicker>();
             return controller;
         }
     }
