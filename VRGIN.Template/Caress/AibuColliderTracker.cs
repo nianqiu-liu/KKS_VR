@@ -133,6 +133,16 @@ namespace KoikatuVR.Caress
             return best.Field2;
         }
 
+        /// <summary>
+        /// Return whether there is any collider we should be interacting with.
+        /// This is equivalent to this.GetCurrentColliderKind() != none, but is more efficient.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsIntersecting()
+        {
+            return _currentlyIntersecting.Count > 0;
+        }
+
         private static readonly IDictionary<string, HandCtrl.AibuColliderKind[]> aibuTagTable
             = new Dictionary<string, HandCtrl.AibuColliderKind[]>
             {
