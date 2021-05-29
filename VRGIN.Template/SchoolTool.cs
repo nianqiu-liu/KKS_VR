@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using VRGIN.Controls;
 using VRGIN.Controls.Tools;
@@ -22,6 +23,12 @@ namespace KoikatuVR
         // 手抜きのためNumpad方式で方向を保存
         private int _PrevTouchDirection = -1;
         private bool _Pl2Cam = false;
+
+        /// <summary>
+        /// The set of keys for which we've sent a down message but not a
+        /// corresponding up message.
+        /// </summary>
+        private readonly HashSet<string> _SentUnmatchedDown = new HashSet<string>();
 
         private void ChangeKeySet()
         {
@@ -73,6 +80,17 @@ namespace KoikatuVR
         protected override void OnDisable()
         {
             base.OnDisable();
+
+            // Send PressUp for keys we sent PressDown for, so that no key
+            // is left pressed indefinitely.
+
+            // Make a copy because the loop below will modify the HashSet.
+            var todo = _SentUnmatchedDown.ToList();
+            foreach (var key in todo)
+            {
+                InputKey(key, KeyMode.PressUp);
+            }
+            _SentUnmatchedDown.Clear();
         }
 
         protected override void OnEnable()
@@ -224,6 +242,7 @@ namespace KoikatuVR
                         VR.Input.Keyboard.KeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), keyName));
                         break;
                 }
+                _SentUnmatchedDown.Add(keyName);
             }
             else
             {
@@ -269,6 +288,7 @@ namespace KoikatuVR
                         VR.Input.Keyboard.KeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), keyName));
                         break;
                 }
+                _SentUnmatchedDown.Remove(keyName);
             }
         }
 
