@@ -96,10 +96,13 @@ namespace KoikatuVR
 		{
 			bool vrMode = newDevice != DeviceNone;
 
-			// 指定されたデバイスの読み込み.
-			UnityEngine.VR.VRSettings.LoadDeviceByName(newDevice);
-			// 次のフレームまで待つ.
-			yield return null;
+			if (UnityEngine.VR.VRSettings.loadedDeviceName != newDevice)
+			{
+				// 指定されたデバイスの読み込み.
+				UnityEngine.VR.VRSettings.LoadDeviceByName(newDevice);
+				// 次のフレームまで待つ.
+				yield return null;
+			}
 			// VRモードを有効にする.
 			UnityEngine.VR.VRSettings.enabled = vrMode;
 			// 次のフレームまで待つ.
