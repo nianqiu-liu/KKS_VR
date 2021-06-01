@@ -46,6 +46,7 @@ namespace KoikatuVR.Caress
                 if (_aibuTracker != null)
                 {
                     HandleTrigger();
+                    HandleToolChange();
                 }
                 else
                 {
@@ -88,7 +89,8 @@ namespace KoikatuVR.Caress
             var device = SteamVR_Controller.Input((int)_controller.Tracking.index);
             if (!_triggerPressed && device.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger))
             {
-                InitiateCaress();
+                UpdateSelectKindTouch();
+                HandCtrlHooks.InjectMouseButtonDown(0);
                 _triggerPressed = true;
             }
             else if (_triggerPressed && device.GetPressUp(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger))
@@ -102,6 +104,17 @@ namespace KoikatuVR.Caress
             }
         }
 
+        private void HandleToolChange()
+        {
+            var device = SteamVR_Controller.Input((int)_controller.Tracking.index);
+            if (device.GetPressUp(Valve.VR.EVRButtonId.k_EButton_ApplicationMenu))
+            {
+                UpdateSelectKindTouch();
+                HandCtrlHooks.InjectMouseScroll(1f);
+            }
+
+        }
+
         private void ReleaseLock()
         {
             SetSelectKindTouch(0, HandCtrl.AibuColliderKind.none);
@@ -112,11 +125,10 @@ namespace KoikatuVR.Caress
             _lock = null;
         }
 
-        private void InitiateCaress()
+        private void UpdateSelectKindTouch()
         {
             var colliderKind = _aibuTracker.GetCurrentColliderKind(out int femaleIndex);
             SetSelectKindTouch(femaleIndex, colliderKind);
-            HandCtrlHooks.InjectMouseButtonDown(0);
         }
 
         /// <summary>
