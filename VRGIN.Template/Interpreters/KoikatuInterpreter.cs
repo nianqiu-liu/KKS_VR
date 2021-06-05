@@ -42,7 +42,7 @@ namespace KoikatuVR.Interpreters
                 if (CurrentScene != TalkScene)
                 {
                     nextSceneType = TalkScene;
-                    //nextInterpreter = new TalkSceneInterpreter(); 特有の処理がないため不要
+                    nextInterpreter = new TalkSceneInterpreter();
                     VRLog.Info("Start TalkScene");
                 }
             }
