@@ -67,7 +67,6 @@
     <Compile Include="Caress\VRMouth.cs" />
     <Compile Include="Interpreters\ActionSceneInterpreter.cs" />
     <Compile Include="ConfigurableContext.cs" />
-    <Compile Include="GenericSeatedMode.cs" />
     <Compile Include="GenericStandingMode.cs" />
     <Compile Include="Interpreters\TalkSceneInterpreter.cs" />
     <Compile Include="LocationPicker.cs" />

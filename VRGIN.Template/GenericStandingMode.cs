@@ -12,13 +12,6 @@ namespace KoikatuVR
 {
     class GenericStandingMode : StandingMode
     {
-        protected override IEnumerable<IShortcut> CreateShortcuts()
-        {
-            return base.CreateShortcuts().Concat(new IShortcut[] {
-                new MultiKeyboardShortcut(new KeyStroke("Ctrl+C"), new KeyStroke("Ctrl+C"), () => { VR.Manager.SetMode<GenericSeatedMode>(); })
-            });
-        }
-
         public override IEnumerable<Type> Tools
         {
             get
