@@ -131,7 +131,7 @@ namespace KoikatuVR
 
 			if (vrMode)
 			{
-                new Harmony("mosirnik.kk-main-game-vr").PatchAll();
+                new Harmony(VRPlugin.GUID).PatchAll();
 				// Boot VRManager!
 				// Note: Use your own implementation of GameInterpreter to gain access to a few useful operatoins
 				// (e.g. characters, camera judging, colliders, etc.)
