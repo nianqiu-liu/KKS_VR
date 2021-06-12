@@ -4,8 +4,10 @@ using System.Xml.Serialization;
 using UnityEngine;
 using System.Collections;
 using VRGIN.Core;
+using VRGIN.Visuals;
 using KoikatuVR.Interpreters;
 using HarmonyLib;
+using VRGIN.Native;
 
 namespace KoikatuVR
 {
@@ -114,6 +116,18 @@ namespace KoikatuVR
 				yield return null;
 			}
 
+
+			while (true)
+			{
+				var rect = WindowManager.GetClientRect();
+				if (rect.Right - rect.Left > 0)
+				{
+					break;
+				}
+				VRLog.Info("waiting for the window rect to be non-empty");
+				yield return null;
+			}
+			VRLog.Info("window rect is not empty!");
 
 			if (vrMode)
 			{
