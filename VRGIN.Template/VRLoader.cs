@@ -136,6 +136,8 @@ namespace KoikatuVR
 				// Note: Use your own implementation of GameInterpreter to gain access to a few useful operatoins
 				// (e.g. characters, camera judging, colliders, etc.)
 				VRManager.Create<KoikatuInterpreter>(CreateContext("VRContext.xml"));
+				// VRGIN doesn't update the near clip plane until a first "main" camera is created, so we set it here.
+				VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = VR.Context.NearClipPlane;
 				VR.Manager.SetMode<GenericStandingMode>();
 				VRFade.Create();
 			}
