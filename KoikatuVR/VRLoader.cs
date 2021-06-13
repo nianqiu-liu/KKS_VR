@@ -50,47 +50,6 @@ namespace KoikatuVR
 			}
 		}
 
-		#region Helper code
-
-		private IVRManagerContext CreateContext(string path)
-		{
-			var serializer = new XmlSerializer(typeof(ConfigurableContext));
-
-			if (File.Exists(path))
-			{
-				// Attempt to load XML
-				using (var file = File.OpenRead(path))
-				{
-					try
-					{
-						return serializer.Deserialize(file) as ConfigurableContext;
-					}
-					catch (Exception e)
-					{
-						VRLog.Error("Failed to deserialize {0} -- using default", path);
-					}
-				}
-			}
-
-			// Create and save file
-			var context = new ConfigurableContext();
-			try
-			{
-				using (var file = new StreamWriter(path))
-				{
-					file.BaseStream.SetLength(0);
-					serializer.Serialize(file, context);
-				}
-			}
-			catch (Exception e)
-			{
-				VRLog.Error("Failed to write {0}", path);
-			}
-
-			return context;
-		}
-		#endregion
-
 		/// <summary>
 		/// VRデバイスのロード。
 		/// </summary>
@@ -135,7 +94,7 @@ namespace KoikatuVR
 				// Boot VRManager!
 				// Note: Use your own implementation of GameInterpreter to gain access to a few useful operatoins
 				// (e.g. characters, camera judging, colliders, etc.)
-				VRManager.Create<KoikatuInterpreter>(CreateContext("VRContext.xml"));
+				VRManager.Create<KoikatuInterpreter>(new KoikatuContext());
 				// VRGIN doesn't update the near clip plane until a first "main" camera is created, so we set it here.
 				VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = VR.Context.NearClipPlane;
 				VR.Manager.SetMode<GenericStandingMode>();

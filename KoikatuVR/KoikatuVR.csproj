@@ -66,7 +66,7 @@
     <Compile Include="Caress\HandCtrlHooks.cs" />
     <Compile Include="Caress\VRMouth.cs" />
     <Compile Include="Interpreters\ActionSceneInterpreter.cs" />
-    <Compile Include="ConfigurableContext.cs" />
+    <Compile Include="KoikatuContext.cs" />
     <Compile Include="GenericStandingMode.cs" />
     <Compile Include="Interpreters\TalkSceneInterpreter.cs" />
     <Compile Include="LocationPicker.cs" />
