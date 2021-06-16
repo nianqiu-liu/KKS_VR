@@ -34,6 +34,7 @@ namespace KoikatuVR
 		{
 			_isVREnable = isEnable;
 			_Instance = new GameObject("VRLoader").AddComponent<VRLoader>();
+			DontDestroyOnLoad(_Instance.gameObject);
 
 			return _Instance;
 		}
