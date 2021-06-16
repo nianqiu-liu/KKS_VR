@@ -65,6 +65,7 @@
     <Compile Include="Caress\CaressController.cs" />
     <Compile Include="Caress\HandCtrlHooks.cs" />
     <Compile Include="Caress\VRMouth.cs" />
+    <Compile Include="ConfigurationManagerAttributes.cs" />
     <Compile Include="Interpreters\ActionSceneInterpreter.cs" />
     <Compile Include="KoikatuContext.cs" />
     <Compile Include="GenericStandingMode.cs" />

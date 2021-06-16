@@ -49,13 +49,17 @@ namespace KoikatuVR
             Tie(rumble, v => settings.Rumble = v);
 
             var grabRotationImmediateMode = config.Bind(sectionGeneral, "Immediate rotation", true,
-                "Determines the rotation mode. If enabled, pulling the trigger while grabbing will immediately rotate you. When disabled, doing the same thing will let you 'drag' the view.");
+                new ConfigDescription(
+                    "Determines the rotation mode. If enabled, pulling the trigger while grabbing will immediately rotate you. When disabled, doing the same thing will let you 'drag' the view.",
+                    null,
+                    new ConfigurationManagerAttributes { Order = -1 }));
             Tie(grabRotationImmediateMode, v => settings.GrabRotationImmediateMode = v);
 
             var rotationMultiplier = config.Bind(sectionGeneral, "Rotation multiplier", 1f,
                 new ConfigDescription(
                     "How quickly the the view should rotate when doing so with the controllers.",
-                    new AcceptableValueRange<float>(-4f, 4f)));
+                    new AcceptableValueRange<float>(-4f, 4f),
+                    new ConfigurationManagerAttributes { Order = -1 }));
             Tie(rotationMultiplier, v => settings.RotationMultiplier = v);
 
             var touchpadThreshold = config.Bind(sectionGeneral, "Touchpad direction threshold", 0.8f,
@@ -65,35 +69,45 @@ namespace KoikatuVR
             Tie(touchpadThreshold, v => settings.TouchpadThreshold = v);
 
             var usingHeadPos = config.Bind(sectionRoaming, "Use head position", false,
-                "Place the camera exactly at the protagonist's head (may cause motion sickness). If disabled, use a fixed height from the floor.");
+                new ConfigDescription(
+                    "Place the camera exactly at the protagonist's head (may cause motion sickness). If disabled, use a fixed height from the floor.",
+                    null,
+                    new ConfigurationManagerAttributes { Order = -1 }));
             Tie(usingHeadPos, v => settings.UsingHeadPos = v);
 
             var standingCameraPos = config.Bind(sectionRoaming, "Camera height", 1.5f,
                 new ConfigDescription(
-                    "",
-                    new AcceptableValueRange<float>(0.2f, 3f)));
+                    "Default camera height for when not using the head position.",
+                    new AcceptableValueRange<float>(0.2f, 3f),
+                    new ConfigurationManagerAttributes { Order = -2 }));
             Tie(standingCameraPos, v => settings.StandingCameraPos = v);
 
             var crouchingCameraPos = config.Bind(sectionRoaming, "Crouching camera height", 0.7f,
                 new ConfigDescription(
-                    "",
-                    new AcceptableValueRange<float>(0.2f, 3f)));
+                    "Crouching camera height for when not using the head position",
+                    new AcceptableValueRange<float>(0.2f, 3f),
+                    new ConfigurationManagerAttributes { Order = -2 }));
             Tie(crouchingCameraPos, v => settings.CrouchingCameraPos = v);
 
             var crouchByHMDPos = config.Bind(sectionRoaming, "Crouch by HMD position", true,
-                "Crouch when the HMD position is below some threshold.");
+                new ConfigDescription(
+                    "Crouch when the HMD position is below some threshold.",
+                    null,
+                    new ConfigurationManagerAttributes { Order = -3 }));
             Tie(crouchByHMDPos, v => settings.CrouchByHMDPos = v);
 
             var crouchThreshold = config.Bind(sectionRoaming, "Crouch threshold", 0.15f,
                 new ConfigDescription(
                     "Trigger crouching when the height difference between the camera and the HMD is this much",
-                    new AcceptableValueRange<float>(0.05f, 3f)));
+                    new AcceptableValueRange<float>(0.05f, 3f),
+                    new ConfigurationManagerAttributes { Order = -4 }));
             Tie(crouchThreshold, v => settings.CrouchThrethould = v);
 
             var standUpThreshold = config.Bind(sectionRoaming, "Stand up threshold", -0.55f,
                 new ConfigDescription(
                     "End crouching when the hight difference between the camera and the HMD is this much",
-                    new AcceptableValueRange<float>(-3f, -0.05f)));
+                    new AcceptableValueRange<float>(-3f, -0.05f),
+                    new ConfigurationManagerAttributes { Order = -4 }));
             Tie(standUpThreshold, v => settings.StandUpThrethould = v);
 
             var rotationAngle = config.Bind(sectionRoaming, "Rotation angle", 45f,
@@ -140,14 +154,16 @@ namespace KoikatuVR
             const string sectionHP = "3. H button assignments (primary)";
             const string sectionHS = "3. H button assignments (secondary)";
 
-            _main = new KeySetConfig(config, onUpdate, sectionP, isH: false);
-            _main1 = new KeySetConfig(config, onUpdate, sectionS, isH: false);
-            _h = new KeySetConfig(config, onUpdate, sectionHP, isH: true);
-            _h1 = new KeySetConfig(config, onUpdate, sectionHS, isH: true);
+            _main = new KeySetConfig(config, onUpdate, sectionP, isH: false, advanced: false);
+            _main1 = new KeySetConfig(config, onUpdate, sectionS, isH: false, advanced: true);
+            _h = new KeySetConfig(config, onUpdate, sectionHP, isH: true, advanced: false);
+            _h1 = new KeySetConfig(config, onUpdate, sectionHS, isH: true, advanced: true);
 
-            _useMain1 = config.Bind(sectionS, "Use secondary assignments", false);
+            _useMain1 = config.Bind(sectionS, "Use secondary assignments", false,
+                new ConfigDescription("", null, new ConfigurationManagerAttributes { IsAdvanced = true }));
             _useMain1.SettingChanged += (_, _1) => onUpdate();
-            _useH1 = config.Bind(sectionHS, "Use secondary assignments", false);
+            _useH1 = config.Bind(sectionHS, "Use secondary assignments", false,
+                new ConfigDescription("", null, new ConfigurationManagerAttributes { IsAdvanced = true }));
             _useH1.SettingChanged += (_, _1) => onUpdate();
         }
 
@@ -179,12 +195,15 @@ namespace KoikatuVR
         private readonly ConfigEntry<AssignableFunction> _left;
         private readonly ConfigEntry<AssignableFunction> _center;
 
-        public KeySetConfig(ConfigFile config, Action onUpdate, string section, bool isH)
+        public KeySetConfig(ConfigFile config, Action onUpdate, string section, bool isH, bool advanced)
         {
+            int order = -1;
             ConfigEntry<AssignableFunction> create(string name, AssignableFunction def)
             {
-                var entry = config.Bind(section, name, def);
+                var entry = config.Bind(section, name, def, new ConfigDescription("", null,
+                    new ConfigurationManagerAttributes { Order = order, IsAdvanced = advanced }));
                 entry.SettingChanged += (_, _1) => onUpdate();
+                order -= 1;
                 return entry;
             }
             if (isH)
