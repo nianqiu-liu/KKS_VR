@@ -210,6 +210,8 @@ namespace KoikatuVR
             {
                 switch (keyName)
                 {
+                    case "NONE":
+                        break;
                     case "WALK":
                         IfActionScene(interpreter => interpreter.StartWalking());
                         break;
@@ -248,6 +250,8 @@ namespace KoikatuVR
             {
                 switch (keyName)
                 {
+                    case "NONE":
+                        break;
                     case "WALK":
                         IfActionScene(interpreter => interpreter.StopWalking());
                         break;
