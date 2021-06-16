@@ -13,11 +13,11 @@ namespace KoikatuVR
 {
     public class KoikatuContext : IVRManagerContext
     {
-        public KoikatuContext()
+        public KoikatuContext(KoikatuSettings settings)
         {
             // We'll keep those always the same
             Materials = new DefaultMaterialPalette();
-            Settings = KoikatuSettings.Load("VRSettings.xml");
+            Settings = settings;
         }
 
         public IMaterialPalette Materials { get; private set; }

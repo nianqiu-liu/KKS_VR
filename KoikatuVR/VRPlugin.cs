@@ -22,14 +22,15 @@ namespace KoikatuVR
         {
             bool vrDeactivated = Environment.CommandLine.Contains("--novr");
             bool vrActivated = Environment.CommandLine.Contains("--vr");
+            var settings = SettingsManager.Create(Config);
 
             if (vrActivated || (!vrDeactivated && SteamVRDetector.IsRunning))
             {
-				VRLoader.Create(true);
+				VRLoader.Create(true, settings);
             }
 			else
 			{
-				VRLoader.Create(false);
+				VRLoader.Create(false, settings);
             }
         }
     }

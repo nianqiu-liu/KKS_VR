@@ -43,8 +43,14 @@ namespace KoikatuVR
             return _InHScene ? _Settings.HKeySets : _Settings.KeySets;
         }
 
+        private void ResetKeys()
+        {
+            SetScene(_InHScene);
+        }
+
         private void SetScene(bool inHScene)
         {
+            CleanupDowns();
             _InHScene = inHScene;
             var keySets = KeySets();
             _KeySetIndex = 0;
@@ -65,6 +71,8 @@ namespace KoikatuVR
 
             _Settings = (VR.Context.Settings as KoikatuSettings);
             SetScene(inHScene: false);
+            _Settings.AddListener("KeySets", (_, _1) => ResetKeys());
+            _Settings.AddListener("HKeySets", (_, _1) => ResetKeys());
         }
 
         protected override void OnStart()
@@ -79,11 +87,16 @@ namespace KoikatuVR
 
         protected override void OnDisable()
         {
+            CleanupDowns();
             base.OnDisable();
+        }
 
-            // Send PressUp for keys we sent PressDown for, so that no key
-            // is left pressed indefinitely.
-
+        /// <summary>
+        /// Send PressUp for keys we sent PressDown for, so that no key
+        /// is left pressed indefinitely.
+        /// </summary>
+        private void CleanupDowns()
+        {
             // Make a copy because the loop below will modify the HashSet.
             var todo = _SentUnmatchedDown.ToList();
             foreach (var key in todo)

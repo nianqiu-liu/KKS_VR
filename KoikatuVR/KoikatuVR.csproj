@@ -70,6 +70,7 @@
     <Compile Include="GenericStandingMode.cs" />
     <Compile Include="Interpreters\TalkSceneInterpreter.cs" />
     <Compile Include="LocationPicker.cs" />
+    <Compile Include="SettingsManager.cs" />
     <Compile Include="TalkSceneHandler.cs" />
     <Compile Include="VRFade.cs" />
     <Compile Include="Interpreters\HSceneInterpreter.cs" />

@@ -17,6 +17,7 @@ namespace KoikatuVR
 		private static string DeviceNone = "None";
 
 		private static bool _isVREnable = false;
+		private static KoikatuSettings _settings;
 		private static VRLoader _Instance;
 		public static VRLoader Instance
 		{
@@ -30,9 +31,10 @@ namespace KoikatuVR
 			}
 		}
 
-		public static VRLoader Create(bool isEnable)
+		public static VRLoader Create(bool isEnable, KoikatuSettings settings)
 		{
 			_isVREnable = isEnable;
+			_settings = settings;
 			_Instance = new GameObject("VRLoader").AddComponent<VRLoader>();
 			DontDestroyOnLoad(_Instance.gameObject);
 
@@ -95,7 +97,7 @@ namespace KoikatuVR
 				// Boot VRManager!
 				// Note: Use your own implementation of GameInterpreter to gain access to a few useful operatoins
 				// (e.g. characters, camera judging, colliders, etc.)
-				VRManager.Create<KoikatuInterpreter>(new KoikatuContext());
+				VRManager.Create<KoikatuInterpreter>(new KoikatuContext(_settings));
 				// VRGIN doesn't update the near clip plane until a first "main" camera is created, so we set it here.
 				VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = VR.Context.NearClipPlane;
 				VR.Manager.SetMode<GenericStandingMode>();
