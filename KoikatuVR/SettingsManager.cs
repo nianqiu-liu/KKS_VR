@@ -37,6 +37,7 @@ namespace KoikatuVR
 
             const string sectionGeneral = "0. General";
             const string sectionRoaming = "1. Roaming";
+            const string sectionCaress = "1. Caress";
 
             var ipdScale = config.Bind(sectionGeneral, "IPD Scale", 1f,
                 new ConfigDescription(
@@ -115,6 +116,10 @@ namespace KoikatuVR
                     "Angle of rotation, in degrees",
                     new AcceptableValueRange<float>(0f, 180f)));
             Tie(rotationAngle, v => settings.RotationAngle = v);
+
+            var automaticTouching = config.Bind(sectionCaress, "Automatic touching", false,
+                "Touching the female's body with controllers triggers reaction");
+            Tie(automaticTouching, v => settings.AutomaticTouching = v);
 
             KeySetsConfig keySetsConfig = null;
             void updateKeySets()

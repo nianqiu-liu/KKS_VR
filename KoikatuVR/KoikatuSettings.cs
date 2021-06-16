@@ -49,6 +49,9 @@ namespace KoikatuVR
 
         public float RotationAngle { get { return _RotationAngle; } set { _RotationAngle = value; } }
         private float _RotationAngle = 45f;
+
+        public bool AutomaticTouching { get { return _AutomaticTouching; } set { _AutomaticTouching = value; } }
+        private bool _AutomaticTouching = false;
     }
 
     public class KeySet

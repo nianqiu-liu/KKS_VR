@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 using VRGIN.Core;
 using VRGIN.Controls;
 using HarmonyLib;
@@ -26,6 +27,7 @@ namespace KoikatuVR.Caress
         // * Delay releasing of the lock until the trigger is released.
 
         KoikatuInterpreter _interpreter;
+        KoikatuSettings _settings;
         Controller _controller;
         AibuColliderTracker _aibuTracker; // may be null
         Controller.Lock _lock; // may be null but never invalid
@@ -35,6 +37,7 @@ namespace KoikatuVR.Caress
         {
             base.OnAwake();
             _interpreter = VR.Interpreter as KoikatuInterpreter;
+            _settings = VR.Context.Settings as KoikatuSettings;
             _controller = GetComponent<Controller>();
         }
 
@@ -60,7 +63,27 @@ namespace KoikatuVR.Caress
             if (_aibuTracker != null && _aibuTracker.AddIfRelevant(other))
             {
                 UpdateLock();
+                if (_lock != null && _settings.AutomaticTouching)
+                {
+                    var colliderKind = _aibuTracker.GetCurrentColliderKind(out int femaleIndex);
+                    if (HandCtrl.AibuColliderKind.reac_head <= colliderKind)
+                    {
+                        SetSelectKindTouch(femaleIndex, colliderKind);
+                        StartCoroutine(ClickCo());
+                    }
+                }
             }
+        }
+
+        private IEnumerator ClickCo()
+        {
+            bool consumed = false;
+            HandCtrlHooks.InjectMouseButtonDown(0, () => consumed = true);
+            while (!consumed)
+            {
+                yield return null;
+            }
+            HandCtrlHooks.InjectMouseButtonUp(0);
         }
 
         protected void OnTriggerExit(Collider other)
