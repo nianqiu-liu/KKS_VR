@@ -1,177 +1,191 @@
-# Ooetksh 追記
+# KK_MainGameVR
 
-当 KoikatuVR は BepInEx 用のプラグインです（*IPAは不要*）。
+This is a BepInEx plugin for Koikatsu that allows you to play the main game
+(including the Maker) in VR. Currently only the standing (aka room-scale)
+mode is supported.
 
-[Releases](https://github.com/Ooetksh/KoikatuVR/releases) ページをご覧ください。
+This plugin is based on the [KoikatuVR](https://github.com/Ooetksh/KoikatuVR)
+plugin developed by vrhth, KoikatsuVrThrowaway and Ooetksh. If you are migrating
+from KoikatuVR, refer to the 'Migrating' section.
 
----
+## Prerequisites
 
-obtdai様版の[VRGIN.Template](https://github.com/obtdai/VRGIN.Template)を触ってなんとかコイカツ本編をVRで操作できるように**したい**もの
+* Koikatu or Koikatsu Party
+* BepInEx 5.4 or later
+* SteamVR
+* A VR headset supported by SteamVR
+* VR controllers
 
-極めて実験的なバージョンです。いろいろと不便ですし、不具合が起こる可能性も高いですので、そういったことをご理解いただいた上で自己責任でお願いします。
+## Installation
 
-# 導入方法
-1. [release](https://github.com/vrhth/KoikatuVR/releases)から最新のzip（full）を落とす
-1. 中身を全てインストールフォルダにコピーする（Koikatu.exeとIPA.exeを同じ階層になるように）
-1. Koikatu.exeをIPA.exeにドラッグ&ドロップ
-1. Koikatu_Data/globalgamemanagersを修正する
-    1. [UABE](https://github.com/DerPopo/UABE/releases)でglobalgamemanagersを開く（確認時のバージョンは2.2 beta2）
-    1. Path ID列が11のTypeがBuild Settingsとなっている行を選択しExport Dumpする
-    1. 作成されたダンプファイルをテキストエディタで開き下の囲みの通り修正する
-    1. 修正したものをImport Dumpする
-    1. 保存する (上書きしようとすると失敗するので他の名前か場所で保存してUAB閉じてから移動、このとき、保存先をデスクトップにするとファイルが壊れるという報告あり)
+1. Make sure BepInEx 5 has been installed.
+2. Download and extract the latest zip file from
+  [releases](https://github.com/mosirnik/KK_MainGameVR/releases).
+3. If your base game is Koikatsu Party (the Steam version), rename the extracted
+  `Koikatu_Data` into `Koikatsu Party_Data` (note the spelling).
+4. Copy the contents of the zip file over the Koikatsu installation folder. If this
+  is done correctly, you should find a folder `BepInEx\plugins\KK_MainGameVR` under
+  the game's root folder.'
+5. Modify `Koikatu_Data\globalgamemanagers` or `Koikatsu Party_Data/globalgamemanagers`:
+    1. Rename the file to `globalgamemanagers.orig` (or whatever you want to call it).
+    2. Open `globalgamemanagers.orig` with [UABE](https://github.com/DerPopo/UABE/releases).
+    3. Select the row with the path ID "11" and the type "Build Settings", then click "Export Dump".
+    4. Use a text editor to edit the generated dump file as shown below.
+    5. Click "Import Dump" to load the edited dump file.
+    6. Click "OK" to save the modified file as `globalgamemanagers`, so that it
+      replaces the file you renamed in the first step.
     ~~~
-    修正前
+    Before:
     0 vector enabledVRDevices
     0 Array Array (0 items)
     0 int size = 0
 
-    修正後
+    After:
     0 vector enabledVRDevices
     0 Array Array (2 items)
     0 int size = 2
     [0]
-    1 string data = "None"
+     1 string data = "None"
     [1]
-    1 string data = "OpenVR"
+     1 string data = "OpenVR"
     ~~~
-    
-1. --vrをつけて起動するか、SteamVRが起動している状態で起動する（--novrをつけて起動するとSteamVRが起動していても通常モードになる）
 
-<br />
-必要ならfork元も参考にして下さい
+Now you can start Koikatsu with `--vr` command line option to enable VR.
+Alternatively, starting Koikatsu while SteamVR is running also enables this
+plugin.
 
-obtdai様版（ベースにさせて頂いています）
+## Control
 
-[VRGIN](https://github.com/obtdai/VRGIN)
+This plugin assumes that your VR controller has the following buttons/controls:
 
-[VRGIN.Template](https://github.com/obtdai/VRGIN.Template)
+* Application menu button
+* Trigger button
+* Grip button
+* Touchpad
 
-Eusth様版（更に元、オリジナルです）
+You may need to tweak button assignments in SteamVR's per-game settings if your
+controllers don't natively have these. If you are using Windows MR controllers,
+you may also need to configure them to pretend to be Vive controllers, for
+reasons I don't understand.
 
-[VRGIN](https://github.com/Eusth/VRGIN)
+In the game, each of the controllers has 3 tools: Menu, Warp and School. Only
+one of them can be active at a time. You can cycle through the tools by pressing
+the Application menu button. Each controller has a cyan icon indicating which
+tool is currently active.
 
-[VRGIN.Template](https://github.com/Eusth/VRGIN.Template)
+### Menu tool
 
-# 操作方法
-新たに学校のアイコンのツールが追加されています
+The menu tool comes with a little screen on which game menus, icons and texts
+are shown. You can use the other controller as a virtual laser pointer, and
+pull the Trigger to click on the screen. Most game interactions (specifically,
+the ones that don't involve touching 3D objects) are done this way.
 
-このツールの状態での操作（oculusでやってるのでviveでの確認してません）
+Pressing the Grip button while the Menu tool is active causes the screen
+to be detached and left at the current position in the 3D space. Pressing it
+again reclaims the screen.
 
-※ポインターが浮いてるウィンドウにあたってるときはこれらの操作はできないので注意
+A detached screen can be resized and moved around by using two controllers:
+point both controllers at the screen, hold the triggers and then move them
+around.
 
-* トリガー
+### Warp tool
 
-HMDが向いている方向に移動（カメラも追従）
+The warp tool allows you to move around in the 3D space. 
 
-VRSettings.xmlで目線の高さを変更できます
+Use the touchpad to teleport. Holding the Grip button allows you to grab
+the world and move it around. While doing so, you can hold the Grip of the
+other controller to start rotating.
 
-UsingHeadPosがtrueのときはキャラクターの目線の高さ、
-falseのときはStandingCameraPosとCrouchingCameraPosの値による高さになります
+### School tool
 
-オマケ：しゃがむとその高さになるので実際にしゃがみながらやると楽しい
+This tool is a collection of Koikatsu-specific action commands and simulated
+mouse/keyboard inputs. There are two button mappings, one for H scenes and
+one for all other scenes. Both mappings are configurable. The defaults for
+non-H scenes are:
 
-※ダッシュだと酔いやすい＆操作しにくかったので、歩き（Shift押し）にしてます。
+* Trigger: Walk (Roam mode)
+* Grip: Middle mouse button
+* Touchpad up: F3
+* Touchpad down: Move protagonist to camera (Roam mode)
+* Touchpad left: Rotate left (Roam mode)
+* Touchpad right: Rotate right (Roam mode)
+* Touchpad center: Right mouse button
 
-※酔い注意（特にキャラクターの目線の高さを使うと歩くとき上下に揺れるので酔いやすい）
+For H scenes:
 
-* HMDの高さによる立ちしゃがみの切り替え
+* Trigger: Left mouse button
+* Grip: Middle mouse button
+* Touchpad up: Mouse wheel scroll up
+* Touchpad down: Mouse wheel scroll down
+* Touchpad left: (unassigned)
+* Touchpad right: (unassigned)
+* Touchpad center: Right mouse button
 
-HMDの高さが一定を下回る（上回る）としゃがみ（立ち）ます
-VRSettings.xmlのCrouchByHMDPosで有効無効、
-CrouchThrethouldとStandUpThrethouldでどの高さで実行するかを設定できます
-※値はHMDの基準位置とHMDの現在位置の差
+## Situation-specific controls
 
-* グリップ
+The school tool can be used when you need more complex interactions than simple
+mouse clicks.
 
-カメラの位置にプレイヤーキャラを移動
+There are also a few types of context-specific controls, where you can interact
+directly with 3D objects using the controllers. This type of interaction does
+not require any specific tool to be selected. The tool icon disappears when
+such an interaction is available.
 
-押しっぱなしで現実で動くと仮想空間でも動き回れる
+Below is a list of situations that offer special controls.
 
-* スティック（タッチパッド）
+### Roaming
 
-上 F3
+In the Roaming mode, there are 2 main methods of moving around:
 
-下 F4
+* Use the school tool to walk (default: Trigger), and turn left and right
+    (default: Touchpad left and right). In this method, your point
+    of view is fixed at the protagonist's head.
+* Use the warp tool to move your viewpoint, then use the school tool
+    (default: Touchpad down) to summon the protagnoist.
 
-左 左回転
+Either way, you can use the school tool to simulate ordinary mouse and keyboard
+inputs, e.g. right click (default: Trigger) for interacting with an object,
+middle click (default: Grip) for opening the menu, etc.
 
-右 右回転
+### Talk scene
 
-中央 右クリック
+When talking to a character, most interactions are done through the menu.
+In addition, you can touch or look at the character by putting one of the
+controllers at the position you want to touch/look at, then pulling the
+Trigger. 
 
-※全て倒すだけでなく押し込む必要あり
+### H scene
 
-VRSettings.xmlを書き換えることで割り当てを変えることができます。
+Caressing can be done in the same way as touching in talk scenes. Additionally,
+you can switch to a different mode of caressing by pressing the Application
+menu button with the controller in place.
 
-* 歩く WALK
-* 走る DASH
-* ファンクションキー そのまま ex) F3
-* マウスボタン LBUTTON / RBUTTON / MBUTTON
-* その他のキー VK_をつける ex) VK_A
-* 回転(45度) LROTATION / RROTATION
-* 押している間しゃがむ CROUCH
-* カメラの位置にプレイヤーキャラを移動 PL2CAM
-* キー配置の切り替え NEXT
+Optionally, automatic touching and kissing can be enabled, so that you don't
+even need to pull the Trigger.
 
-<details><summary>設定例</summary><div>
-(トリガーで歩き、グリップしている間しゃがむ、↑設定/→マップ移動/←ステータス/・右クリ)と
-(トリガーでダッシュ、グリップしている間HMDの位置にキャラを移動、↑左クリ/←→左右回転/・中央クリ)を↓を押すたびに切り替える
-    
-~~~
-  <KeySets>
-    <KeySet>
-      <Trigger>WALK</Trigger>
-      <Grip>CROUCH</Grip>
-      <Up>F1</Up>
-      <Down>NEXT</Down>
-      <Right>F3</Right>
-      <Left>F4</Left>
-      <Center>RBUTTON</Center>
-    </KeySet>
-    <KeySet>
-      <Trigger>DASH</Trigger>
-      <Grip>PL2CAM</Grip>
-      <Up>LBUTTON</Up>
-      <Down>NEXT</Down>
-      <Right>RROTATION</Right>
-      <Left>LROTATION</Left>
-      <Center>MBUTTON</Center>
-    </KeySet>
-  </KeySets>
-~~~
-</div></details>
-<br />
+When changing location, you can use the green laser to point to a new location
+icon and pull the Trigger to confirm.
 
-* ぱいタッチなど、3Dモデルをクリックする操作について
+## Configuration
 
-会話時は、VR上で真正面にアップで表示されている状態にしてウィンドウの真ん中らへんをクリックでなんとか（ようはHMDじゃなくて通常のディスプレイのほうでの表示をクリックする）
+It is recommended that you use
+[ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager),
+which allows you to change settings of this plugin from within the game.
 
-H時は不可能ではないもののウィンドウ内でのマウスの位置と対応する3D空間での位置がわかりにくすぎるので、困難
-（本編で愛撫で絶頂させる必要がある場合はマクロの使用を推奨）
+Alternatively can manually edit `BepInEx\config\mosirnik.kk-main-game-vr.cfg`
+with a text editor.
 
-* リモコン操作
+## Migrating
 
-以前の通りマウス左クリック（MenuToolのトリガー）でリモコン操作できるので、場面によってはそのほうが便利かも
+Major differences between this plugin and Ooetksh's version of KoikatuVR include:
 
-# その他改善点
-開始時にStandingModeで始まるように（Ctrl+C, Ctrl+C不要）
+* It is a BepInEx 5 plugin.
+* It adds a few ways of interacting with 3D objects using conrollers, like
+  touching a character or changing location in H.
+* It no longer reads `VRContext.xml` or `VRSettings.xml`. It uses BepInEx-style
+  configuration instead.
+* All keyboard shortcuts and the seated mode have been removed.
 
-自動でApplyEffectsするように（VRSettings.xmlでOFFにできます）
-
-ApplyEffects時（Ctrl+F5）に同時にHDRを許可するように（ピンクや緑の変な色になるの対策）
-
-# 既知の不具合など
-* ウィンドウが真っ白になったままフリーズすることがある（例えば、F3を開いたままゲームを進めるなど本来不可能な操作をした場合？）
-* キャラクターのレイヤーのライティングがおかしくなることがある（光があたっていない状態になる、HMDの向き→ActionCameraの向き→DirectionalLightの向きと影響してるせいでたまたま影になる方向になるだけ？）
-* マウスがきかなくなるときがある（非VRでポインタ表示されない状態のときの処理を無効化してるのが戻ってしまうときがある）。メニュー出すなど非VR環境でポインタ表示される状態にすれば一応操作はできる（もちろんその際は移動できない）。
-* 向きの対応がおかしくなることがある（ワープツールで方向転換した後など？）
-* 頭消しやカメラコントロールがうまくいかない場合がある（学校ツールに切り替えるタイミングや、そのときのカメラとプレイヤーの位置などによる？）
-* 移動時障害物にひっかかるとカメラとの対応がおかしくなる
-* KeySetが複数ある場合に、現在どれになっているのか確認できない
-* 設定できるようになりました ~~ホイールクリックが未割当（WindowsInput.InputSimulator.Mouseになかったんだもん）~~
-* 作者様が対応版を出してくださいました ~~GOLのCameraCtrlOffと競合するのでgolconfig.iniから抜くとかして下さい~~
-* たぶん治った ~~近づいたときにキャラが消える（ゲーム側で、固定キャラ以外はカメラとかさなると消えるようになってる模様）~~
-* 自動適用のタイミングで起こらないのでひとまず問題なし ~~Ctrl + F5をするタイミングによって色がおかしくなる（夜の家でやるとダメなのでロード直後注意、他ダメなシーンあるかは不明。大丈夫なところで一回適用してしまえば、後は大丈夫）~~
-* たぶん治った ~~自動でFPSモードになる場面（トイレやシャワーなど）でプレイヤーキャラが消える（以後戻らない）~~~
-
+If you are migrating from KoikatuVR, make sure to remove or disable KoikatuVR
+before installing this plugin, except that you can keep the modified version
+of the `globalgamemanagers` file.
