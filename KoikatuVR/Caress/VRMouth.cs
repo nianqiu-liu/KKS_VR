@@ -17,6 +17,7 @@ namespace KoikatuVR.Caress
     class VRMouth : ProtectedBehaviour
     {
         KoikatuInterpreter _interpreter;
+        KoikatuSettings _settings;
         AibuColliderTracker _aibuTracker; // may be null
 
         VRMouthColliderObject _small, _medium, _large;
@@ -40,6 +41,7 @@ namespace KoikatuVR.Caress
         {
             base.OnAwake();
             _interpreter = VR.Interpreter as KoikatuInterpreter;
+            _settings = VR.Context.Settings as KoikatuSettings;
 
             // Create 3 colliders, small ones for entering and a large one for exiting.
             _small = VRMouthColliderObject
@@ -99,7 +101,7 @@ namespace KoikatuVR.Caress
         private void UpdateKissLick()
         {
             var colliderKind = _aibuTracker.GetCurrentColliderKind(out int _);
-            if (colliderKind == HandCtrl.AibuColliderKind.mouth)
+            if (colliderKind == HandCtrl.AibuColliderKind.mouth && _settings.AutomaticKissing)
             {
                 StartKiss();
             }
