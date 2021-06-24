@@ -196,12 +196,26 @@ namespace KoikatuVR.Caress
 
             protected void OnTriggerEnter(Collider other)
             {
-                TriggerEnter?.Invoke(other);
+                try
+                {
+                    TriggerEnter?.Invoke(other);
+                }
+                catch (Exception e)
+                {
+                    VRLog.Error(e);
+                }
             }
 
             protected void OnTriggerExit(Collider other)
             {
-                TriggerExit?.Invoke(other);
+                try
+                {
+                    TriggerExit?.Invoke(other);
+                }
+                catch (Exception e)
+                {
+                    VRLog.Error(e);
+                }
             }
         }
     }

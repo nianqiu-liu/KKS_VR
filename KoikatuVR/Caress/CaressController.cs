@@ -60,18 +60,25 @@ namespace KoikatuVR.Caress
 
         protected void OnTriggerEnter(Collider other)
         {
-            if (_aibuTracker != null && _aibuTracker.AddIfRelevant(other))
+            try
             {
-                UpdateLock();
-                if (_lock != null && _settings.AutomaticTouching)
+                if (_aibuTracker != null && _aibuTracker.AddIfRelevant(other))
                 {
-                    var colliderKind = _aibuTracker.GetCurrentColliderKind(out int femaleIndex);
-                    if (HandCtrl.AibuColliderKind.reac_head <= colliderKind)
+                    UpdateLock();
+                    if (_lock != null && _settings.AutomaticTouching)
                     {
-                        SetSelectKindTouch(femaleIndex, colliderKind);
-                        StartCoroutine(ClickCo());
+                        var colliderKind = _aibuTracker.GetCurrentColliderKind(out int femaleIndex);
+                        if (HandCtrl.AibuColliderKind.reac_head <= colliderKind)
+                        {
+                            SetSelectKindTouch(femaleIndex, colliderKind);
+                            StartCoroutine(ClickCo());
+                        }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                VRLog.Error(e);
             }
         }
 
@@ -88,9 +95,16 @@ namespace KoikatuVR.Caress
 
         protected void OnTriggerExit(Collider other)
         {
-            if (_aibuTracker != null && _aibuTracker.RemoveIfRelevant(other))
+            try
             {
-                UpdateLock();
+                if (_aibuTracker != null && _aibuTracker.RemoveIfRelevant(other))
+                {
+                    UpdateLock();
+                }
+            }
+            catch (Exception e)
+            {
+                VRLog.Error(e);
             }
         }
 
