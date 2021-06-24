@@ -165,7 +165,7 @@ namespace KoikatuVR.Caress
             HSceneProc proc = _aibuTracker.Proc;
             for (int i = 0; i < proc.flags.lstHeroine.Count; i++)
             {
-                var hand = i == 0 ? proc.hand : proc.hand1;
+                var hand = i == 0 ? proc.hand : Compat.HSceenProc_hand1(proc);
                 var kind = i == femaleIndex ? colliderKind : HandCtrl.AibuColliderKind.none;
                 new Traverse(hand).Field("selectKindTouch").SetValue(kind);
             }

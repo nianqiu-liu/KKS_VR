@@ -92,7 +92,7 @@ namespace KoikatuVR.Caress
 
             var idx = idx_kinds.Field1;
             var kinds = idx_kinds.Field2;
-            var hand = idx == 0 ? Proc.hand : Proc.hand1;
+            var hand = idx == 0 ? Proc.hand : Compat.HSceenProc_hand1(Proc);
             var kind = kinds.Where((k) => AibuKindAllowed(hand, k)).FirstOrDefault();
             if (kind != HandCtrl.AibuColliderKind.none)
             {

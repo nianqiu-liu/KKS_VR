@@ -57,7 +57,9 @@ namespace KoikatuVR.Interpreters
                 _CameraSystem = scene.transform.Find("CameraSystem").gameObject;
 
                 // トイレなどでFPS視点になっている場合にTPS視点に戻す
-                _CameraSystem.GetComponent<ActionGame.CameraStateDefinitionChange>().ModeChangeForce((ActionGame.CameraMode?) ActionGame.CameraMode.TPS);
+                Compat.CameraStateDefinitionChange_ModeChangeForce(
+                    _CameraSystem.GetComponent<ActionGame.CameraStateDefinitionChange>(),
+                    (ActionGame.CameraMode?) ActionGame.CameraMode.TPS);
                 //scene.GetComponent<ActionScene>().isCursorLock = false;
 
                 // プレイヤーキャラの頭を非表示にする
