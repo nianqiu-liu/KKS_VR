@@ -113,12 +113,12 @@
       <PdbFiles Include="$(OutputPath)*.pdb" />
     </ItemGroup>
     <!-- Copy plugins to the right place -->
-    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(OutputPath)BepInEx\%(RecursiveDir)" />
+    <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(OutputPath)BepInEx\plugins\KK_MainGameVR\%(RecursiveDir)" />
     <Copy SourceFiles="@(DataPluginFiles)" DestinationFolder="$(OutputPath)Koikatu_Data\Plugins\%(RecursiveDir)" />
     <!-- Remove unneeded directory -->
     <RemoveDir Directories="$(OutputPath)Plugins" />
     <!-- Copy libraries to the right place -->
-    <Move SourceFiles="@(ManagedLibs)" DestinationFolder="$(OutputPath)BepInEx" />
+    <Move SourceFiles="@(ManagedLibs)" DestinationFolder="$(OutputPath)BepInEx\plugins\KK_MainGameVR" />
     <!-- Remove unneeded directory -->
     <RemoveDir Directories="$(OutputPath)Data" />
     <!-- Remove PDB files -->
