@@ -25,7 +25,7 @@ from KoikatuVR, refer to the 'Migrating' section.
   `Koikatu_Data` into `Koikatsu Party_Data` (note the spelling).
 4. Copy the contents of the zip file over the Koikatsu installation folder. If this
   is done correctly, you should find a folder `BepInEx\plugins\KK_MainGameVR` under
-  the game's root folder.'
+  the game's root folder.
 5. Modify `Koikatu_Data\globalgamemanagers` or `Koikatsu Party_Data/globalgamemanagers`:
     1. Rename the file to `globalgamemanagers.orig` (or whatever you want to call it).
     2. Open `globalgamemanagers.orig` with [UABE](https://github.com/DerPopo/UABE/releases).
@@ -172,7 +172,7 @@ It is recommended that you use
 [ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager),
 which allows you to change settings of this plugin from within the game.
 
-Alternatively can manually edit `BepInEx\config\mosirnik.kk-main-game-vr.cfg`
+Alternatively you can manually edit `BepInEx\config\mosirnik.kk-main-game-vr.cfg`
 with a text editor.
 
 ## Migrating
