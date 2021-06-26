@@ -27,12 +27,14 @@ from KoikatuVR, refer to the 'Migrating' section.
   Koikatsu installation folder. If this is done correctly, you should find a folder
   `BepInEx\plugins\KK_MainGameVR` directly under the game's root folder.
 5. Modify `Koikatu_Data\globalgamemanagers` or `Koikatsu Party_Data/globalgamemanagers`:
-    1. Rename the file to `globalgamemanagers.orig` (or whatever you want to call it).
-    2. Open `globalgamemanagers.orig` with [UABE](https://github.com/DerPopo/UABE/releases).
-    3. Select the row with the path ID "11" and the type "Build Settings", then click "Export Dump".
-    4. Use a text editor to edit the generated dump file as shown below.
-    5. Click "Import Dump" to load the edited dump file.
-    6. Click "OK" to save the modified file as `globalgamemanagers`, so that it
+    1. If you already have a modified version of `globalgamemanagers` that works with a VR mod,
+      you don't need to do anything. Otherwise, proceed.
+    2. Rename the file to `globalgamemanagers.orig` (or whatever you want to call it).
+    3. Open `globalgamemanagers.orig` with [UABE](https://github.com/DerPopo/UABE/releases).
+    4. Select the row with the path ID "11" and the type "Build Settings", then click "Export Dump".
+    5. Use a text editor to edit the generated dump file as shown below.
+    6. Click "Import Dump" to load the edited dump file.
+    7. Click "OK" to save the modified file as `globalgamemanagers`, so that it
       replaces the file you renamed in the first step.
     ~~~
     Before:
@@ -176,6 +178,8 @@ Alternatively you can manually edit `BepInEx\config\mosirnik.kk-main-game-vr.cfg
 with a text editor.
 
 ## Migrating
+
+This section is for existing users of the KoikatuVR plugin.
 
 Major differences between this plugin and Ooetksh's version of KoikatuVR include:
 
