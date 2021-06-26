@@ -22,10 +22,10 @@ from KoikatuVR, refer to the 'Migrating' section.
 2. Download and extract the latest zip file from
   [releases](https://github.com/mosirnik/KK_MainGameVR/releases).
 3. If your base game is Koikatsu Party (the Steam version), rename the extracted
-  `Koikatu_Data` into `Koikatsu Party_Data` (note the spelling).
-4. Copy the contents of the zip file over the Koikatsu installation folder. If this
-  is done correctly, you should find a folder `BepInEx\plugins\KK_MainGameVR` under
-  the game's root folder.
+  `Koikatu_Data` folder into `Koikatsu Party_Data` (note the spelling).
+4. Copy two folders, `BepInEx` and `Koikatu_Data` (or the renamed one), to the
+  Koikatsu installation folder. If this is done correctly, you should find a folder
+  `BepInEx\plugins\KK_MainGameVR` directly under the game's root folder.
 5. Modify `Koikatu_Data\globalgamemanagers` or `Koikatsu Party_Data/globalgamemanagers`:
     1. Rename the file to `globalgamemanagers.orig` (or whatever you want to call it).
     2. Open `globalgamemanagers.orig` with [UABE](https://github.com/DerPopo/UABE/releases).
