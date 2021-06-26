@@ -73,7 +73,7 @@ one of them can be active at a time. You can cycle through the tools by pressing
 the Application menu button. Each controller has a cyan icon indicating which
 tool is currently active.
 
-### Menu tool
+### Menu tool <img src="https://raw.githubusercontent.com/mosirnik/KK_MainGameVR/master/doc/img/icon_menu.png" height="30">
 
 The menu tool comes with a little screen on which game menus, icons and texts
 are shown. You can use the other controller as a virtual laser pointer, and
@@ -88,7 +88,7 @@ A detached screen can be resized and moved around by using two controllers:
 point both controllers at the screen, hold the triggers and then move them
 around.
 
-### Warp tool
+### Warp tool <img src="https://raw.githubusercontent.com/mosirnik/KK_MainGameVR/master/doc/img/icon_warp.png" height="30">
 
 The warp tool allows you to move around in the 3D space. 
 
@@ -96,7 +96,7 @@ Use the touchpad to teleport. Holding the Grip button allows you to grab
 the world and move it around. While doing so, you can hold the Grip of the
 other controller to start rotating.
 
-### School tool
+### School tool <img src="https://raw.githubusercontent.com/mosirnik/KK_MainGameVR/master/doc/img/icon_school.png" height="30">
 
 This tool is a collection of Koikatsu-specific action commands and simulated
 mouse/keyboard inputs. There are two button mappings, one for H scenes and
