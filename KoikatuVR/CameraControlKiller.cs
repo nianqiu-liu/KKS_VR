@@ -48,7 +48,7 @@ namespace KoikatuVR
         protected override void OnLateUpdate()
         {
             base.OnLateUpdate();
-            if (_control.isCursorLock)
+            if (_control.isCursorLock && Singleton<GameCursor>.IsInstance())
             {
                 Singleton<GameCursor>.Instance.SetCursorLock(false);
             }

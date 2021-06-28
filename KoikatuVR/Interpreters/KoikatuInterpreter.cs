@@ -11,6 +11,7 @@ namespace KoikatuVR.Interpreters
         public const int TalkScene = 2;
         public const int HScene = 3;
         public const int NightMenuScene = 4;
+        public const int CustomScene = 5;
 
         public int CurrentScene { get; private set; }
         public SceneInterpreter SceneInterpreter;
@@ -74,6 +75,16 @@ namespace KoikatuVR.Interpreters
                     nextSceneType = ActionScene;
                     nextInterpreter = new ActionSceneInterpreter();
                     VRLog.Info("Start ActionScene");
+                }
+            }
+
+            else if (GameObject.Find("CustomScene") != null)
+            {
+                if (CurrentScene != CustomScene)
+                {
+                    nextSceneType = CustomScene;
+                    nextInterpreter = new CustomSceneInterpreter();
+                    VRLog.Info("Start CustomScene");
                 }
             }
 

@@ -70,6 +70,7 @@
     <Compile Include="Compat.cs" />
     <Compile Include="ConfigurationManagerAttributes.cs" />
     <Compile Include="Interpreters\ActionSceneInterpreter.cs" />
+    <Compile Include="Interpreters\CustomSceneInterpreter.cs" />
     <Compile Include="KoikatuContext.cs" />
     <Compile Include="GenericStandingMode.cs" />
     <Compile Include="Interpreters\TalkSceneInterpreter.cs" />
