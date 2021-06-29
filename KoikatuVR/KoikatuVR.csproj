@@ -72,7 +72,7 @@
     <Compile Include="Interpreters\ActionSceneInterpreter.cs" />
     <Compile Include="Interpreters\CustomSceneInterpreter.cs" />
     <Compile Include="KoikatuContext.cs" />
-    <Compile Include="GenericStandingMode.cs" />
+    <Compile Include="KoikatuStandingMode.cs" />
     <Compile Include="Interpreters\TalkSceneInterpreter.cs" />
     <Compile Include="LocationPicker.cs" />
     <Compile Include="SettingsManager.cs" />

@@ -100,7 +100,7 @@ namespace KoikatuVR
 				VRManager.Create<KoikatuInterpreter>(new KoikatuContext(_settings));
 				// VRGIN doesn't update the near clip plane until a first "main" camera is created, so we set it here.
 				VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = VR.Context.NearClipPlane;
-				VR.Manager.SetMode<GenericStandingMode>();
+				VR.Manager.SetMode<KoikatuStandingMode>();
 				VRFade.Create();
 			}
 		}

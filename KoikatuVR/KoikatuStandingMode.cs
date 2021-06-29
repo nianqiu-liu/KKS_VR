@@ -10,7 +10,7 @@ using VRGIN.Modes;
 
 namespace KoikatuVR
 {
-    class GenericStandingMode : StandingMode
+    class KoikatuStandingMode : StandingMode
     {
         public override IEnumerable<Type> Tools
         {
