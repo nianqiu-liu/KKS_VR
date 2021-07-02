@@ -123,6 +123,9 @@ For H scenes:
 * Touchpad right: (unassigned)
 * Touchpad center: Right mouse button
 
+For touchpad inputs, you need to press the touchpad or click the thumbstick.
+Just touching the touchpad or tilting the thumbstick won't be recognized.
+
 ## Situation-specific controls
 
 The school tool can be used when you need more complex interactions than simple
