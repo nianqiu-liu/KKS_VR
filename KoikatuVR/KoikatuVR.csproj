@@ -62,7 +62,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CameraControlKiller.cs" />
+    <Compile Include="CameraControlControl.cs" />
     <Compile Include="Caress\AibuColliderTracker.cs" />
     <Compile Include="Caress\CaressController.cs" />
     <Compile Include="Caress\HandCtrlHooks.cs" />

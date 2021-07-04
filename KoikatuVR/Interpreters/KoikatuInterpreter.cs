@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using VRGIN.Core;
+using System.Collections;
 
 namespace KoikatuVR.Interpreters
 {
@@ -105,6 +106,28 @@ namespace KoikatuVR.Interpreters
                 CurrentScene = nextSceneType;
                 SceneInterpreter = nextInterpreter;
                 SceneInterpreter.OnStart();
+            }
+        }
+
+        protected override CameraJudgement JudgeCameraInternal(Camera camera)
+        {
+            if (camera.CompareTag("MainCamera"))
+            {
+                StartCoroutine(HandleMainCameraCo(camera));
+            }
+            return base.JudgeCameraInternal(camera);
+        }
+
+        private IEnumerator HandleMainCameraCo(Camera camera)
+        {
+            yield return new WaitForEndOfFrame();
+            VRLog.Info("New main camera detected: moving to {0} {1}", camera.transform.position, camera.transform.eulerAngles);
+            VR.Mode.MoveToPosition(camera.transform.position, camera.transform.rotation, ignoreHeight: true);
+            VRLog.Info("moved to {0} {1}", VR.Camera.Head.position, VR.Camera.Head.eulerAngles);
+            if (camera.GetComponent<CameraControl_Ver2>() != null)
+            {
+                VRLog.Info("Adding CameraControlControl");
+                camera.gameObject.AddComponent<CameraControlControl>();
             }
         }
     }
