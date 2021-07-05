@@ -13,8 +13,6 @@ namespace KoikatuVR
 {
     class KoikatuStandingMode : StandingMode
     {
-        private Interpreters.KoikatuInterpreter _interpreter;
-
         public override IEnumerable<Type> Tools
         {
             get
@@ -34,7 +32,6 @@ namespace KoikatuVR
         {
             base.OnStart();
             Caress.VRMouth.Init();
-            _interpreter = VR.Interpreter as Interpreters.KoikatuInterpreter;
         }
 
         protected override Controller CreateLeftController()
@@ -57,15 +54,7 @@ namespace KoikatuVR
 
         protected override void SyncCameras()
         {
-            var scene = _interpreter?.CurrentScene;
-            if (scene == Interpreters.KoikatuInterpreter.HScene || scene == Interpreters.KoikatuInterpreter.CustomScene)
-            {
-                /* Do nothing. CameraControlContrl takes care of this */
-            }
-            else
-            {
-                base.SyncCameras();
-            }
+            // Do nothing. CameraControlControl and friends take care of this.
         }
     }
 }

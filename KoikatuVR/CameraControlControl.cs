@@ -53,15 +53,10 @@ namespace KoikatuVR
 
         protected override void OnUpdate()
         {
-            /// Move cameraBase in such a way that the main camera has the same
-            /// position and rotation as the VR camera.
-            var cameraBase = transform.parent;
             var head = VR.Camera.Head;
-            var rot = head.rotation * Quaternion.Inverse(_control.transform.localRotation);
-            cameraBase.SetPositionAndRotation(
-                head.position - rot * _control.transform.localPosition,
-                rot);
+            transform.SetPositionAndRotation(head.position, head.rotation);
         }
+
         protected override void OnLateUpdate()
         {
             if (_control.isCursorLock && Singleton<GameCursor>.IsInstance())
