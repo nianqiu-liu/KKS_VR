@@ -98,6 +98,9 @@ Use the touchpad to teleport. Holding the Grip button allows you to grab
 the world and move it around. While doing so, you can hold the Grip of the
 other controller to start rotating.
 
+An alternative way of rotating is to pull the trigger while holding the grip.
+This behavior can be configured with the "Immediate rotation" option.
+
 ### School tool <img src="https://raw.githubusercontent.com/mosirnik/KK_MainGameVR/master/doc/img/icon_school.png" height="30">
 
 This tool is a collection of Koikatsu-specific action commands and simulated
