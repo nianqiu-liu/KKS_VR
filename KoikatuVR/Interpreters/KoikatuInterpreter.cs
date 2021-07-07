@@ -128,14 +128,23 @@ namespace KoikatuVR.Interpreters
             // Unity might have messed with the camera transform for this frame,
             // so we wait for the next frame to get clean data.
             yield return null;
-            VRLog.Info("New main camera detected: moving to {0} {1}", camera.transform.position, camera.transform.eulerAngles);
-            VR.Mode.MoveToPosition(camera.transform.position, camera.transform.rotation, ignoreHeight: true);
-            VRLog.Info("moved to {0} {1}", VR.Camera.Head.position, VR.Camera.Head.eulerAngles);
 
-            if (camera.GetComponent<CameraControl_Ver2>() != null)
+            if (camera.name == "ActionCamera" || camera.name == "FrontCamera")
             {
+                VRLog.Info("Adding ActionCameraControl");
+                camera.gameObject.AddComponent<ActionCameraControl>();
+            }
+            else if (camera.GetComponent<CameraControl_Ver2>() != null)
+            {
+                VRLog.Info("New main camera detected: moving to {0} {1}", camera.transform.position, camera.transform.eulerAngles);
+                VR.Mode.MoveToPosition(camera.transform.position, camera.transform.rotation, ignoreHeight: true);
+                VRLog.Info("moved to {0} {1}", VR.Camera.Head.position, VR.Camera.Head.eulerAngles);
                 VRLog.Info("Adding CameraControlControl");
                 camera.gameObject.AddComponent<CameraControlControl>();
+            }
+            else
+            {
+                VRLog.Warn($"Unknown kind of main camera was added: {camera.name}");
             }
         }
     }

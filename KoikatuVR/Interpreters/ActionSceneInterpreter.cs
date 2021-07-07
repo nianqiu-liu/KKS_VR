@@ -102,14 +102,6 @@ namespace KoikatuVR.Interpreters
 
         public override void OnUpdate()
         {
-            var player = GameObject.Find("ActionScene/Player");
-            var camera = StrayTech.MonoBehaviourSingleton<StrayTech.CameraSystem>.Instance.CurrentCamera;
-            if (player != null && camera != null)
-            {
-                camera.transform.rotation = player.transform.rotation;
-                camera.transform.position = player.transform.position;
-            }
-
             GameObject map = GameObject.Find("Map");
 
             if (map != _Map)
