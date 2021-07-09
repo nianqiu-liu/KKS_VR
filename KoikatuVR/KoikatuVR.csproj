@@ -76,6 +76,7 @@
     <Compile Include="KoikatuStandingMode.cs" />
     <Compile Include="Interpreters\TalkSceneInterpreter.cs" />
     <Compile Include="LocationPicker.cs" />
+    <Compile Include="MoverHooks.cs" />
     <Compile Include="SettingsManager.cs" />
     <Compile Include="TalkSceneHandler.cs" />
     <Compile Include="Util.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Interpreters\NightMenuSceneInterpreter.cs" />
     <Compile Include="Interpreters\SceneInterpreter.cs" />
     <Compile Include="VRLoader.cs" />
+    <Compile Include="VRMover.cs" />
     <Compile Include="VRPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchoolTool.cs" />

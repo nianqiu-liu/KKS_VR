@@ -59,7 +59,7 @@ namespace KoikatuVR.Interpreters
             var cameraPosition = cameraRotation * camDat.Dir + baseTransform.TransformPoint(camDat.Pos);
             // TODO: the height calculation below assumes standing mode.
             var cameraHeight = lstFemale[0].transform.position.y + VR.Camera.transform.localPosition.y;
-            VR.Mode.MoveToPosition(new Vector3(cameraPosition.x, cameraHeight, cameraPosition.z), cameraRotation, ignoreHeight: false);
+            VRMover.Instance.MoveTo(new Vector3(cameraPosition.x, cameraHeight, cameraPosition.z), cameraRotation, keepHeight: false);
         }
     }
 }

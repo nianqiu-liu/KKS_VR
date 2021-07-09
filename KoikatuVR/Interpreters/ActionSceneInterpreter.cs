@@ -41,7 +41,7 @@ namespace KoikatuVR.Interpreters
 
             StandUp();
             StopWalking();
-            _NeedsResetCamera = true;
+            _NeedsResetCamera = false;
             _NeedsMoveCamera = false;
             _MoveCameraWaitTime = 0;
         }
