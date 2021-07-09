@@ -21,10 +21,10 @@ namespace KoikatuVR.Caress
         public HSceneProc Proc { get; private set; }
 
         readonly Transform _referencePoint;
-        readonly IDictionary<Collider, Tuple2<int /*female index*/, HandCtrl.AibuColliderKind>> _currentlyIntersecting
-            = new Dictionary<Collider, Tuple2<int, HandCtrl.AibuColliderKind>>();
-        readonly IDictionary<Collider, Tuple2<int /*female index*/, HandCtrl.AibuColliderKind[]>> _knownColliders
-            = new Dictionary<Collider, Tuple2<int, HandCtrl.AibuColliderKind[]>>();
+        readonly IDictionary<Collider, Util.ValueTuple<int /*female index*/, HandCtrl.AibuColliderKind>> _currentlyIntersecting
+            = new Dictionary<Collider, Util.ValueTuple<int, HandCtrl.AibuColliderKind>>();
+        readonly IDictionary<Collider, Util.ValueTuple<int /*female index*/, HandCtrl.AibuColliderKind[]>> _knownColliders
+            = new Dictionary<Collider, Util.ValueTuple<int, HandCtrl.AibuColliderKind[]>>();
 
         /// <summary>
         /// Create or destroy an AibuColliderTracker instance as necessary.
@@ -72,7 +72,7 @@ namespace KoikatuVR.Caress
 
                     if (aibuTagTable.TryGetValue(aibuHit, out var kinds))
                     {
-                        _knownColliders[collider] = Tuple2Util.Create(i, kinds);
+                        _knownColliders[collider] = Util.ValueTuple.Create(i, kinds);
                     }
                 }
             }
@@ -96,7 +96,7 @@ namespace KoikatuVR.Caress
             var kind = kinds.Where((k) => AibuKindAllowed(hand, k)).FirstOrDefault();
             if (kind != HandCtrl.AibuColliderKind.none)
             {
-                _currentlyIntersecting[other] = Tuple2Util.Create(idx, kind);
+                _currentlyIntersecting[other] = Util.ValueTuple.Create(idx, kind);
                 return true;
             }
             return false;
@@ -237,27 +237,6 @@ namespace KoikatuVR.Caress
                 return str.Substring(prefix.Length);
             }
             return null;
-        }
-
-        // Our version of C# doesn't have tuples, wtf.
-        struct Tuple2<T1, T2>
-        {
-            public T1 Field1 { get; set; }
-            public T2 Field2 { get; set; }
-            public Tuple2(T1 x1, T2 x2)
-            {
-                Field1 = x1;
-                Field2 = x2;
-            }
-
-        }
-
-        class Tuple2Util
-        {
-            public static Tuple2<T1, T2> Create<T1, T2>(T1 x1, T2 x2)
-            {
-                return new Tuple2<T1, T2>(x1, x2);
-            }
         }
     }
 }

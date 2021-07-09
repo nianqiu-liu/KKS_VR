@@ -77,6 +77,7 @@
     <Compile Include="LocationPicker.cs" />
     <Compile Include="SettingsManager.cs" />
     <Compile Include="TalkSceneHandler.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="VRFade.cs" />
     <Compile Include="Interpreters\HSceneInterpreter.cs" />
     <Compile Include="Interpreters\KoikatuInterpreter.cs" />
