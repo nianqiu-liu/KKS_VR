@@ -34,6 +34,12 @@ namespace KoikatuVR
         [HarmonyPostfix]
         static void PostADVCameraSetting(ADV.TextScenario __instance)
         {
+            if (Manager.Scene.IsInstance() && Manager.Scene.Instance.NowSceneNames[0] == "Talk")
+            {
+                // Talk scenes are handled separately.
+                return;
+            }
+
             VRLog.Info("PostADVCameraSetting");
             var backTrans = __instance.BackCamera.transform;
             VRMover.Instance.MaybeMoveToADV(__instance, backTrans.position, backTrans.rotation, keepHeight: false);
