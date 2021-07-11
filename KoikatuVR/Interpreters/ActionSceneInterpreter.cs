@@ -62,10 +62,6 @@ namespace KoikatuVR.Interpreters
                     (ActionGame.CameraMode?) ActionGame.CameraMode.TPS);
                 //scene.GetComponent<ActionScene>().isCursorLock = false;
 
-                // プレイヤーキャラの頭を非表示にする
-                if (pl.transform.Find("p_cf_body_bone/cf_j_root") is Transform t1) t1.gameObject.SetActive(false);
-                else if (pl.transform.Find("p_cf_body_bone_low/cf_j_root") is Transform t2) t2.gameObject.SetActive(false);
-
                 // カメラをプレイヤーの位置に移動
                 MoveCameraToPlayer();
 
