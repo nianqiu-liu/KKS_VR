@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HarmonyLib;
+using System.Reflection;
+using System.IO;
+using VRGIN.Core;
+using UnityEngine;
+using System.Diagnostics;
 
 // Collection of patches that are to be enabled only during development.
 
@@ -34,6 +40,39 @@ namespace KoikatuVR
                 VRLog.Info("Someone is modifying the target transform!");
                 VRLog.Info(new StackTrace(false));
             }
+        }
+    }
+
+    // Dump human-readable ADV scenarios under the "scenario/" folder.
+    [HarmonyPatch(typeof(AssetBundleManager))]
+    class AssetBundleManagerPatches
+    {
+        [HarmonyPatch("LoadAsset", new[] { typeof(string), typeof(string), typeof(Type), typeof(string) })]
+        [HarmonyPostfix]
+        static void PostLoadAsset(string assetBundleName, string assetName, Type type, AssetBundleLoadAssetOperation __result)
+        {
+            if (type == typeof(ADV.ScenarioData))
+            {
+                var scenarioData = __result.GetAsset<ADV.ScenarioData>();
+                StreamWriter writer = new StreamWriter($"scenario/{assetBundleName.Replace('/', '_')}-{assetName.Replace('/', '_')}.txt");
+                foreach (var param in scenarioData.list)
+                {
+                    writer.WriteLine($"{(param.Multi ? "M" : " ")} {param.Command} {string.Join(", ", param.Args)}");
+                }
+                writer.Close();
+            }
+        }
+    }
+
+    // Log every time a scenario command is executed.
+    [HarmonyPatch(typeof(ADV.CommandList))]
+    class CommandListPatches
+    {
+        [HarmonyPatch("Add", new[] { typeof(ADV.ScenarioData.Param), typeof(int) })]
+        [HarmonyPrefix]
+        static void PreAdd(ADV.ScenarioData.Param item)
+        {
+            VRLog.Info($"{(item.Multi ? "M" : " ")} {item.Command} {string.Join(", ", item.Args)}");
         }
     }
 #endif
