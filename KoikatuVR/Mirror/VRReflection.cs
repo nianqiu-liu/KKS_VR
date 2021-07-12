@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace KoikatuVR.Mirror
 {
     [ExecuteInEditMode] // Make mirror live-update even when not in play mode
-    public class MirrorReflection : MonoBehaviour
+    public class VRReflection : MonoBehaviour
     {
         public bool m_DisablePixelLights = true;
 
