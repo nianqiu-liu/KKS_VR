@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BepInEx.Configuration;
 using System.ComponentModel;
+using VRGIN.Core;
 
 namespace KoikatuVR
 {
@@ -69,6 +70,13 @@ namespace KoikatuVR
                     "Touchpad presses within this radius are considered center clicks rather than directional ones.",
                     new AcceptableValueRange<float>(0f, 1f)));
             Tie(touchpadThreshold, v => settings.TouchpadThreshold = v);
+
+            var logLevel = config.Bind(sectionGeneral, "Log level", VRLog.LogMode.Info,
+                new ConfigDescription(
+                    "The minimum severity for a message to be logged.",
+                    null,
+                    new ConfigurationManagerAttributes { IsAdvanced = true }));
+            Tie(logLevel, v => VRLog.Level = v);
 
             var usingHeadPos = config.Bind(sectionRoaming, "Use head position", false,
                 new ConfigDescription(
