@@ -352,7 +352,7 @@ namespace KoikatuVR.Mirror
 
         public static Matrix4x4 GetSteamVRProjectionMatrix(Camera cam, Valve.VR.EVREye eye)
         {
-            Valve.VR.HmdMatrix44_t proj = SteamVR.instance.hmd.GetProjectionMatrix(eye, cam.nearClipPlane, cam.farClipPlane, SteamVR.instance.graphicsAPI);
+            Valve.VR.HmdMatrix44_t proj = SteamVR.instance.hmd.GetProjectionMatrix(eye, cam.nearClipPlane, cam.farClipPlane);
             Matrix4x4 m = new Matrix4x4();
             m.m00 = proj.m0;
             m.m01 = proj.m1;
