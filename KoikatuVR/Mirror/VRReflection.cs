@@ -133,7 +133,7 @@ namespace KoikatuVR.Mirror
 
             // find out the reflection plane: position and normal in world space
             Vector3 pos = transform.position;
-            Vector3 normal = -transform.up;
+            Vector3 normal = transform.up;
 
             // Reflect camera around reflection plane
             Vector4 worldSpaceClipPlane = Plane(pos, normal);
