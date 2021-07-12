@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using VRGIN.Core;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 namespace KoikatuVR.Interpreters
 {
@@ -17,12 +18,16 @@ namespace KoikatuVR.Interpreters
         public int CurrentScene { get; private set; }
         public SceneInterpreter SceneInterpreter;
 
+        private Mirror.Manager _mirrorManager;
+
         protected override void OnAwake()
         {
             base.OnAwake();
 
             CurrentScene = NoScene;
             SceneInterpreter = new OtherSceneInterpreter();
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            _mirrorManager = new Mirror.Manager();
         }
 
         protected override void OnUpdate()
@@ -31,6 +36,15 @@ namespace KoikatuVR.Interpreters
 
             DetectScene();
             SceneInterpreter.OnUpdate();
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            VRLog.Info($"OnSceneLoaded {scene.name}");
+            foreach (var reflection in GameObject.FindObjectsOfType<MirrorReflection>())
+            {
+                _mirrorManager.Fix(reflection);
+            }
         }
 
         // 前回とSceneが変わっていれば切り替え処理をする

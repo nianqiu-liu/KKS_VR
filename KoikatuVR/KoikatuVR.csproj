@@ -77,7 +77,14 @@
     <Compile Include="KoikatuStandingMode.cs" />
     <Compile Include="Interpreters\TalkSceneInterpreter.cs" />
     <Compile Include="LocationPicker.cs" />
+    <Compile Include="Mirror\Manager.cs" />
+    <Compile Include="Mirror\VRReflection.cs" />
     <Compile Include="MoverHooks.cs" />
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
     <Compile Include="SettingsManager.cs" />
     <Compile Include="TalkSceneHandler.cs" />
     <Compile Include="Util.cs" />
@@ -103,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Deploy.props" />
+    <None Include="Resources\mirror-shader" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Libs\Assembly-CSharp.dll" />
@@ -110,6 +118,12 @@
     <Content Include="Plugins\Images\icon_school.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Release'">
