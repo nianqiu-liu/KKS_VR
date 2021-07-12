@@ -55,6 +55,8 @@ namespace KoikatuVR
 
         public bool AutomaticKissing { get { return _AutomaticKissing; } set { _AutomaticKissing = value; } }
         private bool _AutomaticKissing = false;
+
+        public bool FirstPersonADV { get; set; }
     }
 
     public class KeySet

@@ -93,6 +93,11 @@ namespace KoikatuVR
                 return o.transform;
             }
         }
+
+        public static void SetIdealPositionAndRotation(Transform t, Vector3 position, Quaternion rotation)
+        {
+            GetIdealTransformFor(t).SetPositionAndRotation(position, rotation);
+        }
     }
 
     [HarmonyPatch]
@@ -150,7 +155,7 @@ namespace KoikatuVR
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> TransADVCameraSetting(IEnumerable<CodeInstruction> code)
         {
-            // Filter out the call to Transform.SetPositionAndRotation.
+            // Replace a call to Transform.SetPositionAndRotation.
             foreach (var inst in code)
             {
                 if ((inst.opcode == OpCodes.Call || inst.opcode == OpCodes.Callvirt) &&
@@ -158,9 +163,9 @@ namespace KoikatuVR
                     method.ReflectedType == typeof(Transform) &&
                     method.Name == "SetPositionAndRotation")
                 {
-                    yield return new CodeInstruction(OpCodes.Pop); // Pop rotation
-                    yield return new CodeInstruction(OpCodes.Pop); // Pop position
-                    yield return new CodeInstruction(OpCodes.Pop); // Pop transform
+                    yield return new CodeInstruction(
+                        OpCodes.Call,
+                        AccessTools.Method(typeof(ActionCameraControl), nameof(ActionCameraControl.SetIdealPositionAndRotation)));
                 }
                 else
                 {
@@ -208,7 +213,7 @@ namespace KoikatuVR
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code)
         {
-            // Filter out the second (!) call to Transform.SetPositionAndRotation.
+            // Replace the second (!) call to Transform.SetPositionAndRotation.
             // This is laughably fragile, but it doesn't seem worthwhile to
             // make it more robust until an actual conflict is reported...
             int found = 0;
@@ -220,9 +225,9 @@ namespace KoikatuVR
                     method.Name == "SetPositionAndRotation" &&
                     found++ == 1)
                 {
-                    yield return new CodeInstruction(OpCodes.Pop); // Pop rotation
-                    yield return new CodeInstruction(OpCodes.Pop); // Pop position
-                    yield return new CodeInstruction(OpCodes.Pop); // Pop transform
+                    yield return new CodeInstruction(
+                        OpCodes.Call,
+                        AccessTools.Method(typeof(ActionCameraControl), nameof(ActionCameraControl.SetIdealPositionAndRotation)));
                 }
                 else
                 {

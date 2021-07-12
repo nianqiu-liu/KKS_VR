@@ -38,6 +38,7 @@ namespace KoikatuVR
             const string sectionGeneral = "0. General";
             const string sectionRoaming = "1. Roaming";
             const string sectionCaress = "1. Caress";
+            const string sectionEventScenes = "1. Event scenes";
 
             var ipdScale = config.Bind(sectionGeneral, "IPD Scale", 1f,
                 new ConfigDescription(
@@ -124,6 +125,10 @@ namespace KoikatuVR
             var automaticKissing = config.Bind(sectionCaress, "Automatic kissing", false,
                 "Initiate kissing by moving the HMD");
             Tie(automaticKissing, v => settings.AutomaticKissing = v);
+
+            var firstPersonADV = config.Bind(sectionEventScenes, "First person", true,
+                "Prefer first person view in event scenes");
+            Tie(firstPersonADV, v => settings.FirstPersonADV = v);
 
             KeySetsConfig keySetsConfig = null;
             void updateKeySets()

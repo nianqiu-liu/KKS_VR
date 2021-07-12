@@ -5,28 +5,13 @@ using System.Text;
 using VRGIN.Core;
 using UnityEngine;
 using HarmonyLib;
+using System.Collections;
 
 // This file is a collection of hooks to move the VR camera at appropriate
 // points of the game.
 
 namespace KoikatuVR
 {
-    [HarmonyPatch(typeof(ADV.Commands.Base.NullSet))]
-    class NullSetPatches
-    {
-        [HarmonyPatch("Do")]
-        [HarmonyPostfix]
-        static void PostDo(ADV.Commands.Base.NullSet __instance)
-        {
-            VRLog.Info("PostDo target={0}", __instance.args[1]);
-            if (__instance.args[1] == "Camera" &&
-                __instance.scenario.AdvCamera.GetComponent<ActionCameraControl>()?.VRIdealCamera.transform is Transform cameraTrans)
-            {
-                VRMover.Instance.MaybeMoveToADV(__instance.scenario, cameraTrans.position, cameraTrans.rotation, keepHeight: false);
-            }
-        }
-    }
-
     [HarmonyPatch(typeof(ADV.TextScenario))]
     class TextScenarioPatches1
     {
@@ -40,9 +25,28 @@ namespace KoikatuVR
                 return;
             }
 
-            VRLog.Info("PostADVCameraSetting");
+            VRLog.Debug("PostADVCameraSetting");
             var backTrans = __instance.BackCamera.transform;
-            VRMover.Instance.MaybeMoveToADV(__instance, backTrans.position, backTrans.rotation, keepHeight: false);
+            VRMover.Instance.MaybeMoveADV(__instance, backTrans.position, backTrans.rotation, keepHeight: false);
+        }
+
+        [HarmonyPatch("_RequestNextLine")]
+        [HarmonyPostfix]
+        static void Post_RequestNextLine(ADV.TextScenario __instance, ref IEnumerator __result)
+        {
+            if (Manager.Scene.IsInstance() && Manager.Scene.Instance.NowSceneNames[0] == "Talk")
+            {
+                // Talk scenes are handled separately.
+                return;
+            }
+
+            __result = new[] { __result, Postfix() }.GetEnumerator();
+
+            IEnumerator Postfix()
+            {
+                VRMover.Instance.HandleTextScenarioProgress(__instance);
+                yield break;
+            }
         }
     }
 
@@ -53,7 +57,7 @@ namespace KoikatuVR
         [HarmonyPostfix]
         static void PostSetNull(Transform transform)
         {
-            VRLog.Info("PostSetNull");
+            VRLog.Debug("PostSetNull");
             VRMover.Instance.MaybeMoveTo(transform.position, transform.rotation, keepHeight: false);
         }
     }
@@ -65,7 +69,7 @@ namespace KoikatuVR
         [HarmonyPostfix]
         static void PostSetCamRoot(ADV.EventCG.Data __instance)
         {
-            VRLog.Info("PostSetCamRoot");
+            VRLog.Debug("PostSetCamRoot");
             VRMover.Instance.MaybeMoveTo(__instance.camRoot.position, __instance.camRoot.rotation, keepHeight: false);
         }
 
@@ -73,7 +77,7 @@ namespace KoikatuVR
         [HarmonyPostfix]
         static void PostRestore(ADV.EventCG.Data __instance)
         {
-            VRLog.Info("PostRestore");
+            VRLog.Debug("PostRestore");
             VRMover.Instance.MaybeMoveTo(__instance.camRoot.position, __instance.camRoot.rotation, keepHeight: false);
         }
     }
