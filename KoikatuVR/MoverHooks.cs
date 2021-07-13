@@ -117,7 +117,21 @@ namespace KoikatuVR
             var baseTransform = lstFemale[0].objTop.transform;
             var camDat = new Traverse(instance.flags.ctrlCamera).Field<BaseCameraControl_Ver2.CameraData>("CamDat").Value;
             var cameraRotation = baseTransform.rotation * Quaternion.Euler(camDat.Rot);
-            var cameraPosition = cameraRotation * camDat.Dir + baseTransform.TransformPoint(camDat.Pos);
+            Vector3 dir;
+            switch (instance.flags.mode)
+            {
+                case HFlag.EMode.masturbation:
+                case HFlag.EMode.peeping:
+                case HFlag.EMode.lesbian:
+                    // Use the default distance for 3rd-person scenes.
+                    dir = camDat.Dir;
+                    break;
+                default:
+                    // Start closer otherwise.
+                    dir = Vector3.back * 0.8f;
+                    break;
+            }
+            var cameraPosition = cameraRotation * dir + baseTransform.TransformPoint(camDat.Pos);
             // TODO: the height calculation below assumes standing mode.
             var cameraHeight = lstFemale[0].transform.position.y + VR.Camera.transform.localPosition.y;
             VRMover.Instance.MoveTo(new Vector3(cameraPosition.x, cameraHeight, cameraPosition.z), cameraRotation, keepHeight: false);
