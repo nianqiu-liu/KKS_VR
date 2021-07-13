@@ -12,6 +12,8 @@ namespace KoikatuVR
     /// </summary>
     class VRMale : ProtectedBehaviour
     {
+        public static bool ForceHideHead { get; set; }
+
         private ChaControl _control;
 
         protected override void OnAwake()
@@ -30,7 +32,8 @@ namespace KoikatuVR
                 var vrEye = VR.Camera.transform;
                 var headCenter = head.TransformPoint(0, 0.12f, -0.04f);
                 var sqrDistance = (vrEye.position - headCenter).sqrMagnitude;
-                _control.fileStatus.visibleHeadAlways = 0.0361f < sqrDistance; // 19 centimeters
+                _control.fileStatus.visibleHeadAlways =
+                    !ForceHideHead && 0.0361f < sqrDistance; // 19 centimeters
             }
             else
             {

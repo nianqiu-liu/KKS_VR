@@ -257,6 +257,9 @@ namespace KoikatuVR.Interpreters
 
             VR.Input.Mouse.LeftButtonDown();
             _Walking = true;
+            // Force hide the protagonist's head while walking, so that it
+            // remains hidden when the game lags.
+            VRMale.ForceHideHead = true;
         }
 
         public void StopWalking()
@@ -270,6 +273,7 @@ namespace KoikatuVR.Interpreters
             }
 
             _Walking = false;
+            VRMale.ForceHideHead = false;
         }
     }
 }
