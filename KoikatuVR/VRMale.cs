@@ -21,7 +21,7 @@ namespace KoikatuVR
             _control = GetComponent<ChaControl>();
         }
 
-        protected override void OnUpdate()
+        protected override void OnLateUpdate()
         {
             // Hide the head iff the VR camera is inside it.
             // This also essentially negates the effect of scenairo-controlled
@@ -29,11 +29,23 @@ namespace KoikatuVR
             var head = _control.objHead?.transform;
             if (_control.objTop?.activeSelf == true && head != null)
             {
+                var wasVisible = _control.fileStatus.visibleHeadAlways;
                 var vrEye = VR.Camera.transform;
                 var headCenter = head.TransformPoint(0, 0.12f, -0.04f);
                 var sqrDistance = (vrEye.position - headCenter).sqrMagnitude;
-                _control.fileStatus.visibleHeadAlways =
-                    !ForceHideHead && 0.0361f < sqrDistance; // 19 centimeters
+                bool visible = !ForceHideHead && 0.0361f < sqrDistance; // 19 centimeters
+                _control.fileStatus.visibleHeadAlways = visible;
+                if (wasVisible && !visible)
+                {
+                    // The VR camera may have just teleported into the head. In
+                    // this case, it's important that the head disappears with
+                    // 0 frame delay, so we proactively deactive it here.
+                    _control.objHead.SetActive(false);
+                    foreach (var hair in _control.objHair)
+                    {
+                        hair.SetActive(false);
+                    }
+                }
             }
             else
             {
