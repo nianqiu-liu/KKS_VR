@@ -6,6 +6,7 @@ using VRGIN.Core;
 using UnityEngine;
 using HarmonyLib;
 using System.Collections;
+using System.Reflection;
 
 // This file is a collection of hooks to move the VR camera at appropriate
 // points of the game.
@@ -29,10 +30,26 @@ namespace KoikatuVR
             var backTrans = __instance.BackCamera.transform;
             VRMover.Instance.MaybeMoveADV(__instance, backTrans.position, backTrans.rotation, keepHeight: false);
         }
+    }
 
-        [HarmonyPatch("_RequestNextLine")]
-        [HarmonyPostfix]
-        static void Post_RequestNextLine(ADV.TextScenario __instance, ref IEnumerator __result)
+    [HarmonyPatch]
+    class RequestNextLinePatches
+    {
+        static IEnumerable<MethodBase> TargetMethods()
+        {
+            // In some versions of the base game, MainScenario._RequestNextLine
+            // duplicates the logic found in TextScenario._RequestNextLine.
+            // In other versions, the former simply calls the latter.
+            // We want to patch both methods or the latter alone depending on
+            // the version.
+            yield return AccessTools.Method(typeof(ADV.TextScenario), "_RequestNextLine");
+            if (AccessTools.Field(typeof(ADV.MainScenario), "textHash") == null)
+            {
+                yield return AccessTools.Method(typeof(ADV.MainScenario), "_RequestNextLine");
+            }
+        }
+
+        static void Postfix(ADV.TextScenario __instance, ref IEnumerator __result)
         {
             if (Manager.Scene.IsInstance() && Manager.Scene.Instance.NowSceneNames[0] == "Talk")
             {
