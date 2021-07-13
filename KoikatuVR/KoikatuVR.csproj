@@ -88,12 +88,12 @@
     <Compile Include="SettingsManager.cs" />
     <Compile Include="TalkSceneHandler.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="VRFade.cs" />
     <Compile Include="Interpreters\HSceneInterpreter.cs" />
     <Compile Include="Interpreters\KoikatuInterpreter.cs" />
     <Compile Include="Interpreters\OtherSceneInterpreter.cs" />
     <Compile Include="Interpreters\NightMenuSceneInterpreter.cs" />
     <Compile Include="Interpreters\SceneInterpreter.cs" />
+    <Compile Include="VRFade.cs" />
     <Compile Include="VRLoader.cs" />
     <Compile Include="VRMale.cs" />
     <Compile Include="VRMover.cs" />
