@@ -8,7 +8,7 @@ namespace KoikatuVR
     /// <summary>
     /// This is an example for a VR plugin. At the same time, it also functions as a generic one.
     /// </summary>
-    [BepInPlugin(GUID: GUID, Name: "Main Game VR", Version: "0.8.1")]
+    [BepInPlugin(GUID: GUID, Name: "Main Game VR", Version: "0.9.0")]
     [BepInProcess("Koikatu")]
     [BepInProcess("Koikatsu Party")]
     public class VRPlugin : BaseUnityPlugin
