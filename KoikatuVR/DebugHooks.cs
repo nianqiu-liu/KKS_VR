@@ -43,7 +43,7 @@ namespace KoikatuVR
         }
     }
 
-    // Dump human-readable ADV scenarios under the "scenario/" folder.
+    // Dump human-readable ADV scenarios under the "scenario_dump/" folder.
     [HarmonyPatch(typeof(AssetBundleManager))]
     class AssetBundleManagerPatches
     {
@@ -53,13 +53,21 @@ namespace KoikatuVR
         {
             if (type == typeof(ADV.ScenarioData))
             {
-                var scenarioData = __result.GetAsset<ADV.ScenarioData>();
-                StreamWriter writer = new StreamWriter($"scenario/{assetBundleName.Replace('/', '_')}-{assetName.Replace('/', '_')}.txt");
-                foreach (var param in scenarioData.list)
+                try
                 {
-                    writer.WriteLine($"{(param.Multi ? "M" : " ")} {param.Command} {string.Join(", ", param.Args)}");
+                    var scenarioData = __result.GetAsset<ADV.ScenarioData>();
+                    Directory.CreateDirectory("scenario_dump");
+                    StreamWriter writer = new StreamWriter($"scenario_dump/{assetBundleName.Replace('/', '_')}-{assetName.Replace('/', '_')}.txt");
+                    foreach (var param in scenarioData.list)
+                    {
+                        writer.WriteLine($"{(param.Multi ? "M" : " ")} {param.Command} {string.Join(", ", param.Args)}");
+                    }
+                    writer.Close();
                 }
-                writer.Close();
+                catch(Exception e)
+                {
+                    VRLog.Error(e);
+                }
             }
         }
     }
