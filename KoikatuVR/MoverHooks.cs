@@ -79,26 +79,6 @@ namespace KoikatuVR
         }
     }
 
-    [HarmonyPatch(typeof(ADV.EventCG.Data))]
-    class EventCGDataPatches1
-    {
-        [HarmonyPatch(nameof(ADV.EventCG.Data.camRoot), MethodType.Setter)]
-        [HarmonyPostfix]
-        static void PostSetCamRoot(ADV.EventCG.Data __instance)
-        {
-            VRLog.Debug("PostSetCamRoot");
-            VRMover.Instance.MaybeMoveTo(__instance.camRoot.position, __instance.camRoot.rotation, keepHeight: false);
-        }
-
-        [HarmonyPatch(nameof(ADV.EventCG.Data.Restore))]
-        [HarmonyPostfix]
-        static void PostRestore(ADV.EventCG.Data __instance)
-        {
-            VRLog.Debug("PostRestore");
-            VRMover.Instance.MaybeMoveTo(__instance.camRoot.position, __instance.camRoot.rotation, keepHeight: false);
-        }
-    }
-
     [HarmonyPatch(typeof(HSceneProc))]
     class HSceneProcPatches
     {
