@@ -51,7 +51,7 @@ namespace KoikatuVR
         }
 
         /// <summary>
-        /// Move the camera using some heurestics.
+        /// Move the camera using some heuristics.
         ///
         /// The position and rotation arguments should represent the pose
         /// the camera would take in the 2D version of the game.
@@ -61,7 +61,7 @@ namespace KoikatuVR
         /// <param name="keepHeight"></param>
         public void MaybeMoveTo(Vector3 position, Quaternion rotation, bool keepHeight)
         {
-            MoveWithHeurestics(position, rotation, keepHeight, pretendFading: false);
+            MoveWithHeuristics(position, rotation, keepHeight, pretendFading: false);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace KoikatuVR
         public void MaybeMoveADV(ADV.TextScenario textScenario, Vector3 position, Quaternion rotation, bool keepHeight)
         {
             var advFade = new Traverse(textScenario).Field<ADVFade>("advFade").Value;
-            MoveWithHeurestics(position, rotation, keepHeight, pretendFading: !advFade.IsEnd);
+            MoveWithHeuristics(position, rotation, keepHeight, pretendFading: !advFade.IsEnd);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace KoikatuVR
             else
             {
                 var target = ActionCameraControl.GetIdealTransformFor(textScenario.AdvCamera);
-                MoveWithHeurestics(target.position, target.rotation, keepHeight: false, pretendFading: isFadingOut);
+                MoveWithHeuristics(target.position, target.rotation, keepHeight: false, pretendFading: isFadingOut);
             }
         }
 
@@ -118,14 +118,14 @@ namespace KoikatuVR
             // For reasons I don't understand, the male may not have a correct pose
             // until later in the update loop.
             yield return new WaitForEndOfFrame();
-            MoveWithHeurestics(
+            MoveWithHeuristics(
                 head.TransformPoint(0, 0.15f, 0.15f),
                 head.rotation,
                 keepHeight: false,
                 pretendFading: isFadingOut);
         }
 
-        private void MoveWithHeurestics(Vector3 position, Quaternion rotation, bool keepHeight, bool pretendFading)
+        private void MoveWithHeuristics(Vector3 position, Quaternion rotation, bool keepHeight, bool pretendFading)
         {
             var fade = Manager.Scene.Instance.sceneFade;
             bool fadeOk = (fade._Fade == SimpleFade.Fade.Out) ^ fade.IsEnd;
@@ -135,7 +135,7 @@ namespace KoikatuVR
             }
             else
             {
-                VRLog.Debug("Not moving because heurestic conditions are not met");
+                VRLog.Debug("Not moving because heuristic conditions are not met");
             }
         }
 
