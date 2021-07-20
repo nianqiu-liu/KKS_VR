@@ -19,6 +19,7 @@ namespace KoikatuVR.Interpreters
         public SceneInterpreter SceneInterpreter;
 
         private Mirror.Manager _mirrorManager;
+        private int _kkapiCanvasHackWait;
 
         protected override void OnAwake()
         {
@@ -45,6 +46,43 @@ namespace KoikatuVR.Interpreters
             {
                 _mirrorManager.Fix(reflection);
             }
+        }
+
+        public override bool IsIgnoredCanvas(Canvas canvas)
+        {
+            if (canvas.name == "CvsMenuTree")
+            {
+                // Here, we attempt to avoid some unfortunate conflict with
+                // KKAPI.
+                //
+                // In order to support plugin-defined subcategories in Maker,
+                // KKAPI clones some UI elements out of CvsMenuTree when the
+                // canvas is created, then uses them as templates for custom
+                // UI items.
+                //
+                // At the same time, VRGIN attempts to claim the canvas by
+                // setting its mode to ScreenSpaceCamera, which changes
+                // localScale of the canvas by a factor of 100 or so. If this
+                // happens between KKAPI's cloning out and cloning in, the
+                // resulting UI items will have the wrong scale, 72x the correct
+                // size to be precise.
+                //
+                // So our solution here is to hide the canvas from VRGIN for a
+                // couple of frames. Crude but works.
+
+                if (_kkapiCanvasHackWait == 0)
+                {
+                    _kkapiCanvasHackWait = 3;
+                    return true;
+                }
+                else
+                {
+                    _kkapiCanvasHackWait -= 1;
+                    return 0 < _kkapiCanvasHackWait;
+                }
+            }
+
+            return false;
         }
 
         // 前回とSceneが変わっていれば切り替え処理をする
