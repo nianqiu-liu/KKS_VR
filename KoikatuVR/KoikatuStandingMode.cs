@@ -56,5 +56,11 @@ namespace KoikatuVR
         {
             // Do nothing. CameraControlControl and friends take care of this.
         }
+
+        protected override void InitializeScreenCapture()
+        {
+            // Don't enable CapturePanorama because it looks broken (throws an
+            // exception).
+        }
     }
 }
