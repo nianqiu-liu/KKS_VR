@@ -87,6 +87,9 @@
     </Compile>
     <Compile Include="SettingsManager.cs" />
     <Compile Include="TalkSceneHandler.cs" />
+    <Compile Include="Tools\KoikatuMenuTool.cs" />
+    <Compile Include="Tools\KoikatuWarpTool.cs" />
+    <Compile Include="Tools\ToolUtil.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Interpreters\HSceneInterpreter.cs" />
     <Compile Include="Interpreters\KoikatuInterpreter.cs" />

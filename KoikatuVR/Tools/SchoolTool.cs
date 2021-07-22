@@ -9,6 +9,7 @@ using VRGIN.Helpers;
 using static SteamVR_Controller;
 using WindowsInput.Native;
 using KoikatuVR.Interpreters;
+using System.ComponentModel;
 
 namespace KoikatuVR.Tools
 {
@@ -320,7 +321,22 @@ namespace KoikatuVR.Tools
 
         public override List<HelpText> GetHelpTexts()
         {
-            return new List<HelpText>();
+            return new List<HelpText>(new[] {
+                ToolUtil.HelpTrigger(Owner, DescriptionFor(_KeySet.Trigger)),
+                ToolUtil.HelpGrip(Owner, DescriptionFor(_KeySet.Grip)),
+                ToolUtil.HelpTrackpadCenter(Owner, DescriptionFor(_KeySet.Center)),
+                ToolUtil.HelpTrackpadLeft(Owner, DescriptionFor(_KeySet.Left)),
+                ToolUtil.HelpTrackpadRight(Owner, DescriptionFor(_KeySet.Right)),
+                ToolUtil.HelpTrackpadUp(Owner, DescriptionFor(_KeySet.Up)),
+                ToolUtil.HelpTrackpadDown(Owner, DescriptionFor(_KeySet.Down)),
+            }.Where(x => x != null));
+        }
+
+        private static string DescriptionFor(AssignableFunction fun)
+        {
+            var member = typeof(AssignableFunction).GetMember(fun.ToString()).FirstOrDefault();
+            var descr = member?.GetCustomAttributes(typeof(DescriptionAttribute), false).Cast<DescriptionAttribute>().FirstOrDefault()?.Description;
+            return descr ?? fun.ToString();
         }
     }
 }

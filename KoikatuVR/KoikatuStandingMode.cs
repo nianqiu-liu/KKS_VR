@@ -17,7 +17,7 @@ namespace KoikatuVR
         {
             get
             {
-                return base.Tools.Concat(new Type[] { typeof(MenuTool), typeof(WarpTool), typeof(Tools.SchoolTool)});
+                return new[] { typeof(Tools.KoikatuMenuTool), typeof(Tools.KoikatuWarpTool), typeof(Tools.SchoolTool)};
             }
         }
 
