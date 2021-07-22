@@ -10,7 +10,7 @@ using static SteamVR_Controller;
 using WindowsInput.Native;
 using KoikatuVR.Interpreters;
 
-namespace KoikatuVR
+namespace KoikatuVR.Tools
 {
     public class SchoolTool : Tool
     {
