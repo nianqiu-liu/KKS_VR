@@ -156,7 +156,7 @@ namespace KoikatuVR
             }
 
             var males = Manager.Character.Instance.dictEntryChara.Values
-                .Where(ch => ch.sex == 0 && ch.objTop.activeSelf && ch.visibleAll)
+                .Where(ch => ch.isActiveAndEnabled && ch.sex == 0 && ch.objTop.activeSelf && ch.visibleAll)
                 .ToArray();
             if (males.Length == 1)
             {
