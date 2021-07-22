@@ -28,7 +28,8 @@ namespace KoikatuVR.Tools
         /// The set of keys for which we've sent a down message but not a
         /// corresponding up message.
         /// </summary>
-        private readonly HashSet<string> _SentUnmatchedDown = new HashSet<string>();
+        private readonly HashSet<AssignableFunction> _SentUnmatchedDown
+            = new HashSet<AssignableFunction>();
 
         private void ChangeKeySet()
         {
@@ -217,95 +218,95 @@ namespace KoikatuVR.Tools
             }
         }
 
-        private void InputKey(string keyName, KeyMode mode)
+        private void InputKey(AssignableFunction fun, KeyMode mode)
         {
             if (mode == KeyMode.PressDown)
             {
-                switch (keyName)
+                switch (fun)
                 {
-                    case "NONE":
+                    case AssignableFunction.NONE:
                         break;
-                    case "WALK":
+                    case AssignableFunction.WALK:
                         IfActionScene(interpreter => interpreter.StartWalking());
                         break;
-                    case "DASH":
+                    case AssignableFunction.DASH:
                         IfActionScene(interpreter => interpreter.StartWalking(true));
                         break;
-                    case "PL2CAM":
+                    case AssignableFunction.PL2CAM:
                         _Pl2Cam = true;
                         break;
-                    case "LBUTTON":
+                    case AssignableFunction.LBUTTON:
                         VR.Input.Mouse.LeftButtonDown();
                         break;
-                    case "RBUTTON":
+                    case AssignableFunction.RBUTTON:
                         VR.Input.Mouse.RightButtonDown();
                         break;
-                    case "MBUTTON":
+                    case AssignableFunction.MBUTTON:
                         VR.Input.Mouse.MiddleButtonDown();
                         break;
-                    case "LROTATION":
-                    case "RROTATION":
-                    case "NEXT":
-                    case "SCROLLUP":
-                    case "SCROLLDOWN":
+                    case AssignableFunction.LROTATION:
+                    case AssignableFunction.RROTATION:
+                    case AssignableFunction.NEXT:
+                    case AssignableFunction.SCROLLUP:
+                    case AssignableFunction.SCROLLDOWN:
                         // ここでは何もせず、上げたときだけ処理する
                         break;
-                    case "CROUCH":
+                    case AssignableFunction.CROUCH:
                         IfActionScene(interpreter => interpreter.Crouch());
                         break;
                     default:
-                        VR.Input.Keyboard.KeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), keyName));
+                        VR.Input.Keyboard.KeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), fun.ToString()));
                         break;
                 }
-                _SentUnmatchedDown.Add(keyName);
+                _SentUnmatchedDown.Add(fun);
             }
             else
             {
-                switch (keyName)
+                switch (fun)
                 {
-                    case "NONE":
+                    case AssignableFunction.NONE:
                         break;
-                    case "WALK":
+                    case AssignableFunction.WALK:
                         IfActionScene(interpreter => interpreter.StopWalking());
                         break;
-                    case "DASH":
+                    case AssignableFunction.DASH:
                         IfActionScene(interpreter => interpreter.StopWalking());
                         break;
-                    case "PL2CAM":
+                    case AssignableFunction.PL2CAM:
                         _Pl2Cam = false;
                         break;
-                    case "LBUTTON":
+                    case AssignableFunction.LBUTTON:
                         VR.Input.Mouse.LeftButtonUp();
                         break;
-                    case "RBUTTON":
+                    case AssignableFunction.RBUTTON:
                         VR.Input.Mouse.RightButtonUp();
                         break;
-                    case "MBUTTON":
+                    case AssignableFunction.MBUTTON:
                         VR.Input.Mouse.MiddleButtonUp();
                         break;
-                    case "LROTATION":
+                    case AssignableFunction.LROTATION:
                         IfActionScene(interpreter => interpreter.RotatePlayer(-_Settings.RotationAngle));
                         break;
-                    case "RROTATION":
+                    case AssignableFunction.RROTATION:
                         IfActionScene(interpreter => interpreter.RotatePlayer(_Settings.RotationAngle));
                         break;
-                    case "SCROLLUP":
+                    case AssignableFunction.SCROLLUP:
                         VR.Input.Mouse.VerticalScroll(1);
                         break;
-                    case "SCROLLDOWN":
+                    case AssignableFunction.SCROLLDOWN:
                         VR.Input.Mouse.VerticalScroll(-1);
                         break;
-                    case "NEXT":
+                    case AssignableFunction.NEXT:
                         ChangeKeySet();
                         break;
-                    case "CROUCH":
+                    case AssignableFunction.CROUCH:
                         IfActionScene(interpreter => interpreter.StandUp());
                         break;
                     default:
-                        VR.Input.Keyboard.KeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), keyName));
+                        VR.Input.Keyboard.KeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), fun.ToString()));
                         break;
                 }
-                _SentUnmatchedDown.Remove(keyName);
+                _SentUnmatchedDown.Remove(fun);
             }
         }
 
