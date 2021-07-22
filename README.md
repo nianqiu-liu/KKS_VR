@@ -206,7 +206,7 @@ The following button assignments are needed:
 * B and Y buttons: Application Menu Button
 * Joystick: Trackpad position & value
 
-In addition, you need to make it to "pretend to be Vive controllers".
+In addition, you need to make it "pretend to be Vive controllers".
 
 ## Migrating
 
