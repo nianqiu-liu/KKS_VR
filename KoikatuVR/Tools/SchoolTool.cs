@@ -115,11 +115,6 @@ namespace KoikatuVR.Tools
             _Interpreter = VR.Interpreter as KoikatuInterpreter;
         }
 
-        protected override void OnLevel(int level)
-        {
-            base.OnLevel(level);
-        }
-
         protected override void OnUpdate()
         {
             base.OnUpdate();
