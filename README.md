@@ -66,9 +66,8 @@ This plugin assumes that your VR controller has the following buttons/controls:
 * Touchpad
 
 You may need to tweak button assignments in SteamVR's per-game settings if your
-controllers don't natively have these. If you are using Windows MR controllers,
-you may also need to configure them to pretend to be Vive controllers, for
-reasons I don't understand.
+controllers don't natively have these. See the Controller Support section for
+a list of knwon-to-work controllers.
 
 In the game, each of the controllers has 3 tools: Menu, Warp and School. Only
 one of them can be active at a time. You can cycle through the tools by pressing
@@ -182,6 +181,32 @@ which allows you to change settings of this plugin from within the game.
 
 Alternatively you can manually edit `BepInEx\config\mosirnik.kk-main-game-vr.cfg`
 with a text editor.
+
+## Controller Support
+
+At the moment, not all VR controllers work out of the box with this plugin. Below
+is an incomplete list of the current status.
+
+If you have an experience with a controller not listed here, please comment on
+<a href="https://github.com/mosirnik/KK_MainGameVR/issues/24">this issue</a>.
+
+### Oculus Quest 2
+
+Works out of the box.
+
+### Valve Index
+
+Works out of the box.
+
+### HP motion controllers
+
+The following button assignments are needed:
+
+* Enumlated trackpad: (remove assignments)
+* B and Y buttons: Application Menu Button
+* Joystick: Trackpad position & value
+
+In addition, you need to make it to "pretend to be Vive controllers".
 
 ## Migrating
 
