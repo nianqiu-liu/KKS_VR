@@ -9,10 +9,6 @@ using HarmonyLib;
 
 namespace KoikatuVR
 {
-
-    /// <summary>
-    /// This is an example for a VR plugin. At the same time, it also functions as a generic one.
-    /// </summary>
     [BepInPlugin(GUID: GUID, Name: "Main Game VR", Version: "0.9.0")]
     [BepInProcess("Koikatu")]
     [BepInProcess("Koikatsu Party")]
@@ -20,9 +16,6 @@ namespace KoikatuVR
     {
         public const string GUID = "mosirnik.kk-main-game-vr";
 
-        /// <summary>
-        /// Determines when to boot the VR code. In most cases, it makes sense to do the check as described here.
-        /// </summary>
         void Awake()
         {
             bool vrDeactivated = Environment.CommandLine.Contains("--novr");
@@ -74,8 +67,6 @@ namespace KoikatuVR
 			{
                 new Harmony(VRPlugin.GUID).PatchAll();
 				// Boot VRManager!
-				// Note: Use your own implementation of GameInterpreter to gain access to a few useful operatoins
-				// (e.g. characters, camera judging, colliders, etc.)
 				VRManager.Create<Interpreters.KoikatuInterpreter>(new KoikatuContext(settings));
 				// VRGIN doesn't update the near clip plane until a first "main" camera is created, so we set it here.
 				VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = VR.Context.NearClipPlane;
