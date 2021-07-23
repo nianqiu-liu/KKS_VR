@@ -97,7 +97,6 @@
     <Compile Include="Interpreters\NightMenuSceneInterpreter.cs" />
     <Compile Include="Interpreters\SceneInterpreter.cs" />
     <Compile Include="VRFade.cs" />
-    <Compile Include="VRLoader.cs" />
     <Compile Include="VRMale.cs" />
     <Compile Include="VRMover.cs" />
     <Compile Include="VRPlugin.cs" />
