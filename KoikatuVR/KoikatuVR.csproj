@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionCameraControl.cs" />
+    <Compile Include="BepInExLoggerBackend.cs" />
     <Compile Include="CameraControlControl.cs" />
     <Compile Include="Caress\AibuColliderTracker.cs" />
     <Compile Include="Caress\CaressController.cs" />

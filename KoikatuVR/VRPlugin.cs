@@ -18,6 +18,7 @@ namespace KoikatuVR
 
         void Awake()
         {
+            VRLog.Backend = new BepInExLoggerBackend(Logger);
             bool vrDeactivated = Environment.CommandLine.Contains("--novr");
             bool vrActivated = Environment.CommandLine.Contains("--vr");
             var settings = SettingsManager.Create(Config);
