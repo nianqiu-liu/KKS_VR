@@ -41,7 +41,9 @@ namespace KoikatuVR
 
         protected override Controller CreateRightController()
         {
-            return AddComponents(base.CreateRightController());
+            var controller = AddComponents(base.CreateRightController());
+            controller.ToolIndex = 1;
+            return controller;
         }
 
         private static Controller AddComponents(Controller controller)
