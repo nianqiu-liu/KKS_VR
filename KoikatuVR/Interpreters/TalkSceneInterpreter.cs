@@ -66,7 +66,7 @@ namespace KoikatuVR.Interpreters
 
         private void SetTalkSceneHandlerEnabledFor(Controller controller, bool enabled)
         {
-            controller.GetComponent<TalkSceneHandler>().enabled = enabled;
+            controller.GetOrAddComponent<TalkSceneHandler>().enabled = enabled;
         }
     }
 }

@@ -48,7 +48,6 @@ namespace KoikatuVR
         {
             controller.gameObject.AddComponent<Caress.CaressController>();
             controller.gameObject.AddComponent<LocationPicker>();
-            controller.gameObject.AddComponent<TalkSceneHandler>().enabled = false;
             return controller;
         }
 
