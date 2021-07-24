@@ -20,6 +20,7 @@ namespace KoikatuVR.Interpreters
 
         private Mirror.Manager _mirrorManager;
         private int _kkapiCanvasHackWait;
+        private Canvas _kkSubtitlesCaption;
 
         protected override void OnAwake()
         {
@@ -39,12 +40,38 @@ namespace KoikatuVR.Interpreters
             SceneInterpreter.OnUpdate();
         }
 
+        protected override void OnLateUpdate()
+        {
+            base.OnLateUpdate();
+            if (_kkSubtitlesCaption != null)
+            {
+                FixupKkSubtitles();
+            }
+        }
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             VRLog.Info($"OnSceneLoaded {scene.name}");
             foreach (var reflection in GameObject.FindObjectsOfType<MirrorReflection>())
             {
                 _mirrorManager.Fix(reflection);
+            }
+            _kkSubtitlesCaption = null;
+        }
+
+        /// <summary>
+        /// Fix up scaling of subtitles added by KK_Subtitles. See
+        /// https://github.com/IllusionMods/KK_Plugins/pull/91 for details.
+        /// </summary>
+        private void FixupKkSubtitles()
+        {
+            foreach (Transform child in _kkSubtitlesCaption.transform)
+            {
+                if (child.localScale != Vector3.one)
+                {
+                    VRLog.Info($"Fixing up scale for {child}");
+                    child.localScale = Vector3.one;
+                }
             }
         }
 
@@ -80,6 +107,10 @@ namespace KoikatuVR.Interpreters
                     _kkapiCanvasHackWait -= 1;
                     return 0 < _kkapiCanvasHackWait;
                 }
+            }
+            else if(canvas.name == "KK_Subtitles_Caption")
+            {
+                _kkSubtitlesCaption = canvas;
             }
 
             return false;
