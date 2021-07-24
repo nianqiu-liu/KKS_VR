@@ -11,14 +11,13 @@ using KoikatuVR.Interpreters;
 namespace KoikatuVR.Caress
 {
     /// <summary>
-    /// An object that allows the user to kiss in H scenes by moving
-    /// their head.
+    /// A component to be attached to the VR camera during an H scene.
+    /// It allows the user to kiss in H scenes by moving their head.
     /// </summary>
     class VRMouth : ProtectedBehaviour
     {
-        KoikatuInterpreter _interpreter;
         KoikatuSettings _settings;
-        AibuColliderTracker _aibuTracker; // may be null
+        AibuColliderTracker _aibuTracker;
 
         VRMouthColliderObject _small, _medium, _large;
         bool _inCaressMode = true;
@@ -29,18 +28,9 @@ namespace KoikatuVR.Caress
         /// </summary>
         bool? _kissCoShouldEnd;
 
-        /// <summary>
-        /// Create necessary game objects.
-        /// </summary>
-        public static void Init()
-        {
-            VR.Camera.gameObject.AddComponent<VRMouth>();
-        }
-
         protected override void OnAwake()
         {
             base.OnAwake();
-            _interpreter = VR.Interpreter as KoikatuInterpreter;
             _settings = VR.Context.Settings as KoikatuSettings;
 
             // Create 3 colliders, small ones for entering and a large one for exiting.
@@ -55,14 +45,26 @@ namespace KoikatuVR.Caress
             _large.TriggerExit += HandleTriggerExit;
 
             _small.gameObject.SetActive(false);
+            var hProc = GameObject.FindObjectOfType<HSceneProc>();
+
+            if (hProc == null)
+            {
+                VRLog.Error("hProc is null");
+                return;
+            }
+            _aibuTracker = new AibuColliderTracker(hProc, referencePoint: transform);
         }
+
+        private void OnDestroy()
+        {
+            GameObject.Destroy(_small.gameObject);
+            GameObject.Destroy(_medium.gameObject);
+            GameObject.Destroy(_large.gameObject);
+        }
+
         protected override void OnUpdate()
         {
-            _aibuTracker = AibuColliderTracker.CreateOrDestroy(_aibuTracker, _interpreter, referencePoint: transform);
-            if (_aibuTracker != null)
-            {
-                SwitchColliders();
-            }
+            SwitchColliders();
         }
 
         private void SwitchColliders()
@@ -84,7 +86,7 @@ namespace KoikatuVR.Caress
 
         private void HandleTriggerEnter(Collider other)
         {
-            if (_aibuTracker != null && _aibuTracker.AddIfRelevant(other))
+            if (_aibuTracker.AddIfRelevant(other))
             {
                 UpdateKissLick();
             }
@@ -92,7 +94,7 @@ namespace KoikatuVR.Caress
 
         private void HandleTriggerExit(Collider other)
         {
-            if (_aibuTracker != null && _aibuTracker.RemoveIfRelevant(other))
+            if (_aibuTracker.RemoveIfRelevant(other))
             {
                 UpdateKissLick();
             }
@@ -183,7 +185,7 @@ namespace KoikatuVR.Caress
             {
                 var gameObj = new GameObject(name);
                 gameObj.transform.localPosition = -0.07f * Vector3.up;
-                gameObj.transform.parent = VR.Camera.transform;
+                gameObj.transform.SetParent(VR.Camera.transform, false);
 
                 var collider = gameObj.AddComponent<BoxCollider>();
                 collider.size = size;

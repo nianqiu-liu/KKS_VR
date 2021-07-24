@@ -7,17 +7,27 @@ namespace KoikatuVR.Interpreters
 {
     class HSceneInterpreter : SceneInterpreter
     {
+        private bool _initialized;
+        Caress.VRMouth _vrMouth;
+
         public override void OnStart()
         {
         }
 
         public override void OnDisable()
         {
-            // nothing to do.
+            GameObject.Destroy(_vrMouth);
         }
 
         public override void OnUpdate()
         {
+            if (!_initialized &&
+                GameObject.FindObjectOfType<HSceneProc>() is HSceneProc proc
+                && proc.enabled)
+            {
+                _vrMouth = VR.Camera.gameObject.AddComponent<Caress.VRMouth>();
+                _initialized = true;
+            }
         }
     }
 }

@@ -31,7 +31,6 @@ namespace KoikatuVR
         protected override void OnStart()
         {
             base.OnStart();
-            Caress.VRMouth.Init();
         }
 
         protected override Controller CreateLeftController()
