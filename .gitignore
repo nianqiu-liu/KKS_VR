@@ -35,3 +35,6 @@ sysinfo.txt
 # VSfile.
 .vs/
 /VRGIN.Template/Libs/*.dll
+packages/
+KoikatuVR/Libs
+PatcherLoader/Libs
