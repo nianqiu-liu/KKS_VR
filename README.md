@@ -186,7 +186,7 @@ In addition, you need to make it "pretend to be Vive controllers".
 
 # Using this plugin without the preload-time patcher
 
-**Normal users don't need to do this.***
+**Normal users don't need to do this.**
 
 1. Delete `BepInEx\patchers\KK_MainGameVR_Patcher`.
 2. Modify `Koikatu_Data\globalgamemanagers` or `Koikatsu Party_Data/globalgamemanagers`:
