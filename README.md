@@ -184,7 +184,7 @@ The following button assignments are needed:
 
 In addition, you need to make it "pretend to be Vive controllers".
 
-# Using this plugin without the preload-time patcher
+## Using this plugin without the preload-time patcher
 
 **Normal users don't need to do this.**
 
