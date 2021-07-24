@@ -47,6 +47,9 @@ one of them can be active at a time. You can cycle through the tools by pressing
 the Application menu button. Each controller has a cyan icon indicating which
 tool is currently active.
 
+When any of the tools is active, you can press and hold the Application menu
+button to see in-game help on button roles.
+
 ### Menu tool <img src="https://raw.githubusercontent.com/mosirnik/KK_MainGameVR/master/doc/img/icon_menu.png" height="30">
 
 The menu tool comes with a little screen on which game menus, icons and texts
