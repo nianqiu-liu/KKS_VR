@@ -21,36 +21,9 @@ from KoikatuVR, refer to the 'Migrating' section.
 1. Make sure BepInEx 5 has been installed.
 2. Download and extract the latest zip file from
   [releases](https://github.com/mosirnik/KK_MainGameVR/releases).
-3. If your base game is Koikatsu Party (the Steam version), rename the extracted
-  `Koikatu_Data` folder into `Koikatsu Party_Data` (note the spelling).
-4. Copy two folders, `BepInEx` and `Koikatu_Data` (or the renamed one), to the
-  Koikatsu installation folder. If this is done correctly, you should find a folder
-  `BepInEx\plugins\KK_MainGameVR` directly under the game's root folder.
-5. Modify `Koikatu_Data\globalgamemanagers` or `Koikatsu Party_Data/globalgamemanagers`:
-    1. If you already have a modified version of `globalgamemanagers` that works with a VR mod,
-      you don't need to do anything. Otherwise, proceed.
-    2. Rename the file to `globalgamemanagers.orig` (or whatever you want to call it).
-    3. Open `globalgamemanagers.orig` with [UABE](https://github.com/DerPopo/UABE/releases).
-    4. Select the row with the path ID "11" and the type "Build Settings", then click "Export Dump".
-    5. Use a text editor to edit the generated dump file as shown below.
-    6. Click "Import Dump" to load the edited dump file.
-    7. Click "OK" to save the modified file as `globalgamemanagers`, so that it
-      replaces the file you renamed in the first step.
-    ~~~
-    Before:
-    0 vector enabledVRDevices
-    0 Array Array (0 items)
-    0 int size = 0
-
-    After:
-    0 vector enabledVRDevices
-    0 Array Array (2 items)
-    0 int size = 2
-    [0]
-     1 string data = "None"
-    [1]
-     1 string data = "OpenVR"
-    ~~~
+3. Copy two of the extracted folders into the game folder:
+    * If your game is Koikatsu Party (the Steam version), copy `BepInEx` and `Koikatsu Party_Data`.
+    * Otherwise, copy `BepInEx` and `Koikatu_Data`.
 
 Now you can start Koikatsu with `--vr` command line option to enable VR.
 Alternatively, starting Koikatsu while SteamVR is running also enables this
@@ -208,6 +181,37 @@ The following button assignments are needed:
 
 In addition, you need to make it "pretend to be Vive controllers".
 
+# Using this plugin without the preload-time patcher
+
+**Normal users don't need to do this.***
+
+1. Delete `BepInEx\patchers\KK_MainGameVR_Patcher`.
+2. Modify `Koikatu_Data\globalgamemanagers` or `Koikatsu Party_Data/globalgamemanagers`:
+    1. If you already have a modified version of `globalgamemanagers` that works with a VR mod,
+      you don't need to do anything. Otherwise, proceed.
+    2. Rename the file to `globalgamemanagers.orig` (or whatever you want to call the backup).
+    3. Open `globalgamemanagers.orig` with [UABE](https://github.com/DerPopo/UABE/releases).
+    4. Select the row with the path ID "11" and the type "Build Settings", then click "Export Dump".
+    5. Use a text editor to edit the generated dump file as shown below.
+    6. Click "Import Dump" to load the edited dump file.
+    7. Click "OK" to save the modified file as `globalgamemanagers`, so that it
+      replaces the file you renamed in the first step.
+    ~~~
+    Before:
+    0 vector enabledVRDevices
+    0 Array Array (0 items)
+    0 int size = 0
+
+    After:
+    0 vector enabledVRDevices
+    0 Array Array (2 items)
+    0 int size = 2
+    [0]
+     1 string data = "None"
+    [1]
+     1 string data = "OpenVR"
+    ~~~
+
 ## Migrating
 
 This section is for existing users of the KoikatuVR plugin.
@@ -222,5 +226,4 @@ Major differences between this plugin and Ooetksh's version of KoikatuVR include
 * All keyboard shortcuts and the seated mode have been removed.
 
 If you are migrating from KoikatuVR, make sure to remove or disable KoikatuVR
-before installing this plugin, except that you can keep the modified version
-of the `globalgamemanagers` file.
+before installing this plugin.
