@@ -40,7 +40,7 @@ This plugin assumes that your VR controller has the following buttons/controls:
 
 You may need to tweak button assignments in SteamVR's per-game settings if your
 controllers don't natively have these. See the Controller Support section for
-a list of knwon-to-work controllers.
+a list of known-to-work controllers.
 
 In the game, each of the controllers has 3 tools: Menu, Warp and School. Only
 one of them can be active at a time. You can cycle through the tools by pressing
