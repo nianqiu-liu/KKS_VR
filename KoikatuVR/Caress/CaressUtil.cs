@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using HarmonyLib;
@@ -20,6 +20,21 @@ namespace KoikatuVR.Caress
                 var kind = i == femaleIndex ? colliderKind : HandCtrl.AibuColliderKind.none;
                 new Traverse(hand).Field("selectKindTouch").SetValue(kind);
             }
+        }
+
+        /// <summary>
+        /// Send a synthetic click event to the hand controls.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerator ClickCo()
+        {
+            bool consumed = false;
+            HandCtrlHooks.InjectMouseButtonDown(0, () => consumed = true);
+            while (!consumed)
+            {
+                yield return null;
+            }
+            HandCtrlHooks.InjectMouseButtonUp(0);
         }
     }
 }

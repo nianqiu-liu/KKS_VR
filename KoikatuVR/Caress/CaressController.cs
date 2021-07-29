@@ -71,7 +71,7 @@ namespace KoikatuVR.Caress
                         if (HandCtrl.AibuColliderKind.reac_head <= colliderKind)
                         {
                             CaressUtil.SetSelectKindTouch(_aibuTracker.Proc, femaleIndex, colliderKind);
-                            StartCoroutine(ClickCo());
+                            StartCoroutine(CaressUtil.ClickCo());
                         }
                     }
                 }
@@ -80,17 +80,6 @@ namespace KoikatuVR.Caress
             {
                 VRLog.Error(e);
             }
-        }
-
-        private IEnumerator ClickCo()
-        {
-            bool consumed = false;
-            HandCtrlHooks.InjectMouseButtonDown(0, () => consumed = true);
-            while (!consumed)
-            {
-                yield return null;
-            }
-            HandCtrlHooks.InjectMouseButtonUp(0);
         }
 
         protected void OnTriggerExit(Collider other)
