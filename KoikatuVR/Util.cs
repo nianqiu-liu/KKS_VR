@@ -27,5 +27,20 @@ namespace KoikatuVR
                 return new ValueTuple<T1, T2>(x1, x2);
             }
         }
+
+        /// <summary>
+        /// Remove a prefix from the given string.
+        /// </summary>
+        /// <param name="prefix"></param>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string StripPrefix(string prefix, string str)
+        {
+            if (str.StartsWith(prefix))
+            {
+                return str.Substring(prefix.Length);
+            }
+            return null;
+        }
     }
 }

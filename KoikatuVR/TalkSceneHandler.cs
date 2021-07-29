@@ -73,7 +73,7 @@ namespace KoikatuVR
             {
                 return;
             }
-            var kind = StripPrefix("Com/Hit/", nearest.tag);
+            var kind = Util.StripPrefix("Com/Hit/", nearest.tag);
             if (kind != null)
             {
                 new Traverse(_talkScene).Method("TouchFunc", new[] { typeof(string), typeof(Vector3) }).GetValue(kind, Vector3.zero);
@@ -117,15 +117,6 @@ namespace KoikatuVR
                 _lock = null;
             }
         }
-        private static string StripPrefix(string prefix, string str)
-        {
-            if (str.StartsWith(prefix))
-            {
-                return str.Substring(prefix.Length);
-            }
-            return null;
-        }
-
     }
 
 }

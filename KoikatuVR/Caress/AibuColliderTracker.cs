@@ -64,7 +64,7 @@ namespace KoikatuVR.Caress
                 var colliders = lstFemale[i].GetComponentsInChildren<Collider>(includeInactive: true);
                 foreach (var collider in colliders)
                 {
-                    var aibuHit = StripPrefix("H/Aibu/Hit/", collider.tag);
+                    var aibuHit = Util.StripPrefix("H/Aibu/Hit/", collider.tag);
                     if (aibuHit == null)
                     {
                         continue;
@@ -228,15 +228,6 @@ namespace KoikatuVR.Caress
             }
             VRLog.Warn("AibuKindAllowed: undefined kind: {0}", kind);
             return false;
-        }
-
-        private static string StripPrefix(string prefix, string str)
-        {
-            if (str.StartsWith(prefix))
-            {
-                return str.Substring(prefix.Length);
-            }
-            return null;
         }
     }
 }
