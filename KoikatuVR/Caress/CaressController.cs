@@ -70,7 +70,7 @@ namespace KoikatuVR.Caress
                         var colliderKind = _aibuTracker.GetCurrentColliderKind(out int femaleIndex);
                         if (HandCtrl.AibuColliderKind.reac_head <= colliderKind)
                         {
-                            SetSelectKindTouch(femaleIndex, colliderKind);
+                            CaressUtil.SetSelectKindTouch(_aibuTracker.Proc, femaleIndex, colliderKind);
                             StartCoroutine(ClickCo());
                         }
                     }
@@ -154,7 +154,7 @@ namespace KoikatuVR.Caress
 
         private void ReleaseLock()
         {
-            SetSelectKindTouch(0, HandCtrl.AibuColliderKind.none);
+            CaressUtil.SetSelectKindTouch(_aibuTracker.Proc, 0, HandCtrl.AibuColliderKind.none);
             if (_triggerPressed)
                 HandCtrlHooks.InjectMouseButtonUp(0);
             _triggerPressed = false;
@@ -165,24 +165,7 @@ namespace KoikatuVR.Caress
         private void UpdateSelectKindTouch()
         {
             var colliderKind = _aibuTracker.GetCurrentColliderKind(out int femaleIndex);
-            SetSelectKindTouch(femaleIndex, colliderKind);
-        }
-
-        /// <summary>
-        /// Modify the internal state of the hand controls so that subsequent mouse button
-        /// presses are interpreted to point to the specified (female, point) pair.
-        /// </summary>
-        /// <param name="femaleIndex"></param>
-        /// <param name="colliderKind"></param>
-        private void SetSelectKindTouch(int femaleIndex, HandCtrl.AibuColliderKind colliderKind)
-        {
-            HSceneProc proc = _aibuTracker.Proc;
-            for (int i = 0; i < proc.flags.lstHeroine.Count; i++)
-            {
-                var hand = i == 0 ? proc.hand : Compat.HSceenProc_hand1(proc);
-                var kind = i == femaleIndex ? colliderKind : HandCtrl.AibuColliderKind.none;
-                new Traverse(hand).Field("selectKindTouch").SetValue(kind);
-            }
+            CaressUtil.SetSelectKindTouch(_aibuTracker.Proc, femaleIndex, colliderKind);
         }
     }
 }
