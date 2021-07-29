@@ -134,6 +134,10 @@ namespace KoikatuVR
                 "Initiate kissing by moving the HMD");
             Tie(automaticKissing, v => settings.AutomaticKissing = v);
 
+            var automaticTouchingByHmd = config.Bind(sectionCaress, "Kiss body", false,
+                "Touching the female's body by moving the HMD");
+            Tie(automaticTouchingByHmd, v => settings.AutomaticTouchingByHmd = v);
+
             var firstPersonADV = config.Bind(sectionEventScenes, "First person", true,
                 "Prefer first person view in event scenes");
             Tie(firstPersonADV, v => settings.FirstPersonADV = v);

@@ -101,7 +101,16 @@ namespace KoikatuVR.Caress
         {
             if (_aibuTracker.AddIfRelevant(other))
             {
-                UpdateKissLick();
+                var colliderKind = _aibuTracker.GetCurrentColliderKind(out int femaleIndex);
+                UpdateKissLick(colliderKind);
+
+                if (_kissCoShouldEnd == null &&
+                    HandCtrl.AibuColliderKind.reac_head <= colliderKind &&
+                    _settings.AutomaticTouchingByHmd)
+                {
+                    CaressUtil.SetSelectKindTouch(_aibuTracker.Proc, femaleIndex, colliderKind);
+                    StartCoroutine(CaressUtil.ClickCo());
+                }
             }
         }
 
@@ -109,13 +118,13 @@ namespace KoikatuVR.Caress
         {
             if (_aibuTracker.RemoveIfRelevant(other))
             {
-                UpdateKissLick();
+                var colliderKind = _aibuTracker.GetCurrentColliderKind(out int _);
+                UpdateKissLick(colliderKind);
             }
         }
 
-        private void UpdateKissLick()
+        private void UpdateKissLick(HandCtrl.AibuColliderKind colliderKind)
         {
-            var colliderKind = _aibuTracker.GetCurrentColliderKind(out int _);
             if (_inCaressMode)
             {
                 return;

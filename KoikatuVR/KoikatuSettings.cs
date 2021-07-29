@@ -53,6 +53,8 @@ namespace KoikatuVR
         public bool AutomaticTouching { get { return _AutomaticTouching; } set { _AutomaticTouching = value; } }
         private bool _AutomaticTouching = false;
 
+        public bool AutomaticTouchingByHmd { get; set; } = false;
+
         public bool AutomaticKissing { get { return _AutomaticKissing; } set { _AutomaticKissing = value; } }
         private bool _AutomaticKissing = false;
 
