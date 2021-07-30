@@ -134,6 +134,10 @@ namespace KoikatuVR
                 "Initiate kissing by moving the HMD");
             Tie(automaticKissing, v => settings.AutomaticKissing = v);
 
+            var automaticLicking = config.Bind(sectionCaress, "Automatic licking", false,
+                "Initiate licking by moving the HMD");
+            Tie(automaticLicking, v => settings.AutomaticLicking = v);
+
             var automaticTouchingByHmd = config.Bind(sectionCaress, "Kiss body", false,
                 "Touching the female's body by moving the HMD");
             Tie(automaticTouchingByHmd, v => settings.AutomaticTouchingByHmd = v);
