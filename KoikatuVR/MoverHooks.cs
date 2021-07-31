@@ -88,20 +88,23 @@ namespace KoikatuVR
         {
             if (_isForceCameraReset)
             {
-                UpdateVRCamera(__instance, ___lstFemale);
+                UpdateVRCamera(__instance, ___lstFemale, null);
             }
         }
 
-        /*
-        We could also update the camera after each location change, but this may be more confusing than useful.
+        [HarmonyPatch("ChangeCategory")]
+        [HarmonyPrefix]
+        public static void PreChangeCategory(List<ChaControl> ___lstFemale, out float __state)
+        {
+            __state = ___lstFemale[0].objTop.transform.position.y;
+        }
 
         [HarmonyPatch("ChangeCategory")]
         [HarmonyPostfix]
-        public static void PostChangeCategory(HSceneProc __instance, List<ChaControl> ___lstFemale)
+        public static void PostChangeCategory(HSceneProc __instance, List<ChaControl> ___lstFemale, float __state)
         {
-            UpdateVRCamera(__instance, ___lstFemale);
+            UpdateVRCamera(__instance, ___lstFemale, __state);
         }
-        */
 
 
         /// <summary>
@@ -109,7 +112,7 @@ namespace KoikatuVR
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="lstFemale"></param>
-        static void UpdateVRCamera(HSceneProc instance, List<ChaControl> lstFemale)
+        static void UpdateVRCamera(HSceneProc instance, List<ChaControl> lstFemale, float? previousFemaleY)
         {
             var baseTransform = lstFemale[0].objTop.transform;
             var camDat = new Traverse(instance.flags.ctrlCamera).Field<BaseCameraControl_Ver2.CameraData>("CamDat").Value;
@@ -129,9 +132,21 @@ namespace KoikatuVR
                     break;
             }
             var cameraPosition = cameraRotation * dir + baseTransform.TransformPoint(camDat.Pos);
-            // TODO: the height calculation below assumes standing mode.
-            var cameraHeight = lstFemale[0].transform.position.y + VR.Camera.transform.localPosition.y;
-            VRMover.Instance.MoveTo(new Vector3(cameraPosition.x, cameraHeight, cameraPosition.z), cameraRotation, keepHeight: false);
+            if (previousFemaleY is float prevY)
+            {
+                // Keep the relative Y coordinate from the female.
+                var cameraHeight = VR.Camera.transform.position.y + baseTransform.position.y - prevY;
+                var destination = new Vector3(cameraPosition.x, cameraHeight, cameraPosition.z);
+                VRMover.Instance.MaybeMoveTo(destination, cameraRotation, keepHeight: false);
+            }
+            else
+            {
+                // We are starting from scratch.
+                // TODO: the height calculation below assumes standing mode.
+                var cameraHeight = lstFemale[0].transform.position.y + VR.Camera.transform.localPosition.y;
+                var destination = new Vector3(cameraPosition.x, cameraHeight, cameraPosition.z);
+                VRMover.Instance.MoveTo(destination, cameraRotation, keepHeight: false);
+            }
         }
     }
 }
