@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections;
 using VRGIN.Core;
 using VRGIN.Controls;
+using VRGIN.Helpers;
 using HarmonyLib;
 using UnityEngine;
 using KoikatuVR.Interpreters;
@@ -62,16 +63,24 @@ namespace KoikatuVR.Caress
         {
             try
             {
-                if (_aibuTracker != null && _aibuTracker.AddIfRelevant(other))
+                if (_aibuTracker != null)
                 {
-                    UpdateLock();
-                    if (_lock != null && _settings.AutomaticTouching)
+                    bool wasIntersecting = _aibuTracker.IsIntersecting();
+                    if (_aibuTracker.AddIfRelevant(other))
                     {
-                        var colliderKind = _aibuTracker.GetCurrentColliderKind(out int femaleIndex);
-                        if (HandCtrl.AibuColliderKind.reac_head <= colliderKind)
+                        UpdateLock();
+                        if (_lock != null && _settings.AutomaticTouching)
                         {
-                            CaressUtil.SetSelectKindTouch(_aibuTracker.Proc, femaleIndex, colliderKind);
-                            StartCoroutine(CaressUtil.ClickCo());
+                            var colliderKind = _aibuTracker.GetCurrentColliderKind(out int femaleIndex);
+                            if (HandCtrl.AibuColliderKind.reac_head <= colliderKind)
+                            {
+                                CaressUtil.SetSelectKindTouch(_aibuTracker.Proc, femaleIndex, colliderKind);
+                                StartCoroutine(CaressUtil.ClickCo());
+                            }
+                        }
+                        if (!wasIntersecting && _aibuTracker.IsIntersecting())
+                        {
+                            _controller.StartRumble(new RumbleImpulse(1000));
                         }
                     }
                 }

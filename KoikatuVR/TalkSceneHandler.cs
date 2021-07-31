@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using VRGIN.Core;
 using VRGIN.Controls;
+using VRGIN.Helpers;
 using UnityEngine;
 using HarmonyLib;
 
@@ -86,9 +87,14 @@ namespace KoikatuVR
             {
                 return;
             }
+            bool wasIntersecting = _currentlyIntersecting.Count > 0;
             if (other.tag.StartsWith("Com/Hit/"))
             {
                 _currentlyIntersecting.Add(other);
+                if (!wasIntersecting)
+                {
+                    _controller.StartRumble(new RumbleImpulse(1000));
+                }
                 UpdateLock();
             }
         }
