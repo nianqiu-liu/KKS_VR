@@ -56,7 +56,6 @@ namespace KoikatuVR.Interpreters
             {
                 _mirrorManager.Fix(reflection);
             }
-            _kkSubtitlesCaption = null;
         }
 
         /// <summary>
