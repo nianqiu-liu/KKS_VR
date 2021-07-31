@@ -19,7 +19,7 @@ namespace KoikatuVR
     class TalkSceneHandler : ProtectedBehaviour
     {
         private Controller _controller;
-        private TalkScene _talkScene; // null while disabled
+        private TalkScene _talkScene;
         private HashSet<Collider> _currentlyIntersecting
             = new HashSet<Collider>();
         private Controller.Lock _lock; // null or valid
@@ -29,10 +29,6 @@ namespace KoikatuVR
             base.OnStart();
 
             _controller = GetComponent<Controller>();
-        }
-
-        protected void OnEnable()
-        {
             _talkScene = GameObject.FindObjectOfType<TalkScene>();
             if (_talkScene == null)
             {
@@ -44,7 +40,6 @@ namespace KoikatuVR
         {
             _currentlyIntersecting.Clear();
             UpdateLock();
-            _talkScene = null;
         }
 
         protected override void OnUpdate()
@@ -83,10 +78,6 @@ namespace KoikatuVR
 
         protected void OnTriggerEnter(Collider other)
         {
-            if (_talkScene == null)
-            {
-                return;
-            }
             bool wasIntersecting = _currentlyIntersecting.Count > 0;
             if (other.tag.StartsWith("Com/Hit/"))
             {
@@ -101,10 +92,6 @@ namespace KoikatuVR
 
         protected void OnTriggerExit(Collider other)
         {
-            if (_talkScene == null)
-            {
-                return;
-            }
             if (_currentlyIntersecting.Remove(other))
             {
                 UpdateLock();
