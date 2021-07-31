@@ -15,47 +15,54 @@ namespace KoikatuVR.Caress
     /// <summary>
     /// An extra component to be attached to each controller, providing the caress
     /// functionality in H scenes.
+    ///
+    /// This component is designed to exist only for the duration of an H scene.
     /// </summary>
     class CaressController : ProtectedBehaviour
     {
         // Basic plan:
         //
-        // * In an H scene, keep track of the potential caress points
+        // * Keep track of the potential caress points
         //   near this controller. _aibuTracker is responsible for this.
         // * While there is at least one such point, lock the controller
         //   to steal any trigger events.
         // * When the trigger is pulled, initiate caress.
         // * Delay releasing of the lock until the trigger is released.
 
-        KoikatuInterpreter _interpreter;
         KoikatuSettings _settings;
         Controller _controller;
-        AibuColliderTracker _aibuTracker; // may be null
+        AibuColliderTracker _aibuTracker;
         Controller.Lock _lock; // may be null but never invalid
         bool _triggerPressed; // Whether the trigger is currently pressed. false if _lock is null.
 
         protected override void OnAwake()
         {
             base.OnAwake();
-            _interpreter = VR.Interpreter as KoikatuInterpreter;
             _settings = VR.Context.Settings as KoikatuSettings;
             _controller = GetComponent<Controller>();
+            var proc = GameObject.FindObjectOfType<HSceneProc>();
+            if (proc == null)
+            {
+                VRLog.Warn("HSceneProc not found");
+                return;
+            }
+            _aibuTracker = new AibuColliderTracker(proc, referencePoint: transform);
+        }
+
+        private void OnDestroy()
+        {
+            if (_lock != null)
+            {
+                ReleaseLock();
+            }
         }
 
         protected override void OnUpdate()
         {
-            _aibuTracker = AibuColliderTracker.CreateOrDestroy(_aibuTracker, _interpreter, referencePoint: transform);
             if (_lock != null)
             {
-                if (_aibuTracker != null)
-                {
-                    HandleTrigger();
-                    HandleToolChange();
-                }
-                else
-                {
-                    ReleaseLock();
-                }
+                HandleTrigger();
+                HandleToolChange();
             }
         }
 
@@ -63,25 +70,22 @@ namespace KoikatuVR.Caress
         {
             try
             {
-                if (_aibuTracker != null)
+                bool wasIntersecting = _aibuTracker.IsIntersecting();
+                if (_aibuTracker.AddIfRelevant(other))
                 {
-                    bool wasIntersecting = _aibuTracker.IsIntersecting();
-                    if (_aibuTracker.AddIfRelevant(other))
+                    UpdateLock();
+                    if (_lock != null && _settings.AutomaticTouching)
                     {
-                        UpdateLock();
-                        if (_lock != null && _settings.AutomaticTouching)
+                        var colliderKind = _aibuTracker.GetCurrentColliderKind(out int femaleIndex);
+                        if (HandCtrl.AibuColliderKind.reac_head <= colliderKind)
                         {
-                            var colliderKind = _aibuTracker.GetCurrentColliderKind(out int femaleIndex);
-                            if (HandCtrl.AibuColliderKind.reac_head <= colliderKind)
-                            {
-                                CaressUtil.SetSelectKindTouch(_aibuTracker.Proc, femaleIndex, colliderKind);
-                                StartCoroutine(CaressUtil.ClickCo());
-                            }
+                            CaressUtil.SetSelectKindTouch(_aibuTracker.Proc, femaleIndex, colliderKind);
+                            StartCoroutine(CaressUtil.ClickCo());
                         }
-                        if (!wasIntersecting && _aibuTracker.IsIntersecting())
-                        {
-                            _controller.StartRumble(new RumbleImpulse(1000));
-                        }
+                    }
+                    if (!wasIntersecting && _aibuTracker.IsIntersecting())
+                    {
+                        _controller.StartRumble(new RumbleImpulse(1000));
                     }
                 }
             }
@@ -95,7 +99,7 @@ namespace KoikatuVR.Caress
         {
             try
             {
-                if (_aibuTracker != null && _aibuTracker.RemoveIfRelevant(other))
+                if (_aibuTracker.RemoveIfRelevant(other))
                 {
                     UpdateLock();
                 }

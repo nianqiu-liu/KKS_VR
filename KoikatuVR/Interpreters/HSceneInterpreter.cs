@@ -16,7 +16,11 @@ namespace KoikatuVR.Interpreters
 
         public override void OnDisable()
         {
-            GameObject.Destroy(_vrMouth);
+            if (_initialized)
+            {
+                GameObject.Destroy(_vrMouth);
+                DestroyControllerComponent<Caress.CaressController>();
+            }
         }
 
         public override void OnUpdate()
@@ -26,6 +30,7 @@ namespace KoikatuVR.Interpreters
                 && proc.enabled)
             {
                 _vrMouth = VR.Camera.gameObject.AddComponent<Caress.VRMouth>();
+                AddControllerComponent<Caress.CaressController>();
                 _initialized = true;
             }
         }
