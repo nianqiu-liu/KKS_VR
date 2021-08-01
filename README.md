@@ -143,8 +143,11 @@ Caressing can be done in the same way as touching in talk scenes. Additionally,
 you can switch to a different mode of caressing by pressing the Application
 menu button with the controller in place.
 
-Optionally, automatic touching and kissing can be enabled, so that you don't
-even need to pull the Trigger.
+Optionally, automatic touching can be enabled, so that you don't even need to
+pull the Trigger.
+
+You can also kiss or lick the female by moving your head to the right place.
+This can be turned off in the config.
 
 When changing location, you can use the green laser to point to a new location
 icon and pull the Trigger to confirm.
