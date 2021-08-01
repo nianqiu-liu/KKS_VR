@@ -144,6 +144,7 @@
     <Copy SourceFiles="@(DataPluginFiles)" DestinationFolder="$(OutputPath)Koikatu_Data\Plugins\%(RecursiveDir)" />
     <!-- Remove unneeded directory -->
     <RemoveDir Directories="$(OutputPath)Plugins" />
+    <RemoveDir Directories="$(OutputPath)Koikatu_Data\Plugins\x86" />
     <!-- Copy libraries to the right place -->
     <Move SourceFiles="@(ManagedLibs)" DestinationFolder="$(OutputPath)BepInEx\plugins\KK_MainGameVR" />
     <!-- Remove unneeded directory -->
