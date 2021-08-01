@@ -107,7 +107,7 @@ namespace KoikatuVR.Interpreters
                     return 0 < _kkapiCanvasHackWait;
                 }
             }
-            else if(canvas.name == "KK_Subtitles_Caption")
+            else if (canvas.name == "KK_Subtitles_Caption")
             {
                 _kkSubtitlesCaption = canvas;
             }
