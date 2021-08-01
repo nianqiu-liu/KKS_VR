@@ -101,6 +101,18 @@ namespace KoikatuVR
                 VRLog.Debug("Maybe impersonating male");
                 male.StartCoroutine(ImpersonateCo(isFadingOut, male.objHead.transform));
             }
+            else if (ShouldApproachCharacter(textScenario, out var character))
+            {
+                VRLog.Debug("Approaching character");
+                var distance = InCafe() ? 0.95f :  0.7f;
+                var originalTarget = ActionCameraControl.GetIdealTransformFor(textScenario.AdvCamera);
+                var cameraXZ = character.transform.position - originalTarget.rotation * (distance * Vector3.forward);
+                MoveWithHeuristics(
+                    new Vector3(cameraXZ.x, originalTarget.position.y, cameraXZ.z),
+                    originalTarget.rotation,
+                    keepHeight: false,
+                    pretendFading: isFadingOut);
+            }
             else
             {
                 var target = ActionCameraControl.GetIdealTransformFor(textScenario.AdvCamera);
@@ -171,6 +183,24 @@ namespace KoikatuVR
                 return true;
             }
             return false;
+        }
+
+        private bool ShouldApproachCharacter(ADV.TextScenario textScenario, out ChaControl control)
+        {
+            if (textScenario.BGParam.visible &&
+                textScenario.currentChara != null)
+            {
+                control = textScenario.currentChara.chaCtrl;
+                return true;
+            }
+            control = null;
+            return false;
+        }
+
+        private static bool InCafe()
+        {
+            return Manager.Game.IsInstance() &&
+                Manager.Game.Instance.actScene.transform.Find("cafeChair");
         }
     }
 }

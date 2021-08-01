@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionCameraControl.cs" />
+    <Compile Include="Background.cs" />
     <Compile Include="BepInExLoggerBackend.cs" />
     <Compile Include="Controls\ButtonsSubtool.cs" />
     <Compile Include="CameraControlControl.cs" />

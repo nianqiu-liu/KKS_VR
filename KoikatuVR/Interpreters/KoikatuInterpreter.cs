@@ -83,6 +83,11 @@ namespace KoikatuVR.Interpreters
             {
                 return true;
             }
+            else if (canvas.name == "Canvas_BackGround")
+            {
+                Background.Instance.TakeCanvas(canvas);
+                return true;
+            }
             else if (canvas.name == "CvsMenuTree")
             {
                 // Here, we attempt to avoid some unfortunate conflict with
