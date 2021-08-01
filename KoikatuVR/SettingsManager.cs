@@ -130,15 +130,15 @@ namespace KoikatuVR
                 "Touching the female's body with controllers triggers reaction");
             Tie(automaticTouching, v => settings.AutomaticTouching = v);
 
-            var automaticKissing = config.Bind(sectionCaress, "Automatic kissing", false,
+            var automaticKissing = config.Bind(sectionCaress, "Automatic kissing", true,
                 "Initiate kissing by moving the HMD");
             Tie(automaticKissing, v => settings.AutomaticKissing = v);
 
-            var automaticLicking = config.Bind(sectionCaress, "Automatic licking", false,
+            var automaticLicking = config.Bind(sectionCaress, "Automatic licking", true,
                 "Initiate licking by moving the HMD");
             Tie(automaticLicking, v => settings.AutomaticLicking = v);
 
-            var automaticTouchingByHmd = config.Bind(sectionCaress, "Kiss body", false,
+            var automaticTouchingByHmd = config.Bind(sectionCaress, "Kiss body", true,
                 "Touching the female's body by moving the HMD");
             Tie(automaticTouchingByHmd, v => settings.AutomaticTouchingByHmd = v);
 
