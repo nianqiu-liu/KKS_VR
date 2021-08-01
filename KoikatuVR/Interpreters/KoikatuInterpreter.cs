@@ -229,5 +229,7 @@ namespace KoikatuVR.Interpreters
                 VRLog.Warn($"Unknown kind of main camera was added: {camera.name}");
             }
         }
+
+        public override bool ApplicationIsQuitting => Manager.Scene.isGameEnd;
     }
 }
