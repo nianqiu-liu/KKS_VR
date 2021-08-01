@@ -35,7 +35,8 @@ namespace KoikatuVR
             base.OnUpdate();
 
             // TODO: somehow arrange that this component is only enabled during location selection?
-            if (Singleton<Manager.Scene>.Instance.NowSceneNames[0] == "HPointMove")
+            if (Singleton<Manager.Scene>.Instance.NowSceneNames[0] == "HPointMove"
+                && (_lock != null || _controller.CanAcquireFocus()))
             {
                 if (!_laserEnabled)
                 {
