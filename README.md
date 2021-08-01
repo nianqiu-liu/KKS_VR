@@ -25,9 +25,9 @@ from KoikatuVR, refer to the 'Migrating' section.
     * If your game is Koikatsu Party (the Steam version), copy `BepInEx` and `Koikatsu Party_Data`.
     * Otherwise, copy `BepInEx` and `Koikatu_Data`.
 
-Now you can start Koikatsu with `--vr` command line option to enable VR.
-Alternatively, starting Koikatsu while SteamVR is running also enables this
-plugin.
+Now you can start Koikatsu while SteamVR is running, and it should automatically
+start up in the VR mode. Alternatively, you can use the `--vr` or `--novr`
+command line option to force enable or disable VR.
 
 ## Control
 
