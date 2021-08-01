@@ -45,7 +45,7 @@ namespace KoikatuVR.Caress
                 .Create("VRMouthSmall", new Vector3(0, 0, 0), new Vector3(0.05f, 0.05f, 0.07f));
             _small.TriggerEnter += HandleTriggerEnter;
             _large = VRMouthColliderObject
-                .Create("VRMouthLarge", new Vector3(0, 0, 0.05f), new Vector3(0.1f, 0.1f, 0.2f));
+                .Create("VRMouthLarge", new Vector3(0, 0, 0.05f), new Vector3(0.1f, 0.1f, 0.15f));
             _large.TriggerExit += HandleTriggerExit;
 
             var hProc = GameObject.FindObjectOfType<HSceneProc>();
