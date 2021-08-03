@@ -79,7 +79,7 @@
     <Compile Include="KoikatuContext.cs" />
     <Compile Include="KoikatuStandingMode.cs" />
     <Compile Include="Interpreters\TalkSceneInterpreter.cs" />
-    <Compile Include="LocationPicker.cs" />
+    <Compile Include="Controls\LocationPicker.cs" />
     <Compile Include="Mirror\Manager.cs" />
     <Compile Include="Mirror\VRReflection.cs" />
     <Compile Include="MoverHooks.cs" />
