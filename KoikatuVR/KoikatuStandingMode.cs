@@ -17,7 +17,7 @@ namespace KoikatuVR
         {
             get
             {
-                return new[] { typeof(Tools.KoikatuMenuTool), typeof(Tools.KoikatuWarpTool), typeof(Tools.SchoolTool)};
+                return new[] { typeof(Controls.KoikatuMenuTool), typeof(Controls.KoikatuWarpTool), typeof(Controls.SchoolTool)};
             }
         }
 

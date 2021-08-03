@@ -5,7 +5,7 @@ using System.Text;
 using VRGIN.Controls;
 using UnityEngine;
 
-namespace KoikatuVR.Tools
+namespace KoikatuVR.Controls
 {
     class KoikatuMenuTool : VRGIN.Controls.Tools.MenuTool
     {

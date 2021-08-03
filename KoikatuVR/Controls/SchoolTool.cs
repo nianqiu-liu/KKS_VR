@@ -11,7 +11,7 @@ using WindowsInput.Native;
 using KoikatuVR.Interpreters;
 using System.ComponentModel;
 
-namespace KoikatuVR.Tools
+namespace KoikatuVR.Controls
 {
     public class SchoolTool : Tool
     {

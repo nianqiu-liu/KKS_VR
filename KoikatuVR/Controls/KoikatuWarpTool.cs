@@ -5,7 +5,7 @@ using System.Text;
 using VRGIN.Controls;
 using UnityEngine;
 
-namespace KoikatuVR.Tools
+namespace KoikatuVR.Controls
 {
     class KoikatuWarpTool : VRGIN.Controls.Tools.WarpTool
     {

@@ -90,9 +90,9 @@
     </Compile>
     <Compile Include="SettingsManager.cs" />
     <Compile Include="TalkSceneHandler.cs" />
-    <Compile Include="Tools\KoikatuMenuTool.cs" />
-    <Compile Include="Tools\KoikatuWarpTool.cs" />
-    <Compile Include="Tools\ToolUtil.cs" />
+    <Compile Include="Controls\KoikatuMenuTool.cs" />
+    <Compile Include="Controls\KoikatuWarpTool.cs" />
+    <Compile Include="Controls\ToolUtil.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Interpreters\HSceneInterpreter.cs" />
     <Compile Include="Interpreters\KoikatuInterpreter.cs" />
@@ -104,7 +104,7 @@
     <Compile Include="VRMover.cs" />
     <Compile Include="VRPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tools\SchoolTool.cs" />
+    <Compile Include="Controls\SchoolTool.cs" />
     <Compile Include="KoikatuSettings.cs" />
   </ItemGroup>
   <ItemGroup>
