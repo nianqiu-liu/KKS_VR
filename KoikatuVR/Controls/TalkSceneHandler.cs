@@ -8,7 +8,7 @@ using VRGIN.Helpers;
 using UnityEngine;
 using HarmonyLib;
 
-namespace KoikatuVR
+namespace KoikatuVR.Controls
 {
     /// <summary>
     /// A handler component to be attached to a controller, providing touch/look

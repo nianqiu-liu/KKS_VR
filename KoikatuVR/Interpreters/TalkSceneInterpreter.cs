@@ -16,7 +16,7 @@ namespace KoikatuVR.Interpreters
 
         public override void OnDisable()
         {
-            DestroyControllerComponent<TalkSceneHandler>();
+            DestroyControllerComponent<Controls.TalkSceneHandler>();
             if (_canvasBack != null)
             {
                 _canvasBack.enabled = true;
@@ -25,7 +25,7 @@ namespace KoikatuVR.Interpreters
 
         public override void OnStart()
         {
-            AddControllerComponent<TalkSceneHandler>();
+            AddControllerComponent<Controls.TalkSceneHandler>();
 
             var talkScene = GameObject.FindObjectOfType<TalkScene>();
             if (talkScene == null)

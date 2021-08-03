@@ -89,7 +89,7 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="SettingsManager.cs" />
-    <Compile Include="TalkSceneHandler.cs" />
+    <Compile Include="Controls\TalkSceneHandler.cs" />
     <Compile Include="Controls\KoikatuMenuTool.cs" />
     <Compile Include="Controls\KoikatuWarpTool.cs" />
     <Compile Include="Controls\ToolUtil.cs" />
