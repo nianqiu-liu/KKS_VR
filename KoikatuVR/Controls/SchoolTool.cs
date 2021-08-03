@@ -23,14 +23,8 @@ namespace KoikatuVR.Controls
 
         // 手抜きのためNumpad方式で方向を保存
         private int _PrevTouchDirection = -1;
-        private bool _Pl2Cam = false;
 
-        /// <summary>
-        /// The set of keys for which we've sent a down message but not a
-        /// corresponding up message.
-        /// </summary>
-        private readonly HashSet<AssignableFunction> _SentUnmatchedDown
-            = new HashSet<AssignableFunction>();
+        private ButtonsSubtool _buttonsSubtool; // null iff disabled
 
         private void ChangeKeySet()
         {
@@ -52,7 +46,8 @@ namespace KoikatuVR.Controls
 
         private void SetScene(bool inHScene)
         {
-            CleanupDowns();
+            _buttonsSubtool.Destroy();
+            _buttonsSubtool = new ButtonsSubtool(_Interpreter, _Settings);
             _InHScene = inHScene;
             var keySets = KeySets();
             _KeySetIndex = 0;
@@ -70,16 +65,16 @@ namespace KoikatuVR.Controls
         protected override void OnAwake()
         {
             base.OnAwake();
-
-            _Settings = (VR.Context.Settings as KoikatuSettings);
-            SetScene(inHScene: false);
-            _Settings.AddListener("KeySets", (_, _1) => ResetKeys());
-            _Settings.AddListener("HKeySets", (_, _1) => ResetKeys());
         }
 
         protected override void OnStart()
         {
             base.OnStart();
+
+            _Settings = (VR.Context.Settings as KoikatuSettings);
+            SetScene(inHScene: false);
+            _Settings.AddListener("KeySets", (_, _1) => ResetKeys());
+            _Settings.AddListener("HKeySets", (_, _1) => ResetKeys());
         }
 
         protected override void OnDestroy()
@@ -89,30 +84,16 @@ namespace KoikatuVR.Controls
 
         protected override void OnDisable()
         {
-            CleanupDowns();
+            _buttonsSubtool?.Destroy();
+            _buttonsSubtool = null;
             base.OnDisable();
-        }
-
-        /// <summary>
-        /// Send PressUp for keys we sent PressDown for, so that no key
-        /// is left pressed indefinitely.
-        /// </summary>
-        private void CleanupDowns()
-        {
-            // Make a copy because the loop below will modify the HashSet.
-            var todo = _SentUnmatchedDown.ToList();
-            foreach (var key in todo)
-            {
-                InputKey(key, KeyMode.PressUp);
-            }
-            _SentUnmatchedDown.Clear();
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
-
             _Interpreter = VR.Interpreter as KoikatuInterpreter;
+            _buttonsSubtool = new ButtonsSubtool(_Interpreter, _Settings);
         }
 
         protected override void OnUpdate()
@@ -208,109 +189,33 @@ namespace KoikatuVR.Controls
                 }
             }
 
-            if (_Pl2Cam)
-            {
-                IfActionScene(interpreter => interpreter.MovePlayerToCamera());
-            }
+            _buttonsSubtool.Update();
         }
 
         private void InputKey(AssignableFunction fun, KeyMode mode)
         {
             if (mode == KeyMode.PressDown)
             {
-                switch (fun)
+                switch(fun)
                 {
-                    case AssignableFunction.NONE:
-                        break;
-                    case AssignableFunction.WALK:
-                        IfActionScene(interpreter => interpreter.StartWalking());
-                        break;
-                    case AssignableFunction.DASH:
-                        IfActionScene(interpreter => interpreter.StartWalking(true));
-                        break;
-                    case AssignableFunction.PL2CAM:
-                        _Pl2Cam = true;
-                        break;
-                    case AssignableFunction.LBUTTON:
-                        VR.Input.Mouse.LeftButtonDown();
-                        break;
-                    case AssignableFunction.RBUTTON:
-                        VR.Input.Mouse.RightButtonDown();
-                        break;
-                    case AssignableFunction.MBUTTON:
-                        VR.Input.Mouse.MiddleButtonDown();
-                        break;
-                    case AssignableFunction.LROTATION:
-                    case AssignableFunction.RROTATION:
                     case AssignableFunction.NEXT:
-                    case AssignableFunction.SCROLLUP:
-                    case AssignableFunction.SCROLLDOWN:
-                        // ここでは何もせず、上げたときだけ処理する
-                        break;
-                    case AssignableFunction.CROUCH:
-                        IfActionScene(interpreter => interpreter.Crouch());
                         break;
                     default:
-                        VR.Input.Keyboard.KeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), fun.ToString()));
+                        _buttonsSubtool.ButtonDown(fun);
                         break;
                 }
-                _SentUnmatchedDown.Add(fun);
             }
             else
             {
                 switch (fun)
                 {
-                    case AssignableFunction.NONE:
-                        break;
-                    case AssignableFunction.WALK:
-                        IfActionScene(interpreter => interpreter.StopWalking());
-                        break;
-                    case AssignableFunction.DASH:
-                        IfActionScene(interpreter => interpreter.StopWalking());
-                        break;
-                    case AssignableFunction.PL2CAM:
-                        _Pl2Cam = false;
-                        break;
-                    case AssignableFunction.LBUTTON:
-                        VR.Input.Mouse.LeftButtonUp();
-                        break;
-                    case AssignableFunction.RBUTTON:
-                        VR.Input.Mouse.RightButtonUp();
-                        break;
-                    case AssignableFunction.MBUTTON:
-                        VR.Input.Mouse.MiddleButtonUp();
-                        break;
-                    case AssignableFunction.LROTATION:
-                        IfActionScene(interpreter => interpreter.RotatePlayer(-_Settings.RotationAngle));
-                        break;
-                    case AssignableFunction.RROTATION:
-                        IfActionScene(interpreter => interpreter.RotatePlayer(_Settings.RotationAngle));
-                        break;
-                    case AssignableFunction.SCROLLUP:
-                        VR.Input.Mouse.VerticalScroll(1);
-                        break;
-                    case AssignableFunction.SCROLLDOWN:
-                        VR.Input.Mouse.VerticalScroll(-1);
-                        break;
                     case AssignableFunction.NEXT:
                         ChangeKeySet();
                         break;
-                    case AssignableFunction.CROUCH:
-                        IfActionScene(interpreter => interpreter.StandUp());
-                        break;
                     default:
-                        VR.Input.Keyboard.KeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), fun.ToString()));
+                        _buttonsSubtool.ButtonUp(fun);
                         break;
                 }
-                _SentUnmatchedDown.Remove(fun);
-            }
-        }
-
-        private void IfActionScene(Action<ActionSceneInterpreter> a)
-        {
-            if (_Interpreter.SceneInterpreter is ActionSceneInterpreter actInterpreter)
-            {
-                a(actInterpreter);
             }
         }
 
