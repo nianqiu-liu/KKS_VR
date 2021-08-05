@@ -20,6 +20,7 @@ namespace KoikatuVR.Controls
         private KeySet _KeySet;
         private int _KeySetIndex = 0;
         private bool _InHScene = false;
+        private Controller.Lock _lock = VRGIN.Controls.Controller.Lock.Invalid;
 
         // 手抜きのためNumpad方式で方向を保存
         private int _PrevTouchDirection = -1;
@@ -93,6 +94,10 @@ namespace KoikatuVR.Controls
             _buttonsSubtool = null;
             _grab?.Destroy();
             _grab = null;
+            if (_lock.IsValid)
+            {
+                _lock.Release();
+            }
             base.OnDisable();
         }
 
@@ -106,6 +111,8 @@ namespace KoikatuVR.Controls
         protected override void OnUpdate()
         {
             base.OnUpdate();
+
+            UpdateLock();
 
             var inHScene = _Interpreter.CurrentScene == KoikatuInterpreter.HScene;
             if (inHScene != _InHScene)
@@ -126,6 +133,19 @@ namespace KoikatuVR.Controls
             if (_buttonsSubtool != null)
             {
                 HandleButtons();
+            }
+        }
+
+        private void UpdateLock()
+        {
+            bool wantLock = _grab != null || _buttonsSubtool?.WantLock() == true;
+            if (wantLock && !_lock.IsValid)
+            {
+                _lock = Owner.AcquireFocus(keepTool: true);
+            }
+            else if(!wantLock && _lock.IsValid)
+            {
+                _lock.Release();
             }
         }
 

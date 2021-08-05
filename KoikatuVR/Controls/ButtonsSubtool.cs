@@ -41,6 +41,15 @@ namespace KoikatuVR.Controls
         }
 
         /// <summary>
+        /// Whether it's desirable to lock the controller.
+        /// </summary>
+        /// <returns></returns>
+        public bool WantLock()
+        {
+            return _SentUnmatchedDown.Count > 0;
+        }
+
+        /// <summary>
         /// A method to be called when this subtool is destroyed.
         /// </summary>
         public void Destroy()
