@@ -122,6 +122,8 @@ namespace KoikatuVR
         SCROLLDOWN,
         [Description("Switch button assignments")]
         NEXT,
+        [Description("Grab space to move")]
+        GRAB,
         [Description("Keyboard F1")]
         F1,
         [Description("Keyboard F2")]

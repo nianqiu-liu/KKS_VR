@@ -24,7 +24,9 @@ namespace KoikatuVR.Controls
         // 手抜きのためNumpad方式で方向を保存
         private int _PrevTouchDirection = -1;
 
-        private ButtonsSubtool _buttonsSubtool; // null iff disabled
+        // When eneabled, exactly one of the below is non-null.
+        private ButtonsSubtool _buttonsSubtool;
+        private GrabAction _grab;
 
         private void ChangeKeySet()
         {
@@ -46,8 +48,11 @@ namespace KoikatuVR.Controls
 
         private void SetScene(bool inHScene)
         {
-            _buttonsSubtool.Destroy();
-            _buttonsSubtool = new ButtonsSubtool(_Interpreter, _Settings);
+            if (_buttonsSubtool != null)
+            {
+                _buttonsSubtool.Destroy();
+                _buttonsSubtool = new ButtonsSubtool(_Interpreter, _Settings);
+            }
             _InHScene = inHScene;
             var keySets = KeySets();
             _KeySetIndex = 0;
@@ -86,6 +91,8 @@ namespace KoikatuVR.Controls
         {
             _buttonsSubtool?.Destroy();
             _buttonsSubtool = null;
+            _grab?.Destroy();
+            _grab = null;
             base.OnDisable();
         }
 
@@ -99,7 +106,6 @@ namespace KoikatuVR.Controls
         protected override void OnUpdate()
         {
             base.OnUpdate();
-            var device = this.Controller;
 
             var inHScene = _Interpreter.CurrentScene == KoikatuInterpreter.HScene;
             if (inHScene != _InHScene)
@@ -107,24 +113,44 @@ namespace KoikatuVR.Controls
                 SetScene(inHScene);
             }
 
+            if (_grab != null)
+            {
+                if (_grab.HandleGrabbing() != GrabAction.Status.Continue)
+                {
+                    _grab.Destroy();
+                    _grab = null;
+                    _buttonsSubtool = new ButtonsSubtool(_Interpreter, _Settings);
+                }
+            }
+
+            if (_buttonsSubtool != null)
+            {
+                HandleButtons();
+            }
+        }
+
+        private void HandleButtons()
+        {
+            var device = this.Controller;
+
             if (device.GetPressDown(ButtonMask.Trigger))
             {
-                InputKey(_KeySet.Trigger, KeyMode.PressDown);
+                InputDown(_KeySet.Trigger, ButtonMask.Trigger);
             }
 
             if (device.GetPressUp(ButtonMask.Trigger))
             {
-                InputKey(_KeySet.Trigger, KeyMode.PressUp);
+                InputUp(_KeySet.Trigger);
             }
 
             if (device.GetPressDown(ButtonMask.Grip))
             {
-                InputKey(_KeySet.Grip, KeyMode.PressDown);
+                InputDown(_KeySet.Grip, ButtonMask.Grip);
             }
 
             if (device.GetPressUp(ButtonMask.Grip))
             {
-                InputKey(_KeySet.Grip, KeyMode.PressUp);
+                InputUp(_KeySet.Grip);
             }
 
             if (device.GetPressDown(ButtonMask.Touchpad))
@@ -135,31 +161,36 @@ namespace KoikatuVR.Controls
 
                     if (touchPosition.y > threshold) // up
                     {
-                        InputKey(_KeySet.Up, KeyMode.PressDown);
+                        InputDown(_KeySet.Up, ButtonMask.Touchpad);
                         _PrevTouchDirection = 8;
                     }
                     else if (touchPosition.y < -threshold) // down
                     {
-                        InputKey(_KeySet.Down, KeyMode.PressDown);
+                        InputDown(_KeySet.Down, ButtonMask.Touchpad);
                         _PrevTouchDirection = 2;
                     }
                     else if (touchPosition.x > threshold) // right
                     {
-                        InputKey(_KeySet.Right, KeyMode.PressDown);
+                        InputDown(_KeySet.Right, ButtonMask.Touchpad);
                         _PrevTouchDirection = 6;
                     }
                     else if (touchPosition.x < -threshold)// left
                     {
-                        InputKey(_KeySet.Left, KeyMode.PressDown);
+                        InputDown(_KeySet.Left, ButtonMask.Touchpad);
                         _PrevTouchDirection = 4;
                     }
                     else
                     {
-                        InputKey(_KeySet.Center, KeyMode.PressDown);
+                        InputDown(_KeySet.Center, ButtonMask.Touchpad);
                         _PrevTouchDirection = 5;
                     }
                 }
-             }
+            }
+
+            if (_buttonsSubtool == null)
+            {
+                return;
+            }
 
             // 上げたときの位置によらず、押したボタンを離す
             if (device.GetPressUp(ButtonMask.Touchpad))
@@ -168,23 +199,23 @@ namespace KoikatuVR.Controls
                 {
                     if (_PrevTouchDirection == 8) // up
                     {
-                        InputKey(_KeySet.Up, KeyMode.PressUp);
+                        InputUp(_KeySet.Up);
                     }
                     else if (_PrevTouchDirection == 2) // down
                     {
-                        InputKey(_KeySet.Down, KeyMode.PressUp);
+                        InputUp(_KeySet.Down);
                     }
                     else if (_PrevTouchDirection == 6) // right
                     {
-                        InputKey(_KeySet.Right, KeyMode.PressUp);
+                        InputUp(_KeySet.Right);
                     }
                     else if (_PrevTouchDirection == 4)// left
                     {
-                        InputKey(_KeySet.Left, KeyMode.PressUp);
+                        InputUp(_KeySet.Left);
                     }
                     else if (_PrevTouchDirection == 5)
                     {
-                        InputKey(_KeySet.Center, KeyMode.PressUp);
+                        InputUp(_KeySet.Center);
                     }
                 }
             }
@@ -192,30 +223,35 @@ namespace KoikatuVR.Controls
             _buttonsSubtool.Update();
         }
 
-        private void InputKey(AssignableFunction fun, KeyMode mode)
+        private void InputDown(AssignableFunction fun, ulong buttonMask)
         {
-            if (mode == KeyMode.PressDown)
+            switch (fun)
             {
-                switch(fun)
-                {
-                    case AssignableFunction.NEXT:
-                        break;
-                    default:
-                        _buttonsSubtool.ButtonDown(fun);
-                        break;
-                }
+                case AssignableFunction.NEXT:
+                    break;
+                case AssignableFunction.GRAB:
+                    _buttonsSubtool.Destroy();
+                    _buttonsSubtool = null;
+                    _grab = new GrabAction(Owner, Controller, buttonMask);
+                    break;
+                default:
+                    _buttonsSubtool.ButtonDown(fun);
+                    break;
             }
-            else
+        }
+
+        private void InputUp(AssignableFunction fun)
+        {
+            switch (fun)
             {
-                switch (fun)
-                {
-                    case AssignableFunction.NEXT:
-                        ChangeKeySet();
-                        break;
-                    default:
-                        _buttonsSubtool.ButtonUp(fun);
-                        break;
-                }
+                case AssignableFunction.NEXT:
+                    ChangeKeySet();
+                    break;
+                case AssignableFunction.GRAB:
+                    break;
+                default:
+                    _buttonsSubtool.ButtonUp(fun);
+                    break;
             }
         }
 
