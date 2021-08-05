@@ -51,13 +51,6 @@ namespace KoikatuVR
                 "Whether or not rumble is activated.");
             Tie(rumble, v => settings.Rumble = v);
 
-            var grabRotationImmediateMode = config.Bind(sectionGeneral, "Immediate rotation", true,
-                new ConfigDescription(
-                    "Determines the rotation mode. If enabled, pulling the trigger while grabbing will immediately rotate you. When disabled, doing the same thing will let you 'drag' the view.",
-                    null,
-                    new ConfigurationManagerAttributes { Order = -1 }));
-            Tie(grabRotationImmediateMode, v => settings.GrabRotationImmediateMode = v);
-
             var rotationMultiplier = config.Bind(sectionGeneral, "Rotation multiplier", 1f,
                 new ConfigDescription(
                     "How quickly the the view should rotate when doing so with the controllers.",
