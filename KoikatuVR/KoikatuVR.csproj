@@ -94,6 +94,7 @@
     <Compile Include="Controls\KoikatuMenuTool.cs" />
     <Compile Include="Controls\KoikatuWarpTool.cs" />
     <Compile Include="Controls\ToolUtil.cs" />
+    <Compile Include="UnityPatches.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Interpreters\HSceneInterpreter.cs" />
     <Compile Include="Interpreters\KoikatuInterpreter.cs" />

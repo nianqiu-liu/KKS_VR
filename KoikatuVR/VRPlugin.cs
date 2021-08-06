@@ -73,6 +73,7 @@ namespace KoikatuVR
                 VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = VR.Context.NearClipPlane;
                 VR.Manager.SetMode<KoikatuStandingMode>();
                 VRFade.Create();
+                GraphicRaycasterPatches.Initialize();
             }
         }
     }
