@@ -71,6 +71,10 @@ namespace KoikatuVR
 
         public void OnDestroy()
         {
+            if (VR.Quitting)
+            {
+                return;
+            }
             Destroy(VRIdealCamera.gameObject);
             TransformDebug.targetTransform = null;
         }
