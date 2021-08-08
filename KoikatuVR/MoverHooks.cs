@@ -27,7 +27,13 @@ namespace KoikatuVR
             }
 
             VRLog.Debug("PostADVCameraSetting");
-            var backTrans = __instance.BackCamera.transform;
+            var backTrans = __instance.BackCamera?.transform;
+            if (backTrans == null)
+            {
+                // backTrans can be null in Roaming. We don't want to move the
+                // camera anyway in that case.
+                return;
+            }
             VRMover.Instance.MaybeMoveADV(__instance, backTrans.position, backTrans.rotation, keepHeight: false);
         }
     }
