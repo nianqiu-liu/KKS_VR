@@ -58,6 +58,8 @@ namespace KoikatuVR
         public bool AutomaticLicking { get; set; }
 
         public bool FirstPersonADV { get; set; }
+
+        public bool TeleportWithProtagonist { get; set; }
     }
 
     public class KeySet

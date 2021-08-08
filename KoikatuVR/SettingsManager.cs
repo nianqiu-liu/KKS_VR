@@ -119,6 +119,10 @@ namespace KoikatuVR
                     new AcceptableValueRange<float>(0f, 180f)));
             Tie(rotationAngle, v => settings.RotationAngle = v);
 
+            var teleportWithProtagonist = config.Bind(sectionRoaming, "Teleport with protagonist", true,
+                "When teleporting, the protagonist also teleports");
+            Tie(teleportWithProtagonist, v => settings.TeleportWithProtagonist = v);
+
             var automaticTouching = config.Bind(sectionCaress, "Automatic touching", false,
                 "Touching the female's body with controllers triggers reaction");
             Tie(automaticTouching, v => settings.AutomaticTouching = v);
