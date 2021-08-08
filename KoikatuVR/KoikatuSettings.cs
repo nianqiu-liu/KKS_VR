@@ -106,12 +106,12 @@ namespace KoikatuVR
         DASH,
         [Description("Move protagonist to camera (Roam mode)")]
         PL2CAM,
-        [Description("Turn left (Roam mode)")]
-        LROTATION,
-        [Description("Turn right (Roam mode)")]
-        RROTATION,
         [Description("Crouch (Roam mode)")]
         CROUCH,
+        [Description("Turn left")]
+        LROTATION,
+        [Description("Turn right")]
+        RROTATION,
         [Description("Left mouse button")]
         LBUTTON,
         [Description("Right mouse button")]

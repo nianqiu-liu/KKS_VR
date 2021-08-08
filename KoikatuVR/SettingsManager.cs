@@ -71,6 +71,12 @@ namespace KoikatuVR
                     new ConfigurationManagerAttributes { IsAdvanced = true }));
             Tie(logLevel, v => VRLog.Level = v);
 
+            var rotationAngle = config.Bind(sectionGeneral, "Rotation angle", 45f,
+                new ConfigDescription(
+                    "Angle of rotation, in degrees",
+                    new AcceptableValueRange<float>(0f, 180f)));
+            Tie(rotationAngle, v => settings.RotationAngle = v);
+
             var usingHeadPos = config.Bind(sectionRoaming, "Use head position", false,
                 new ConfigDescription(
                     "Place the camera exactly at the protagonist's head (may cause motion sickness). If disabled, use a fixed height from the floor.",
@@ -112,12 +118,6 @@ namespace KoikatuVR
                     new AcceptableValueRange<float>(-3f, -0.05f),
                     new ConfigurationManagerAttributes { Order = -4 }));
             Tie(standUpThreshold, v => settings.StandUpThrethould = v);
-
-            var rotationAngle = config.Bind(sectionRoaming, "Rotation angle", 45f,
-                new ConfigDescription(
-                    "Angle of rotation, in degrees",
-                    new AcceptableValueRange<float>(0f, 180f)));
-            Tie(rotationAngle, v => settings.RotationAngle = v);
 
             var teleportWithProtagonist = config.Bind(sectionRoaming, "Teleport with protagonist", true,
                 "When teleporting, the protagonist also teleports");

@@ -5,6 +5,7 @@ using System.Text;
 using WindowsInput.Native;
 using VRGIN.Core;
 using KoikatuVR.Interpreters;
+using UnityEngine;
 
 namespace KoikatuVR.Controls
 {
@@ -133,10 +134,10 @@ namespace KoikatuVR.Controls
                     VR.Input.Mouse.MiddleButtonUp();
                     break;
                 case AssignableFunction.LROTATION:
-                    IfActionScene(interpreter => interpreter.RotatePlayer(-_Settings.RotationAngle));
+                    Rotate(-_Settings.RotationAngle);
                     break;
                 case AssignableFunction.RROTATION:
-                    IfActionScene(interpreter => interpreter.RotatePlayer(_Settings.RotationAngle));
+                    Rotate(_Settings.RotationAngle);
                     break;
                 case AssignableFunction.SCROLLUP:
                     VR.Input.Mouse.VerticalScroll(1);
@@ -154,6 +155,26 @@ namespace KoikatuVR.Controls
                     break;
             }
             _SentUnmatchedDown.Remove(fun);
+        }
+
+        /// <summary>
+        /// Rotate the camera. If we are in Roaming, rotate the protagonist as well.
+        /// </summary>
+        /// <param name="degrees"></param>
+        private void Rotate(float degrees)
+        {
+            var actInterpreter = _Interpreter.SceneInterpreter as ActionSceneInterpreter;
+            if (actInterpreter != null)
+            {
+                actInterpreter.MoveCameraToPlayer(onlyPosition: true);
+            }
+            var camera = VR.Camera.transform;
+            var newRotation = Quaternion.AngleAxis(degrees, Vector3.up) * camera.rotation;
+            VRMover.Instance.MoveTo(camera.position, newRotation, keepHeight: false);
+            if (actInterpreter != null)
+            {
+                actInterpreter.MovePlayerToCamera();
+            }
         }
 
         private void IfActionScene(Action<ActionSceneInterpreter> a)

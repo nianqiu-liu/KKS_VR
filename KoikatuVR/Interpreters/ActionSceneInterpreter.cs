@@ -200,13 +200,6 @@ namespace KoikatuVR.Interpreters
             }
         }
 
-        public void RotatePlayer(float angle)
-        {
-            var player = _ActionScene.Player.transform;
-            player.Rotate(Vector3.up * angle);
-            _NeedsMoveCamera = true;
-        }
-
         public void Crouch()
         {
             if (_IsStanding)
