@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using VRGIN.Core;
 using WindowsInput.Native;
+using StrayTech;
 
 namespace KoikatuVR.Interpreters
 {
     class ActionSceneInterpreter : SceneInterpreter
     {
         private KoikatuSettings _Settings;
+        private ActionScene _ActionScene;
 
         private GameObject _Map;
         private GameObject _CameraSystem;
@@ -22,6 +24,7 @@ namespace KoikatuVR.Interpreters
             VRLog.Info("ActionScene OnStart");
 
             _Settings = (VR.Context.Settings as KoikatuSettings);
+            _ActionScene = GameObject.FindObjectOfType<ActionScene>();
 
             ResetState();
             HoldCamera();
@@ -48,13 +51,11 @@ namespace KoikatuVR.Interpreters
 
         private void ResetCamera()
         {
-            var pl = GameObject.Find("ActionScene/Player/chaM_001/BodyTop");
-            //_CameraSystem = GameObject.Find("ActionScene/CameraSystem");
+            var pl = _ActionScene.Player?.chaCtrl.objTop;
 
             if (pl != null && pl.activeSelf)
             {
-                GameObject scene = GameObject.Find("ActionScene");
-                _CameraSystem = scene.transform.Find("CameraSystem").gameObject;
+                _CameraSystem = MonoBehaviourSingleton<CameraSystem>.Instance.gameObject;
 
                 // トイレなどでFPS視点になっている場合にTPS視点に戻す
                 Compat.CameraStateDefinitionChange_ModeChangeForce(
@@ -74,7 +75,7 @@ namespace KoikatuVR.Interpreters
         {
             VRLog.Info("ActionScene HoldCamera");
 
-            _CameraSystem = GameObject.Find("ActionScene").transform.Find("CameraSystem").gameObject;
+            _CameraSystem = MonoBehaviourSingleton<CameraSystem>.Instance.gameObject;
 
             if (_CameraSystem != null)
             {
@@ -98,7 +99,7 @@ namespace KoikatuVR.Interpreters
 
         public override void OnUpdate()
         {
-            GameObject map = GameObject.Find("Map");
+            GameObject map = _ActionScene.Map.mapRoot?.gameObject;
 
             if (map != _Map)
             {
@@ -139,8 +140,8 @@ namespace KoikatuVR.Interpreters
         {
             if (_Settings.CrouchByHMDPos)// && _CameraSystem != null)
             {
-                var cam = GameObject.Find("VRGIN_Camera (origin)").transform;
-                var headCam = GameObject.Find("VRGIN_Camera (origin)/VRGIN_Camera (eye)/VRGIN_Camera (head)").transform;
+                var cam = VR.Camera.Origin;
+                var headCam = VR.Camera.transform;
                 var delta_y = cam.position.y - headCam.position.y;
 
                 if (_IsStanding && delta_y > _Settings.CrouchThrethould)
@@ -156,13 +157,11 @@ namespace KoikatuVR.Interpreters
 
         public void MoveCameraToPlayer(bool onlyPosition = false)
         {
-            var player = GameObject.Find("ActionScene/Player").transform;
+            var player = _ActionScene.Player;
 
-            var playerHead = player.transform.Find("chaM_001/BodyTop/p_cf_body_bone/cf_j_root/cf_n_height/cf_j_hips/cf_j_spine01/cf_j_spine02/cf_j_spine03/cf_j_neck/cf_j_head/cf_s_head");
-            playerHead = playerHead ?? player.transform.Find("chaM_001/BodyTop/p_cf_body_bone_low/cf_j_root/cf_n_height/cf_j_hips/cf_j_spine01/cf_j_spine02/cf_j_spine03/cf_j_neck/cf_j_head/cf_s_head");
-            //var playerHead = GameObject.Find("ActionScene/Player/chaM_001/BodyTop/p_cf_body_bone_low/cf_j_root/cf_n_height/cf_j_hips/cf_j_spine01/cf_j_spine02/cf_j_spine03/cf_j_neck/cf_j_head/cf_s_head").transform;
-            var cam = GameObject.Find("VRGIN_Camera (origin)").transform;
-            var headCam = GameObject.Find("VRGIN_Camera (origin)/VRGIN_Camera (eye)/VRGIN_Camera (head)").transform;
+            var playerHead = player.chaCtrl.objHead.transform;
+            var cam = VR.Camera.Origin;
+            var headCam = VR.Camera.transform;
 
             // 歩いているときに回転をコピーするとおかしくなるバグの暫定対策
             // 歩く方向がHMDの方向基準なので歩いている時はコピーしなくても回転は一致する
@@ -173,7 +172,7 @@ namespace KoikatuVR.Interpreters
                 cam.Rotate(Vector3.up * delta_y);
             }
 
-            Vector3 cf = Vector3.Scale(player.forward, new Vector3(1, 0, 1)).normalized;
+            Vector3 cf = Vector3.Scale(player.transform.forward, new Vector3(1, 0, 1)).normalized;
 
             Vector3 pos;
             if (_Settings.UsingHeadPos)
@@ -192,19 +191,16 @@ namespace KoikatuVR.Interpreters
 
         public void MovePlayerToCamera(bool onlyRotation = false)
         {
-            var player = GameObject.Find("ActionScene/Player").transform;
-            var playerHead = player.transform.Find("chaM_001/BodyTop/p_cf_body_bone/cf_j_root/cf_n_height/cf_j_hips/cf_j_spine01/cf_j_spine02/cf_j_spine03/cf_j_neck/cf_j_head/cf_s_head");
-            playerHead = playerHead ?? player.transform.Find("chaM_001/BodyTop/p_cf_body_bone_low/cf_j_root/cf_n_height/cf_j_hips/cf_j_spine01/cf_j_spine02/cf_j_spine03/cf_j_neck/cf_j_head/cf_s_head");
-            //var playerHead = GameObject.Find("ActionScene/Player/chaM_001/BodyTop/p_cf_body_bone_low/cf_j_root/cf_n_height/cf_j_hips/cf_j_spine01/cf_j_spine02/cf_j_spine03/cf_j_neck/cf_j_head/cf_s_head").transform;
-            //var cam = GameObject.Find("VRGIN_Camera (origin)").transform;
-            var headCam = GameObject.Find("VRGIN_Camera (origin)/VRGIN_Camera (eye)/VRGIN_Camera (head)").transform;
+            var player = _ActionScene.Player;
+            var playerHead = player.chaCtrl.objHead.transform;
+            var headCam = VR.Camera.transform;
 
             var pos = headCam.position;
             pos.y += player.position.y - playerHead.position.y;
 
             var delta_y = headCam.rotation.eulerAngles.y - player.rotation.eulerAngles.y;
-            player.Rotate(Vector3.up * delta_y);
-            Vector3 cf = Vector3.Scale(player.forward, new Vector3(1, 0, 1)).normalized;
+            player.transform.Rotate(Vector3.up * delta_y);
+            Vector3 cf = Vector3.Scale(player.transform.forward, new Vector3(1, 0, 1)).normalized;
 
             if (!onlyRotation)
             {
@@ -214,7 +210,7 @@ namespace KoikatuVR.Interpreters
 
         public void RotatePlayer(float angle)
         {
-            var player = GameObject.Find("ActionScene/Player").transform;
+            var player = _ActionScene.Player.transform;
             player.Rotate(Vector3.up * angle);
             _NeedsMoveCamera = true;
         }
