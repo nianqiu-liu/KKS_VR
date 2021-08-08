@@ -23,6 +23,18 @@ namespace KoikatuVR.Controls
             _settings = VR.Settings as KoikatuSettings;
         }
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            VRMover.Instance.OnMove += OnCameraMove;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            VRMover.Instance.OnMove -= OnCameraMove;
+        }
+
         protected override void OnUpdate()
         {
             var origin = VR.Camera.Origin;
@@ -78,6 +90,11 @@ namespace KoikatuVR.Controls
                 act.MoveCameraToPlayer();
             }
             player.chaCtrl.objTop.SetActive(oldActive);
+        }
+
+        private void OnCameraMove()
+        {
+            OnPlayAreaUpdated();
         }
 
         public override List<HelpText> GetHelpTexts()

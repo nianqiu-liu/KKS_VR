@@ -29,6 +29,9 @@ namespace KoikatuVR
         private Quaternion _lastRotation;
         private KoikatuSettings _settings;
 
+        public delegate void OnMoveAction();
+        public event OnMoveAction OnMove;
+
         public VRMover()
         {
             _lastPosition = Vector3.zero;
@@ -48,6 +51,7 @@ namespace KoikatuVR
             _lastPosition = position;
             _lastRotation = rotation;
             VR.Mode.MoveToPosition(position, rotation, ignoreHeight: keepHeight);
+            OnMove?.Invoke();
         }
 
         /// <summary>

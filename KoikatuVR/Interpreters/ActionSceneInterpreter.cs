@@ -160,17 +160,7 @@ namespace KoikatuVR.Interpreters
             var player = _ActionScene.Player;
 
             var playerHead = player.chaCtrl.objHead.transform;
-            var cam = VR.Camera.Origin;
             var headCam = VR.Camera.transform;
-
-            // 歩いているときに回転をコピーするとおかしくなるバグの暫定対策
-            // 歩く方向がHMDの方向基準なので歩いている時はコピーしなくても回転は一致する
-            if (!onlyPosition)
-            {
-                cam.rotation = player.rotation;
-                var delta_y = cam.rotation.eulerAngles.y - headCam.rotation.eulerAngles.y;
-                cam.Rotate(Vector3.up * delta_y);
-            }
 
             Vector3 cf = Vector3.Scale(player.transform.forward, new Vector3(1, 0, 1)).normalized;
 
@@ -185,8 +175,10 @@ namespace KoikatuVR.Interpreters
                 pos.y += _IsStanding ? _Settings.StandingCameraPos : _Settings.CrouchingCameraPos;
             }
 
-            // 首が見えるとうざいのでほんの少し前目にする
-            cam.position = pos - (headCam.position - cam.position) + cf * 0.23f;
+            VRMover.Instance.MoveTo(
+                pos + cf * 0.23f, // 首が見えるとうざいのでほんの少し前目にする
+                onlyPosition ? headCam.rotation : player.rotation,
+                keepHeight: false);
         }
 
         public void MovePlayerToCamera(bool onlyRotation = false)
