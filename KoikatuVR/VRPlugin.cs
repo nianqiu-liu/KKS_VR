@@ -6,6 +6,7 @@ using VRGIN.Native;
 using System.Collections;
 using UnityEngine;
 using HarmonyLib;
+using System.Runtime.InteropServices;
 
 namespace KoikatuVR
 {
@@ -74,7 +75,17 @@ namespace KoikatuVR
                 VR.Manager.SetMode<KoikatuStandingMode>();
                 VRFade.Create();
                 GraphicRaycasterPatches.Initialize();
+                // It's been reported in #28 that the game window defocues when
+                // the game is under heavy load. We disable window ghosting in
+                // an attempt to counter this.
+                NativeMethods.DisableProcessWindowsGhosting();
             }
         }
+    }
+
+    class NativeMethods
+    {
+        [DllImport("user32.dll")]
+        public static extern void DisableProcessWindowsGhosting();
     }
 }
