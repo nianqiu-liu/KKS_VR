@@ -163,6 +163,7 @@ namespace KoikatuVR.Controls
         /// <param name="degrees"></param>
         private void Rotate(float degrees)
         {
+            VRLog.Debug($"Rotating {degrees}");
             var actInterpreter = _Interpreter.SceneInterpreter as ActionSceneInterpreter;
             if (actInterpreter != null)
             {

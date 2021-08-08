@@ -87,6 +87,7 @@ namespace KoikatuVR.Controls
             yield return null;
             if (_interpreter.SceneInterpreter is ActionSceneInterpreter act)
             {
+                VRLog.Debug("Following player");
                 act.MoveCameraToPlayer();
             }
             player.chaCtrl.objTop.SetActive(oldActive);
