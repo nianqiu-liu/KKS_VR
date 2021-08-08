@@ -100,6 +100,9 @@ namespace KoikatuVR.Controls
                     break;
                 case AssignableFunction.NEXT:
                     throw new NotSupportedException();
+                case AssignableFunction.KEYBOARD_PAGE_DOWN:
+                    VR.Input.Keyboard.KeyDown(VirtualKeyCode.NEXT);
+                    break;
                 default:
                     VR.Input.Keyboard.KeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), fun.ToString()));
                     break;
@@ -150,6 +153,9 @@ namespace KoikatuVR.Controls
                     break;
                 case AssignableFunction.NEXT:
                     throw new NotSupportedException();
+                case AssignableFunction.KEYBOARD_PAGE_DOWN:
+                    VR.Input.Keyboard.KeyUp(VirtualKeyCode.NEXT);
+                    break;
                 default:
                     VR.Input.Keyboard.KeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), fun.ToString()));
                     break;

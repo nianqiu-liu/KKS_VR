@@ -124,6 +124,44 @@ namespace KoikatuVR
         NEXT,
         [Description("Grab space to move")]
         GRAB,
+        [Description("Keyboard Tab")]
+        TAB,
+        [Description("Keyboard Enter")]
+        RETURN,
+        [Description("Keyboard Esc")]
+        ESCAPE,
+        [Description("Keyboard Space")]
+        SPACE,
+        [Description("Keyboard Home")]
+        HOME,
+        [Description("Keyboard End")]
+        END,
+        [Description("Keyboard arrow left")]
+        LEFT,
+        [Description("Keyboard arrow up")]
+        UP,
+        [Description("Keyboard arrow right")]
+        RIGHT,
+        [Description("Keyboard arrow down")]
+        DOWN,
+        [Description("Keyboard Ins")]
+        INSERT,
+        [Description("Keyboard Del")]
+        DELETE,
+        [Description("Keyboard Page Up")]
+        PRIOR,
+        [Description("Keyboard Page Down")]
+        KEYBOARD_PAGE_DOWN,
+        [Description("Keyboard Backspace")]
+        BACK,
+        [Description("Keyboard Shift")]
+        SHIFT,
+        [Description("Keyboard Ctrl")]
+        CONTROL,
+        [Description("Keyboard Alt")]
+        MENU,
+        [Description("Keyboard Pause")]
+        PAUSE,
         [Description("Keyboard F1")]
         F1,
         [Description("Keyboard F2")]
@@ -220,5 +258,25 @@ namespace KoikatuVR
         VK_8,
         [Description("Keyboard 9")]
         VK_9,
+        [Description("Keyboard Numpad 0")]
+        NUMPAD0,
+        [Description("Keyboard Numpad 1")]
+        NUMPAD1,
+        [Description("Keyboard Numpad 2")]
+        NUMPAD2,
+        [Description("Keyboard Numpad 3")]
+        NUMPAD3,
+        [Description("Keyboard Numpad 4")]
+        NUMPAD4,
+        [Description("Keyboard Numpad 5")]
+        NUMPAD5,
+        [Description("Keyboard Numpad 6")]
+        NUMPAD6,
+        [Description("Keyboard Numpad 7")]
+        NUMPAD7,
+        [Description("Keyboard Numpad 8")]
+        NUMPAD8,
+        [Description("Keyboard Numpad 9")]
+        NUMPAD9,
     }
 }
