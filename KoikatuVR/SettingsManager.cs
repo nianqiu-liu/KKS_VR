@@ -105,19 +105,19 @@ namespace KoikatuVR
                     new ConfigurationManagerAttributes { Order = -3 }));
             Tie(crouchByHMDPos, v => settings.CrouchByHMDPos = v);
 
-            var crouchThreshold = config.Bind(sectionRoaming, "Crouch threshold", 0.15f,
+            var crouchThreshold = config.Bind(sectionRoaming, "Crouch height", 0.9f,
                 new ConfigDescription(
-                    "Trigger crouching when the height difference between the camera and the HMD is this much",
+                    "Trigger crouching when the camera is below this height",
                     new AcceptableValueRange<float>(0.05f, 3f),
                     new ConfigurationManagerAttributes { Order = -4 }));
-            Tie(crouchThreshold, v => settings.CrouchThrethould = v);
+            Tie(crouchThreshold, v => settings.CrouchThreshold = v);
 
-            var standUpThreshold = config.Bind(sectionRoaming, "Stand up threshold", -0.55f,
+            var standUpThreshold = config.Bind(sectionRoaming, "Stand up height", 1f,
                 new ConfigDescription(
-                    "End crouching when the hight difference between the camera and the HMD is this much",
-                    new AcceptableValueRange<float>(-3f, -0.05f),
+                    "End crouching when the camera is above this height",
+                    new AcceptableValueRange<float>(0.05f, 3f),
                     new ConfigurationManagerAttributes { Order = -4 }));
-            Tie(standUpThreshold, v => settings.StandUpThrethould = v);
+            Tie(standUpThreshold, v => settings.StandUpThreshold = v);
 
             var teleportWithProtagonist = config.Bind(sectionRoaming, "Teleport with protagonist", true,
                 "When teleporting, the protagonist also teleports");

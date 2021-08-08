@@ -13,11 +13,9 @@ namespace KoikatuVR.Interpreters
         private GameObject _Map;
         private GameObject _CameraSystem;
         private bool _NeedsResetCamera;
-        private bool _NeedsMoveCamera;
         private bool _IsStanding = true;
         private bool _Walking = false;
         private bool _Dashing = false; // ダッシュ時は_Walkingと両方trueになる
-        private int _MoveCameraWaitTime = 0;
 
         public override void OnStart()
         {
@@ -45,8 +43,6 @@ namespace KoikatuVR.Interpreters
             StandUp();
             StopWalking();
             _NeedsResetCamera = false;
-            _NeedsMoveCamera = false;
-            _MoveCameraWaitTime = 0;
         }
 
         private void ResetCamera()
@@ -111,44 +107,33 @@ namespace KoikatuVR.Interpreters
                 _NeedsResetCamera = true;
             }
 
-            UpdateCrouch();
-
-            if (_MoveCameraWaitTime > 0)
+            if (_Walking)
             {
-                _MoveCameraWaitTime--;
-
-                if (_MoveCameraWaitTime == 0)
-                {
-                    _NeedsMoveCamera = true;
-                }
-            }
-
-            if (_NeedsMoveCamera || _Walking)
-            {
-                MoveCameraToPlayer(_Walking);
-                _NeedsMoveCamera = false;
-                _MoveCameraWaitTime = 0;
+                MoveCameraToPlayer(true);
             }
 
             if (_NeedsResetCamera)
             {
                 ResetCamera();
             }
+
+            UpdateCrouch();
         }
 
         private void UpdateCrouch()
         {
-            if (_Settings.CrouchByHMDPos)// && _CameraSystem != null)
-            {
-                var cam = VR.Camera.Origin;
-                var headCam = VR.Camera.transform;
-                var delta_y = cam.position.y - headCam.position.y;
+            var pl = _ActionScene.Player?.chaCtrl.objTop;
 
-                if (_IsStanding && delta_y > _Settings.CrouchThrethould)
+            if (_Settings.CrouchByHMDPos && pl?.activeInHierarchy == true)
+            {
+                var cam = VR.Camera.transform;
+                var delta_y = cam.position.y - pl.transform.position.y;
+
+                if (_IsStanding && delta_y < _Settings.CrouchThreshold)
                 {
                     Crouch();
                 }
-                else if (!_IsStanding && delta_y < _Settings.StandUpThrethould)
+                else if (!_IsStanding && delta_y > _Settings.StandUpThreshold)
                 {
                     StandUp();
                 }
@@ -206,10 +191,6 @@ namespace KoikatuVR.Interpreters
             {
                 _IsStanding = false;
                 VR.Input.Keyboard.KeyDown(VirtualKeyCode.VK_Z);
-
-                // 数F待ってから視点移動する
-                //_NeedsMoveCamera = true;
-                _MoveCameraWaitTime = 30;
             }
         }
 
@@ -219,10 +200,6 @@ namespace KoikatuVR.Interpreters
             {
                 _IsStanding = true;
                 VR.Input.Keyboard.KeyUp(VirtualKeyCode.VK_Z);
-
-                // 数F待ってから視点移動する
-                //_NeedsMoveCamera = true;
-                _MoveCameraWaitTime = 30;
             }
         }
 

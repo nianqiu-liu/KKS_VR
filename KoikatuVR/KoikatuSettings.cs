@@ -38,11 +38,9 @@ namespace KoikatuVR
         public bool CrouchByHMDPos { get { return _CrouchByHMDPos; } set { _CrouchByHMDPos = value; } }
         private bool _CrouchByHMDPos = true;
 
-        public float CrouchThrethould { get { return _CrouchThrethould; } set { _CrouchThrethould = value; } }
-        private float _CrouchThrethould = 0.15f;
+        public float CrouchThreshold { get; set; }
 
-        public float StandUpThrethould { get { return _StandUpThrethould; } set { _StandUpThrethould = value; } }
-        private float _StandUpThrethould = -0.55f;
+        public float StandUpThreshold { get; set; }
 
         public float RotationAngle { get { return _RotationAngle; } set { _RotationAngle = value; } }
         private float _RotationAngle = 45f;
