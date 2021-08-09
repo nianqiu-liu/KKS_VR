@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace KoikatuVR
 {
-    [BepInPlugin(GUID: GUID, Name: "Main Game VR", Version: "0.11.0")]
+    [BepInPlugin(GUID: GUID, Name: "Main Game VR", Version: "0.12.0")]
     [BepInProcess("Koikatu")]
     [BepInProcess("Koikatsu Party")]
     public class VRPlugin : BaseUnityPlugin
