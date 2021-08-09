@@ -24,6 +24,9 @@ namespace KoikatuVR.Controls
         private readonly KoikatuInterpreter _Interpreter;
         private readonly KoikatuSettings _Settings;
 
+        private float _ScrollRepeatTime;
+        private int _ScrollRepeatAmount;
+
         public ButtonsSubtool(KoikatuInterpreter interpreter, KoikatuSettings settings)
         {
             _Interpreter = interpreter;
@@ -38,6 +41,11 @@ namespace KoikatuVR.Controls
             if (_SentUnmatchedDown.Contains(AssignableFunction.PL2CAM))
             {
                 IfActionScene(interpreter => interpreter.MovePlayerToCamera());
+            }
+            if (_ScrollRepeatAmount != 0 && _ScrollRepeatTime < Time.unscaledTime)
+            {
+                _ScrollRepeatTime += 0.1f;
+                VR.Input.Mouse.VerticalScroll(_ScrollRepeatAmount);
             }
         }
 
@@ -91,9 +99,13 @@ namespace KoikatuVR.Controls
                     break;
                 case AssignableFunction.LROTATION:
                 case AssignableFunction.RROTATION:
-                case AssignableFunction.SCROLLUP:
-                case AssignableFunction.SCROLLDOWN:
                     // ここでは何もせず、上げたときだけ処理する
+                    break;
+                case AssignableFunction.SCROLLUP:
+                    StartScroll(1);
+                    break;
+                case AssignableFunction.SCROLLDOWN:
+                    StartScroll(-1);
                     break;
                 case AssignableFunction.CROUCH:
                     IfActionScene(interpreter => interpreter.Crouch());
@@ -143,10 +155,8 @@ namespace KoikatuVR.Controls
                     Rotate(_Settings.RotationAngle);
                     break;
                 case AssignableFunction.SCROLLUP:
-                    VR.Input.Mouse.VerticalScroll(1);
-                    break;
                 case AssignableFunction.SCROLLDOWN:
-                    VR.Input.Mouse.VerticalScroll(-1);
+                    _ScrollRepeatAmount = 0;
                     break;
                 case AssignableFunction.CROUCH:
                     IfActionScene(interpreter => interpreter.StandUp());
@@ -161,6 +171,13 @@ namespace KoikatuVR.Controls
                     break;
             }
             _SentUnmatchedDown.Remove(fun);
+        }
+
+        private void StartScroll(int amount)
+        {
+            VR.Input.Mouse.VerticalScroll(amount);
+            _ScrollRepeatTime = Time.unscaledTime + 0.5f;
+            _ScrollRepeatAmount = amount;
         }
 
         /// <summary>

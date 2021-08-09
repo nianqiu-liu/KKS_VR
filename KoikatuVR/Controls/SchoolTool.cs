@@ -22,7 +22,8 @@ namespace KoikatuVR.Controls
         private bool _InHScene = false;
         private Controller.Lock _lock = VRGIN.Controls.Controller.Lock.Invalid;
 
-        private Controller.TrackpadDirection? _PrevTouchDirection;
+        private Controller.TrackpadDirection? _touchDirection;
+        private Controller.TrackpadDirection? _lastPressDirection;
 
         // When eneabled, exactly one of the below is non-null.
         private ButtonsSubtool _buttonsSubtool;
@@ -97,6 +98,8 @@ namespace KoikatuVR.Controls
             {
                 _lock.Release();
             }
+            _touchDirection = null;
+            _lastPressDirection = null;
             base.OnDisable();
         }
 
@@ -174,24 +177,13 @@ namespace KoikatuVR.Controls
 
             if (device.GetPressDown(ButtonMask.Touchpad))
             {
-                _PrevTouchDirection = Owner.GetTrackpadDirection();
-                switch (_PrevTouchDirection)
+                var dir = Owner.GetTrackpadDirection();
+                var fun = GetTrackpadFunction(dir);
+                bool requiresPress = RequiresPress(fun);
+                if (requiresPress)
                 {
-                    case VRGIN.Controls.Controller.TrackpadDirection.Up:
-                        InputDown(_KeySet.Up, ButtonMask.Touchpad);
-                        break;
-                    case VRGIN.Controls.Controller.TrackpadDirection.Down:
-                        InputDown(_KeySet.Down, ButtonMask.Touchpad);
-                        break;
-                    case VRGIN.Controls.Controller.TrackpadDirection.Left:
-                        InputDown(_KeySet.Left, ButtonMask.Touchpad);
-                        break;
-                    case VRGIN.Controls.Controller.TrackpadDirection.Right:
-                        InputDown(_KeySet.Right, ButtonMask.Touchpad);
-                        break;
-                    case VRGIN.Controls.Controller.TrackpadDirection.Center:
-                        InputDown(_KeySet.Center, ButtonMask.Touchpad);
-                        break;
+                    _lastPressDirection = dir;
+                    InputDown(fun, ButtonMask.Touchpad);
                 }
             }
 
@@ -201,29 +193,70 @@ namespace KoikatuVR.Controls
             }
 
             // 上げたときの位置によらず、押したボタンを離す
-            if (device.GetPressUp(ButtonMask.Touchpad))
+            if (device.GetPressUp(ButtonMask.Touchpad) && _lastPressDirection is Controller.TrackpadDirection dirP)
             {
-                switch (_PrevTouchDirection)
+                InputUp(GetTrackpadFunction(dirP));
+                _lastPressDirection = null;
+            }
+
+            var newTouchDirection =
+                device.GetTouch(ButtonMask.Touchpad) ? (Controller.TrackpadDirection?)Owner.GetTrackpadDirection() : null;
+
+            if (_touchDirection != newTouchDirection)
+            {
+                if (_touchDirection is Controller.TrackpadDirection oldDir &&
+                    GetTrackpadFunction(oldDir) is var oldFun &&
+                    !RequiresPress(oldFun))
                 {
-                    case VRGIN.Controls.Controller.TrackpadDirection.Up:
-                        InputUp(_KeySet.Up, ButtonMask.Touchpad);
-                        break;
-                    case VRGIN.Controls.Controller.TrackpadDirection.Down:
-                        InputUp(_KeySet.Down, ButtonMask.Touchpad);
-                        break;
-                    case VRGIN.Controls.Controller.TrackpadDirection.Left:
-                        InputUp(_KeySet.Left, ButtonMask.Touchpad);
-                        break;
-                    case VRGIN.Controls.Controller.TrackpadDirection.Right:
-                        InputUp(_KeySet.Right, ButtonMask.Touchpad);
-                        break;
-                    case VRGIN.Controls.Controller.TrackpadDirection.Center:
-                        InputUp(_KeySet.Center, ButtonMask.Touchpad);
-                        break;
+                    InputUp(oldFun);
+
                 }
+
+                if (newTouchDirection is Controller.TrackpadDirection newDir &&
+                    GetTrackpadFunction(newDir) is var newFun &&
+                    !RequiresPress(newFun))
+                {
+                    InputDown(newFun, ButtonMask.Touchpad);
+                }
+                _touchDirection = newTouchDirection;
             }
 
             _buttonsSubtool.Update();
+        }
+
+        private AssignableFunction GetTrackpadFunction(Controller.TrackpadDirection dir)
+        {
+            switch (dir)
+            {
+                case VRGIN.Controls.Controller.TrackpadDirection.Up:
+                    return _KeySet.Up;
+                case VRGIN.Controls.Controller.TrackpadDirection.Down:
+                    return _KeySet.Down;
+                case VRGIN.Controls.Controller.TrackpadDirection.Left:
+                    return _KeySet.Left;
+                case VRGIN.Controls.Controller.TrackpadDirection.Right:
+                    return _KeySet.Right;
+                default:
+                    return _KeySet.Center;
+            }
+        }
+
+        /// <summary>
+        /// When this function is assigned to trackpad, does it require a press
+        /// or does a touch suffice?
+        /// </summary>
+        /// <param name="fun"></param>
+        /// <returns></returns>
+        static bool RequiresPress(AssignableFunction fun)
+        {
+            switch (fun)
+            {
+                case AssignableFunction.SCROLLDOWN:
+                case AssignableFunction.SCROLLUP:
+                    return false;
+                default:
+                    return true;
+            }
         }
 
         private void InputDown(AssignableFunction fun, ulong buttonMask)
