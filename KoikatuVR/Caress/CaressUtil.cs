@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HarmonyLib;
@@ -14,12 +15,22 @@ namespace KoikatuVR.Caress
         /// </summary>
         public static void SetSelectKindTouch(HSceneProc proc, int femaleIndex, HandCtrl.AibuColliderKind colliderKind)
         {
+            var hands = GetHands(proc);
+            for (int i = 0; i < hands.Count; i++)
+            {
+                var kind = i == femaleIndex ? colliderKind : HandCtrl.AibuColliderKind.none;
+                new Traverse(hands[i]).Field("selectKindTouch").SetValue(kind);
+            }
+        }
+
+        public static List<HandCtrl> GetHands(HSceneProc proc)
+        {
+            var ret = new List<HandCtrl>();
             for (int i = 0; i < proc.flags.lstHeroine.Count; i++)
             {
-                var hand = i == 0 ? proc.hand : Compat.HSceenProc_hand1(proc);
-                var kind = i == femaleIndex ? colliderKind : HandCtrl.AibuColliderKind.none;
-                new Traverse(hand).Field("selectKindTouch").SetValue(kind);
+                ret.Add(i == 0 ? proc.hand : Compat.HSceenProc_hand1(proc));
             }
+            return ret;
         }
 
         /// <summary>

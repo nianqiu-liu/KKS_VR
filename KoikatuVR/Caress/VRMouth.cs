@@ -113,9 +113,22 @@ namespace KoikatuVR.Caress
                     HandCtrl.AibuColliderKind.reac_head <= colliderKind &&
                     _settings.AutomaticTouchingByHmd)
                 {
-                    CaressUtil.SetSelectKindTouch(_aibuTracker.Proc, femaleIndex, colliderKind);
-                    StartCoroutine(CaressUtil.ClickCo());
+                    StartCoroutine(TriggerReactionCo(femaleIndex, colliderKind));
                 }
+            }
+        }
+
+        private IEnumerator TriggerReactionCo(int femaleIndex, HandCtrl.AibuColliderKind colliderKind)
+        {
+            var kindFields = CaressUtil.GetHands(_aibuTracker.Proc)
+                .Select(h => new Traverse(h).Field<HandCtrl.AibuColliderKind>("selectKindTouch"))
+                .ToList();
+            var oldKinds = kindFields.Select(f => f.Value).ToList();
+            CaressUtil.SetSelectKindTouch(_aibuTracker.Proc, femaleIndex, colliderKind);
+            yield return CaressUtil.ClickCo();
+            for (int i = 0; i < kindFields.Count(); i++)
+            {
+                kindFields[i].Value = oldKinds[i];
             }
         }
 
