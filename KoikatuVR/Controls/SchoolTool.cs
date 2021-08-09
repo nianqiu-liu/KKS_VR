@@ -22,8 +22,7 @@ namespace KoikatuVR.Controls
         private bool _InHScene = false;
         private Controller.Lock _lock = VRGIN.Controls.Controller.Lock.Invalid;
 
-        // 手抜きのためNumpad方式で方向を保存
-        private int _PrevTouchDirection = -1;
+        private Controller.TrackpadDirection? _PrevTouchDirection;
 
         // When eneabled, exactly one of the below is non-null.
         private ButtonsSubtool _buttonsSubtool;
@@ -175,35 +174,24 @@ namespace KoikatuVR.Controls
 
             if (device.GetPressDown(ButtonMask.Touchpad))
             {
-                Vector2 touchPosition = device.GetAxis();
+                _PrevTouchDirection = Owner.GetTrackpadDirection();
+                switch (_PrevTouchDirection)
                 {
-                    float threshold = _Settings.TouchpadThreshold;
-
-                    if (touchPosition.y > threshold) // up
-                    {
+                    case VRGIN.Controls.Controller.TrackpadDirection.Up:
                         InputDown(_KeySet.Up, ButtonMask.Touchpad);
-                        _PrevTouchDirection = 8;
-                    }
-                    else if (touchPosition.y < -threshold) // down
-                    {
+                        break;
+                    case VRGIN.Controls.Controller.TrackpadDirection.Down:
                         InputDown(_KeySet.Down, ButtonMask.Touchpad);
-                        _PrevTouchDirection = 2;
-                    }
-                    else if (touchPosition.x > threshold) // right
-                    {
-                        InputDown(_KeySet.Right, ButtonMask.Touchpad);
-                        _PrevTouchDirection = 6;
-                    }
-                    else if (touchPosition.x < -threshold)// left
-                    {
+                        break;
+                    case VRGIN.Controls.Controller.TrackpadDirection.Left:
                         InputDown(_KeySet.Left, ButtonMask.Touchpad);
-                        _PrevTouchDirection = 4;
-                    }
-                    else
-                    {
+                        break;
+                    case VRGIN.Controls.Controller.TrackpadDirection.Right:
+                        InputDown(_KeySet.Right, ButtonMask.Touchpad);
+                        break;
+                    case VRGIN.Controls.Controller.TrackpadDirection.Center:
                         InputDown(_KeySet.Center, ButtonMask.Touchpad);
-                        _PrevTouchDirection = 5;
-                    }
+                        break;
                 }
             }
 
@@ -215,28 +203,23 @@ namespace KoikatuVR.Controls
             // 上げたときの位置によらず、押したボタンを離す
             if (device.GetPressUp(ButtonMask.Touchpad))
             {
-                Vector2 touchPosition = device.GetAxis();
+                switch (_PrevTouchDirection)
                 {
-                    if (_PrevTouchDirection == 8) // up
-                    {
-                        InputUp(_KeySet.Up);
-                    }
-                    else if (_PrevTouchDirection == 2) // down
-                    {
-                        InputUp(_KeySet.Down);
-                    }
-                    else if (_PrevTouchDirection == 6) // right
-                    {
-                        InputUp(_KeySet.Right);
-                    }
-                    else if (_PrevTouchDirection == 4)// left
-                    {
-                        InputUp(_KeySet.Left);
-                    }
-                    else if (_PrevTouchDirection == 5)
-                    {
-                        InputUp(_KeySet.Center);
-                    }
+                    case VRGIN.Controls.Controller.TrackpadDirection.Up:
+                        InputUp(_KeySet.Up, ButtonMask.Touchpad);
+                        break;
+                    case VRGIN.Controls.Controller.TrackpadDirection.Down:
+                        InputUp(_KeySet.Down, ButtonMask.Touchpad);
+                        break;
+                    case VRGIN.Controls.Controller.TrackpadDirection.Left:
+                        InputUp(_KeySet.Left, ButtonMask.Touchpad);
+                        break;
+                    case VRGIN.Controls.Controller.TrackpadDirection.Right:
+                        InputUp(_KeySet.Right, ButtonMask.Touchpad);
+                        break;
+                    case VRGIN.Controls.Controller.TrackpadDirection.Center:
+                        InputUp(_KeySet.Center, ButtonMask.Touchpad);
+                        break;
                 }
             }
 
