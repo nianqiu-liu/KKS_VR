@@ -61,20 +61,26 @@ Pressing the Grip button while the Menu tool is active causes the screen
 to be detached and left at the current position in the 3D space. Pressing it
 again reclaims the screen.
 
-A detached screen can be resized and moved around by using two controllers:
-point both controllers at the screen, hold the triggers and then move them
-around.
+A laser pointer can also generate a right click (Touchpad right), middle click
+(Touchpad center) and scroll up/down (Touchpad up/down). You can also grab
+a detached screen by holding Grip. Press and hold the Application menu button
+while the laser is visible to see help about this.
 
 ### Warp tool <img src="https://raw.githubusercontent.com/mosirnik/KK_MainGameVR/master/doc/img/icon_warp.png" height="30">
 
 The warp tool allows you to move around in the 3D space. 
 
-Use the touchpad to teleport. Holding the Grip button allows you to grab
-the world and move it around. While doing so, you can hold the Grip of the
-other controller to start rotating.
+Use the touchpad to teleport. Before you finish teleporting, you can draw a
+circle along the rim of the trackpad (or similarly rotate the thumbstick)
+to change your orientation after teleporting.
 
-An alternative way of rotating is to pull the trigger while holding the grip.
-This behavior can be configured with the "Immediate rotation" option.
+Holding the Grip button takes you into grab action. Here you can move around
+by "grabbing" the world. If you additionally press Trigger, you can also rotate
+the world. Pressing both Trigger and the touchpad gives you the full power
+of general 3D rotation, allowing you to turn a wall into the floor, for
+example. Double click the touchpad to become upright again.
+
+Grab action is also avaible in the school tool.
 
 ### School tool <img src="https://raw.githubusercontent.com/mosirnik/KK_MainGameVR/master/doc/img/icon_school.png" height="30">
 
@@ -84,25 +90,27 @@ one for all other scenes. Both mappings are configurable. The defaults for
 non-H scenes are:
 
 * Trigger: Walk (Roam mode)
-* Grip: Middle mouse button
+* Grip: Grab action
 * Touchpad up: F3
-* Touchpad down: Move protagonist to camera (Roam mode)
-* Touchpad left: Rotate left (Roam mode)
-* Touchpad right: Rotate right (Roam mode)
+* Touchpad down: F1
+* Touchpad left: Turn left
+* Touchpad right: Turn right
 * Touchpad center: Right mouse button
 
 For H scenes:
 
 * Trigger: Left mouse button
-* Grip: Middle mouse button
+* Grip: Grab action
 * Touchpad up: Mouse wheel scroll up
 * Touchpad down: Mouse wheel scroll down
 * Touchpad left: (unassigned)
-* Touchpad right: (unassigned)
-* Touchpad center: Right mouse button
+* Touchpad right: Right mouse button
+* Touchpad center: Middle mouse button
 
 For touchpad inputs, you need to press the touchpad or click the thumbstick.
 Just touching the touchpad or tilting the thumbstick won't be recognized.
+An exception to this rule is mouse wheel scroll actions, which only require
+touching.
 
 ## Situation-specific controls
 
@@ -118,17 +126,19 @@ Below is a list of situations that offer special controls.
 
 ### Roaming
 
-In the Roaming mode, there are 2 main methods of moving around:
+In the Roaming mode, you can move around by using the school tool to walk
+(default: Trigger), and turn left and right (default: Touchpad left and right).
+You can also use the warp tool to teleport.
 
-* Use the school tool to walk (default: Trigger), and turn left and right
-    (default: Touchpad left and right). In this method, your point
-    of view is fixed at the protagonist's head.
-* Use the warp tool to move your viewpoint, then use the school tool
-    (default: Touchpad down) to summon the protagnoist.
+You can use the school tool to simulate ordinary mouse and keyboard
+inputs, e.g. right click (default: touchpad center) for interacting with an
+object.
 
-Either way, you can use the school tool to simulate ordinary mouse and keyboard
-inputs, e.g. right click (default: Trigger) for interacting with an object,
-middle click (default: Grip) for opening the menu, etc.
+Use the laser pointer (touchpad center) to open the middle-button menu.
+
+You can crouch by lowering your viewpoint relative to the floor. To do this,
+you can either physically move your head or use grab action to bring the
+floor closer. This behavior can be disabled in the config.
 
 ### Talk scene
 
@@ -154,7 +164,7 @@ icon and pull the Trigger to confirm.
 
 ## Configuration
 
-It is recommended that you use
+This plugin has a lot of configuration options. It is recommended that you use
 [ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager),
 which allows you to change settings of this plugin from within the game.
 
