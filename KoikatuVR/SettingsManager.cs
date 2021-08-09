@@ -236,19 +236,19 @@ namespace KoikatuVR
             if (isH)
             {
                 _trigger = create("Trigger", AssignableFunction.LBUTTON);
-                _grip = create("Grip", AssignableFunction.MBUTTON);
+                _grip = create("Grip", AssignableFunction.GRAB);
                 _up = create("Up", AssignableFunction.SCROLLUP);
                 _down = create("Down", AssignableFunction.SCROLLDOWN);
                 _left = create("Left", AssignableFunction.NONE);
-                _right = create("Right", AssignableFunction.NONE);
-                _center = create("Center", AssignableFunction.RBUTTON);
+                _right = create("Right", AssignableFunction.RBUTTON);
+                _center = create("Center", AssignableFunction.MBUTTON);
             }
             else
             {
                 _trigger = create("Trigger", AssignableFunction.WALK);
-                _grip = create("Grip", AssignableFunction.MBUTTON);
+                _grip = create("Grip", AssignableFunction.GRAB);
                 _up = create("Up", AssignableFunction.F3);
-                _down = create("Down", AssignableFunction.PL2CAM);
+                _down = create("Down", AssignableFunction.F1);
                 _left = create("Left", AssignableFunction.LROTATION);
                 _right = create("Right", AssignableFunction.RROTATION);
                 _center = create("Center", AssignableFunction.RBUTTON);
