@@ -63,6 +63,12 @@ namespace KoikatuVR
                 return;
             }
 
+            if (__instance.advScene == null)
+            {
+                // Outside ADV scene (probably roaming), ignore.
+                return;
+            }
+
             __result = new[] { __result, Postfix() }.GetEnumerator();
 
             IEnumerator Postfix()
