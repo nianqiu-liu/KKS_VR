@@ -164,7 +164,6 @@ namespace KoikatuVR.Caress
         private bool IsLickingOk(HandCtrl.AibuColliderKind colliderKind, out int layerNum)
         {
             layerNum = 0;
-            VRLog.Info("IsLickingOk");
             if (colliderKind <= HandCtrl.AibuColliderKind.mouth ||
                 HandCtrl.AibuColliderKind.reac_head <= colliderKind)
             {
@@ -186,7 +185,6 @@ namespace KoikatuVR.Caress
             }
             if (layerInfo.plays[clothState] == -1)
             {
-                VRLog.Info("Licking not ok: clothing");
                 return false;
             }
             var heroine = _aibuTracker.Proc.flags.lstHeroine[0];
@@ -195,11 +193,9 @@ namespace KoikatuVR.Caress
                 !heroine.denial.anal &&
                 heroine.hAreaExps[3] == 0f)
             {
-                VRLog.Info("Licking not ok: anal denial");
                 return false;
             }
 
-            VRLog.Info("Licking is ok");
             return true;
         }
 
@@ -262,12 +258,9 @@ namespace KoikatuVR.Caress
 
         private void StartLicking(HandCtrl.AibuColliderKind colliderKind, int layerNum)
         {
-            VRLog.Info("Start licking!");
-
             if (_lickCoShouldEnd != null)
             {
                 // Already licking.
-                VRLog.Info("StartLicking: already licking");
                 return;
             }
 
@@ -279,7 +272,6 @@ namespace KoikatuVR.Caress
             // If another item is being used on the target body part, detach it.
             if (usedItem != null && usedItem.idUse != 2)
             {
-                VRLog.Info($"StartLicking: detaching existing item from slot {usedItem.idUse}");
                 hand.DetachItemByUseItem(usedItem.idUse);
             }
 
