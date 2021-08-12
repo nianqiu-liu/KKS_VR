@@ -55,6 +55,9 @@ namespace KoikatuVR
         {
             var head = VR.Camera.Head;
             transform.SetPositionAndRotation(head.position, head.rotation);
+            // One of the default macros from GameObjectList enables the camera
+            // control. We make sure that it remains desabled.
+            _control.enabled = false;
         }
 
         protected override void OnLateUpdate()
