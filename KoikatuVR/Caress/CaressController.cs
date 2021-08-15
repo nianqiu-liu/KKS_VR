@@ -130,6 +130,7 @@ namespace KoikatuVR.Caress
             {
                 UpdateSelectKindTouch();
                 HandCtrlHooks.InjectMouseButtonDown(0);
+                _controller.StartRumble(new RumbleImpulse(1000));
                 _triggerPressed = true;
             }
             else if (_triggerPressed && device.GetPressUp(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger))
