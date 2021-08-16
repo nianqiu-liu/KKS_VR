@@ -197,6 +197,12 @@ The following button assignments are needed:
 
 In addition, you need to make it "pretend to be Vive controllers".
 
+## Building (for developers)
+
+This repository uses a submodule, so be sure to update it as appropriate (e.g. by running `git submodule update --init` after you pull).
+
+You should be able to open KK_MainGameVR.sln in Visual Studio 2019 and just hit Build to build everything.
+
 ## Using this plugin without the preload-time patcher
 
 **Normal users don't need to do this.**
