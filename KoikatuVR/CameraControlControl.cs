@@ -57,7 +57,10 @@ namespace KoikatuVR
             transform.SetPositionAndRotation(head.position, head.rotation);
             // One of the default macros from GameObjectList enables the camera
             // control. We make sure that it remains desabled.
-            _control.enabled = false;
+            if (_control != null)
+            {
+                _control.enabled = false;
+            }
         }
 
         protected override void OnLateUpdate()
