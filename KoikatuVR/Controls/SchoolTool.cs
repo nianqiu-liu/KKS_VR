@@ -116,7 +116,7 @@ namespace KoikatuVR.Controls
 
             UpdateLock();
 
-            var inHScene = _Interpreter.CurrentScene == KoikatuInterpreter.HScene;
+            var inHScene = _Interpreter.CurrentScene == KoikatuInterpreter.SceneType.HScene;
             if (inHScene != _InHScene)
             {
                 SetScene(inHScene);

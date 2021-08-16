@@ -34,7 +34,7 @@ namespace KoikatuVR.Caress
         /// <returns>The new instance. May be the same instance as prev. May be null.</returns>
         public static AibuColliderTracker CreateOrDestroy(AibuColliderTracker prev, KoikatuInterpreter interpreter, Transform referencePoint)
         {
-            if (interpreter.CurrentScene == KoikatuInterpreter.HScene)
+            if (interpreter.CurrentScene == KoikatuInterpreter.SceneType.HScene)
             {
                 if (prev == null)
                 {

@@ -7,26 +7,29 @@ namespace KoikatuVR.Interpreters
 {
     class KoikatuInterpreter : GameInterpreter
     {
-        public const int NoScene = -1;
-        public const int OtherScene = 0;
-        public const int ActionScene = 1;
-        public const int TalkScene = 2;
-        public const int HScene = 3;
-        public const int NightMenuScene = 4;
-        public const int CustomScene = 5;
+        public enum SceneType
+        {
+            OtherScene,
+            ActionScene,
+            TalkScene,
+            HScene,
+            NightMenuScene,
+            CustomScene,
+        }
 
-        public int CurrentScene { get; private set; }
+        public SceneType CurrentScene { get; private set; }
         public SceneInterpreter SceneInterpreter;
 
         private Mirror.Manager _mirrorManager;
         private int _kkapiCanvasHackWait;
         private Canvas _kkSubtitlesCaption;
+        private GameObject _sceneObjCache;
 
         protected override void OnAwake()
         {
             base.OnAwake();
 
-            CurrentScene = NoScene;
+            CurrentScene = SceneType.OtherScene;
             SceneInterpreter = new OtherSceneInterpreter();
             SceneManager.sceneLoaded += OnSceneLoaded;
             _mirrorManager = new Mirror.Manager();
@@ -36,7 +39,7 @@ namespace KoikatuVR.Interpreters
         {
             base.OnUpdate();
 
-            DetectScene();
+            UpdateScene();
             SceneInterpreter.OnUpdate();
         }
 
@@ -116,78 +119,74 @@ namespace KoikatuVR.Interpreters
         }
 
         // 前回とSceneが変わっていれば切り替え処理をする
-        private void DetectScene()
+        private void UpdateScene()
         {
-            int nextSceneType = NoScene;
-            SceneInterpreter nextInterpreter = new OtherSceneInterpreter();
+            SceneType nextSceneType = DetectScene();
 
-            if (GameObject.Find("TalkScene") != null)
+            if (nextSceneType != CurrentScene)
             {
-                if (CurrentScene != TalkScene)
-                {
-                    nextSceneType = TalkScene;
-                    nextInterpreter = new TalkSceneInterpreter();
-                    VRLog.Info("Start TalkScene");
-                }
-            }
-
-            else if (GameObject.Find("HScene") != null)
-            {
-                if (CurrentScene != HScene)
-                {
-                    nextSceneType = HScene;
-                    nextInterpreter = new HSceneInterpreter();
-                    VRLog.Info("Start HScene");
-                }
-            }
-
-            else if (GameObject.Find("NightMenuScene") != null)
-            {
-                if (CurrentScene != NightMenuScene)
-                {
-                    nextSceneType = NightMenuScene;
-                    nextInterpreter = new NightMenuSceneInterpreter();
-                    VRLog.Info("Start NightMenuScene");
-                }
-            }
-
-            else if (GameObject.Find("ActionScene") != null)
-            {
-                if (CurrentScene != ActionScene)
-                {
-                    nextSceneType = ActionScene;
-                    nextInterpreter = new ActionSceneInterpreter();
-                    VRLog.Info("Start ActionScene");
-                }
-            }
-
-            else if (GameObject.Find("CustomScene") != null)
-            {
-                if (CurrentScene != CustomScene)
-                {
-                    nextSceneType = CustomScene;
-                    nextInterpreter = new CustomSceneInterpreter();
-                    VRLog.Info("Start CustomScene");
-                }
-            }
-
-            else
-            {
-                if (CurrentScene != OtherScene)
-                {
-                    nextSceneType = OtherScene;
-                    //nextInterpreter = new OtherSceneInterpreter();
-                    VRLog.Info("Start OtherScene");
-                }
-            }
-
-            if (nextSceneType != NoScene)
-            {
+                VRLog.Info($"Start {nextSceneType}");
                 SceneInterpreter.OnDisable();
 
                 CurrentScene = nextSceneType;
-                SceneInterpreter = nextInterpreter;
+                SceneInterpreter = CreateSceneInterpreter(nextSceneType);
                 SceneInterpreter.OnStart();
+            }
+        }
+
+        private SceneType DetectScene()
+        {
+            var stack = Manager.Scene.Instance.NowSceneNames;
+            foreach (string name in stack)
+            {
+                if (name == "H" && SceneObjPresent("HScene"))
+                    return SceneType.HScene;
+                if (name == "Action" && SceneObjPresent("ActionScene"))
+                    return SceneType.ActionScene;
+                if (name == "Talk" && SceneObjPresent("TalkScene"))
+                    return SceneType.TalkScene;
+                if (name == "NightMenu" && SceneObjPresent("NightMenuScene"))
+                    return SceneType.NightMenuScene;
+                if (name == "CustomScene" && SceneObjPresent("CustomScene"))
+                    return SceneType.CustomScene;
+            }
+            return SceneType.OtherScene;
+        }
+
+        private bool SceneObjPresent(string name)
+        {
+            if (_sceneObjCache != null && _sceneObjCache.name == name)
+            {
+                return true;
+            }
+            var obj = GameObject.Find(name);
+            if (obj != null)
+            {
+                _sceneObjCache = obj;
+                return true;
+            }
+            return false;
+        }
+
+        private static SceneInterpreter CreateSceneInterpreter(SceneType ty)
+        {
+            switch(ty)
+            {
+                case SceneType.OtherScene:
+                    return new OtherSceneInterpreter();
+                case SceneType.ActionScene:
+                    return new ActionSceneInterpreter();
+                case SceneType.CustomScene:
+                    return new CustomSceneInterpreter();
+                case SceneType.NightMenuScene:
+                    return new NightMenuSceneInterpreter();
+                case SceneType.HScene:
+                    return new HSceneInterpreter();
+                case SceneType.TalkScene:
+                    return new TalkSceneInterpreter();
+                default:
+                    VRLog.Warn($"Unknown scene type: {ty}");
+                    return new OtherSceneInterpreter();
             }
         }
 
