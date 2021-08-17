@@ -45,9 +45,12 @@ namespace KoikatuVR
         /// <param name="position"></param>
         /// <param name="rotation"></param>
         /// <param name="keepHeight"></param>
-        public void MoveTo(Vector3 position, Quaternion rotation, bool keepHeight)
+        public void MoveTo(Vector3 position, Quaternion rotation, bool keepHeight, bool quiet = false)
         {
-            VRLog.Debug($"Moving camera to {position} {rotation.eulerAngles}");
+            if (!quiet)
+            {
+                VRLog.Debug($"Moving camera to {position} {rotation.eulerAngles}");
+            }
             _lastPosition = position;
             _lastRotation = rotation;
             VR.Mode.MoveToPosition(position, rotation, ignoreHeight: keepHeight);

@@ -109,7 +109,7 @@ namespace KoikatuVR.Interpreters
 
             if (_Walking)
             {
-                MoveCameraToPlayer(true);
+                MoveCameraToPlayer(true, true);
             }
 
             if (_NeedsResetCamera)
@@ -140,7 +140,7 @@ namespace KoikatuVR.Interpreters
             }
         }
 
-        public void MoveCameraToPlayer(bool onlyPosition = false)
+        public void MoveCameraToPlayer(bool onlyPosition = false, bool quiet = false)
         {
             var player = _ActionScene.Player;
 
@@ -163,7 +163,8 @@ namespace KoikatuVR.Interpreters
             VRMover.Instance.MoveTo(
                 pos + cf * 0.23f, // 首が見えるとうざいのでほんの少し前目にする
                 onlyPosition ? headCam.rotation : player.rotation,
-                keepHeight: false);
+                keepHeight: false,
+                quiet: quiet);
         }
 
         public void MovePlayerToCamera(bool onlyRotation = false)
