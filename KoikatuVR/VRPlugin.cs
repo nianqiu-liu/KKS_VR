@@ -76,6 +76,7 @@ namespace KoikatuVR
                 VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = VR.Context.NearClipPlane;
                 VR.Manager.SetMode<KoikatuStandingMode>();
                 VRFade.Create();
+                PrivacyScreen.Initialize();
                 GraphicRaycasterPatches.Initialize();
                 // It's been reported in #28 that the game window defocues when
                 // the game is under heavy load. We disable window ghosting in

@@ -58,6 +58,9 @@ namespace KoikatuVR
         public bool FirstPersonADV { get; set; }
 
         public bool TeleportWithProtagonist { get; set; }
+
+        public bool PrivacyScreen { get { return _PrivacyScreen; } set { _PrivacyScreen = value; TriggerPropertyChanged("PrivacyScreen"); } }
+        private bool _PrivacyScreen = false;
     }
 
     public class KeySet

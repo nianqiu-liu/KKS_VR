@@ -77,6 +77,10 @@ namespace KoikatuVR
                     new AcceptableValueRange<float>(0f, 180f)));
             Tie(rotationAngle, v => settings.RotationAngle = v);
 
+            var privacyScreen = config.Bind(sectionGeneral, "Privacy screen", false,
+                "Attempt to hide everything in the desktop mirror window");
+            Tie(privacyScreen, v => settings.PrivacyScreen = v);
+
             var usingHeadPos = config.Bind(sectionRoaming, "Use head position", false,
                 new ConfigDescription(
                     "Place the camera exactly at the protagonist's head (may cause motion sickness). If disabled, use a fixed height from the floor.",

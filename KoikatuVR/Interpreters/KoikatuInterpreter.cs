@@ -79,7 +79,11 @@ namespace KoikatuVR.Interpreters
 
         public override bool IsIgnoredCanvas(Canvas canvas)
         {
-            if (canvas.name == "CvsMenuTree")
+            if (PrivacyScreen.IsOwnedCanvas(canvas))
+            {
+                return true;
+            }
+            else if (canvas.name == "CvsMenuTree")
             {
                 // Here, we attempt to avoid some unfortunate conflict with
                 // KKAPI.
