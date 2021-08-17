@@ -144,7 +144,7 @@ const BYTE expected_parser_calling_code[] = {
     0xe8, 0xfe, 0x6f, 0xbe, 0xff
 };
 
-const BYTE new_parser_calling_code[] = {
+const BYTE new_parser_calling_code[sizeof(expected_parser_calling_code)] = {
     /* lea rdx, [rdi+90h] */
     0x48, 0x8d, 0x97, 0x90, 0x00, 0x00, 0x00,
     /* xor r8d, r8d */
