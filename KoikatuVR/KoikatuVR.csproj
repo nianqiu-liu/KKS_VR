@@ -79,6 +79,7 @@
     <Compile Include="Compat.cs" />
     <Compile Include="ConfigurationManagerAttributes.cs" />
     <Compile Include="DebugHooks.cs" />
+    <Compile Include="GameFixes.cs" />
     <Compile Include="PrivacyScreen.cs" />
     <Compile Include="Interpreters\ActionSceneInterpreter.cs" />
     <Compile Include="Interpreters\CustomSceneInterpreter.cs" />
