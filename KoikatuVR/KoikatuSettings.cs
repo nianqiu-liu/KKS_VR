@@ -61,6 +61,8 @@ namespace KoikatuVR
 
         public bool PrivacyScreen { get { return _PrivacyScreen; } set { _PrivacyScreen = value; TriggerPropertyChanged("PrivacyScreen"); } }
         private bool _PrivacyScreen = false;
+
+        public bool OptimizeHInsideRoaming { get; set; }
     }
 
     public class KeySet

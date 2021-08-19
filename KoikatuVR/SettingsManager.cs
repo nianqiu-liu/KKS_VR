@@ -127,6 +127,10 @@ namespace KoikatuVR
                 "When teleporting, the protagonist also teleports");
             Tie(teleportWithProtagonist, v => settings.TeleportWithProtagonist = v);
 
+            var optimizeHInsideRoaming = config.Bind(sectionRoaming, "Aggressive performance optimizations", true,
+                "Improve framerate and reduce stutter in H and Talk scenes inside Roaming. May cause visual glitches.");
+            Tie(optimizeHInsideRoaming, v => settings.OptimizeHInsideRoaming = v);
+
             var automaticTouching = config.Bind(sectionCaress, "Automatic touching", false,
                 "Touching the female's body with controllers triggers reaction");
             Tie(automaticTouching, v => settings.AutomaticTouching = v);

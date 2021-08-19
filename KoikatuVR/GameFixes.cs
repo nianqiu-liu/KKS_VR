@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using VRGIN.Core;
 using UnityEngine;
+using KoikatuVR.Interpreters;
 
 // Fixes issues that are in the base game but are only relevant in VR.
 
@@ -76,6 +77,38 @@ namespace KoikatuVR
                     yield return inst;
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Suppress character update for invisible characters in some sub-scenes of Roaming.
+    /// </summary>
+    [HarmonyPatch(typeof(ChaControl))]
+    public class ChaControlPatches1
+    {
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(ChaControl.LateUpdateForce))]
+        private static bool PreLateUpdateForce(ChaControl __instance)
+        {
+            return !SafeToSkipUpdate(__instance);
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(ChaControl.UpdateForce))]
+        private static bool PreUpdateForce(ChaControl __instance)
+        {
+            return !SafeToSkipUpdate(__instance);
+        }
+
+        public static bool SafeToSkipUpdate(ChaControl control)
+        {
+            return
+                VR.Settings is KoikatuSettings settings &&
+                settings.OptimizeHInsideRoaming &&
+                control.objTop?.activeSelf == false &&
+                VR.Interpreter is KoikatuInterpreter interpreter &&
+                (interpreter.CurrentScene == KoikatuInterpreter.SceneType.HScene ||
+                    interpreter.CurrentScene == KoikatuInterpreter.SceneType.TalkScene);
         }
     }
 }
