@@ -59,6 +59,10 @@ namespace KoikatuVR.Caress
 
         protected override void OnUpdate()
         {
+            if (_lock != null && Manager.Scene.Instance.NowSceneNames[0] == "HPointMove")
+            {
+                ReleaseLock();
+            }
             if (_lock != null)
             {
                 HandleTrigger();
@@ -70,6 +74,10 @@ namespace KoikatuVR.Caress
         {
             try
             {
+                if (Manager.Scene.Instance.NowSceneNames[0] == "HPointMove")
+                {
+                    return;
+                }
                 bool wasIntersecting = _aibuTracker.IsIntersecting();
                 if (_aibuTracker.AddIfRelevant(other))
                 {
