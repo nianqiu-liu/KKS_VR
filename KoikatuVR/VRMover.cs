@@ -103,13 +103,27 @@ namespace KoikatuVR
             }
             else if (ShouldApproachCharacter(textScenario, out var character))
             {
-                VRLog.Debug("Approaching character");
                 var distance = InCafe() ? 0.95f :  0.7f;
-                var originalTarget = ActionCameraControl.GetIdealTransformFor(textScenario.AdvCamera);
-                var cameraXZ = character.transform.position - originalTarget.rotation * (distance * Vector3.forward);
+                float height;
+                Quaternion rotation;
+                if (Manager.Scene.Instance.NowSceneNames[0] == "H")
+                {
+                    VRLog.Debug("Approaching character (H)");
+                    // TODO: find a way to get a proper height.
+                    height = character.transform.position.y + 1.3f;
+                    rotation = character.transform.rotation * Quaternion.AngleAxis(180f, Vector3.up);
+                }
+                else
+                {
+                    VRLog.Debug("Approaching character (non-H)");
+                    var originalTarget = ActionCameraControl.GetIdealTransformFor(textScenario.AdvCamera);
+                    height = originalTarget.position.y;
+                    rotation = originalTarget.rotation;
+                }
+                var cameraXZ = character.transform.position - rotation * (distance * Vector3.forward);
                 MoveWithHeuristics(
-                    new Vector3(cameraXZ.x, originalTarget.position.y, cameraXZ.z),
-                    originalTarget.rotation,
+                    new Vector3(cameraXZ.x, height, cameraXZ.z),
+                    rotation,
                     keepHeight: false,
                     pretendFading: isFadingOut);
             }
@@ -187,7 +201,7 @@ namespace KoikatuVR
 
         private bool ShouldApproachCharacter(ADV.TextScenario textScenario, out ChaControl control)
         {
-            if (textScenario.BGParam.visible &&
+            if ((Manager.Scene.Instance.NowSceneNames[0] == "H" || textScenario.BGParam.visible) &&
                 textScenario.currentChara != null)
             {
                 control = textScenario.currentChara.chaCtrl;
