@@ -42,7 +42,7 @@ You may need to tweak button assignments in SteamVR's per-game settings if your
 controllers don't natively have these. See the Controller Support section for
 a list of known-to-work controllers.
 
-In the game, each of the controllers has 3 tools: Menu, Warp and School. Only
+In the game, each of the controllers has 3 tools: Menu, Warp and School/Hand. Only
 one of them can be active at a time. You can cycle through the tools by pressing
 the Application menu button. Each controller has a cyan icon indicating which
 tool is currently active.
@@ -80,14 +80,15 @@ the world. Pressing both Trigger and the touchpad gives you the full power
 of general 3D rotation, allowing you to turn a wall into the floor, for
 example. Double click the touchpad to become upright again.
 
-Grab action is also avaible in the school tool.
+Grab action is also avaible in the school and hand tools.
 
-### School tool <img src="https://raw.githubusercontent.com/mosirnik/KK_MainGameVR/master/doc/img/icon_school.png" height="30">
+### School tool <img src="https://raw.githubusercontent.com/mosirnik/KK_MainGameVR/master/doc/img/icon_school.png" height="30"> and Hand tool <img src="https://raw.githubusercontent.com/mosirnik/KK_MainGameVR/master/doc/img/icon_hand.png" height="30">
 
-This tool is a collection of Koikatsu-specific action commands and simulated
-mouse/keyboard inputs. There are two button mappings, one for H scenes and
-one for all other scenes. Both mappings are configurable. The defaults for
-non-H scenes are:
+These tools are collections of Koikatsu-specific action commands and simulated
+mouse/keyboard inputs. The hand tool is for H scenes, and the school tool is for
+all other scenes, but otherwise these two are similar to each other. The
+button mappings are configurable for each of them separately.
+The default for the school tool is:
 
 * Trigger: Walk (Roam mode)
 * Grip: Grab action
@@ -97,7 +98,7 @@ non-H scenes are:
 * Touchpad right: Turn right
 * Touchpad center: Right mouse button
 
-For H scenes:
+For the hand tool:
 
 * Trigger: Left mouse button
 * Grip: Grab action
