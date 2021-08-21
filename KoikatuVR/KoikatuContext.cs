@@ -17,12 +17,14 @@ namespace KoikatuVR
         {
             // We'll keep those always the same
             Materials = new DefaultMaterialPalette();
-            Settings = settings;
+            _settings = settings;
         }
+
+        private KoikatuSettings _settings;
 
         public IMaterialPalette Materials { get; private set; }
 
-        public VRSettings Settings { get; private set; }
+        public VRSettings Settings => _settings;
 
         public Type VoiceCommandType { get { return typeof(VoiceCommand); } }
 
@@ -52,7 +54,7 @@ namespace KoikatuVR
 
         public float UnitToMeter { get { return 1f; } }
 
-        public float NearClipPlane { get { return 0.02f; } }
+        public float NearClipPlane => _settings.NearClipPlane;
 
         public GUIType PreferredGUI { get { return GUIType.uGUI; } }
     }

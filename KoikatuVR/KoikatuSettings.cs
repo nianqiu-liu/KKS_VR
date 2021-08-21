@@ -63,6 +63,9 @@ namespace KoikatuVR
         private bool _PrivacyScreen = false;
 
         public bool OptimizeHInsideRoaming { get; set; }
+
+        public float NearClipPlane { get { return _NearClipPlane; } set { _NearClipPlane = value; TriggerPropertyChanged("NearClipPlane"); } }
+        private float _NearClipPlane;
     }
 
     public class KeySet

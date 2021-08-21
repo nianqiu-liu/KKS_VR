@@ -81,6 +81,12 @@ namespace KoikatuVR
                 "Attempt to hide everything in the desktop mirror window");
             Tie(privacyScreen, v => settings.PrivacyScreen = v);
 
+            var nearClipPlane = config.Bind(sectionGeneral, "Near clip plane", 0.002f,
+                new ConfigDescription(
+                    "Minimum distance from camera for an object to be shown (causes visual glitches on some maps when set too small)",
+                    new AcceptableValueRange<float>(0.001f, 0.2f)));
+            Tie(nearClipPlane, v => settings.NearClipPlane = v);
+
             var usingHeadPos = config.Bind(sectionRoaming, "Use head position", false,
                 new ConfigDescription(
                     "Place the camera exactly at the protagonist's head (may cause motion sickness). If disabled, use a fixed height from the floor.",
