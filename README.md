@@ -86,7 +86,7 @@ Grab action is also avaible in the school and hand tools.
 
 These tools are collections of Koikatsu-specific action commands and simulated
 mouse/keyboard inputs. The hand tool is for H scenes, and the school tool is for
-all other scenes, but otherwise these two are similar to each other. The
+all other scenes. Other than that, these two are similar to each other. The
 button mappings are configurable for each of them separately.
 The default for the school tool is:
 
