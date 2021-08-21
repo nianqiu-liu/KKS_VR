@@ -29,18 +29,9 @@ namespace KoikatuVR
 
         protected override void OnAwake()
         {
-            var fades = Resources.FindObjectsOfTypeAll<SceneFade>();
-
-            if (fades.Length == 1)
-            {
-                _vanillaImage = fades[0].GetComponent<Image>();
-                _fadeMaterial = new Material(UnityHelper.GetShader("Custom/SteamVR_Fade"));
-                _fadeMaterialColorID = Shader.PropertyToID("fadeColor");
-            }
-            else
-            {
-                VRLog.Warn("VRFade: failed to find the vanilla fade: {0} candidates found", fades.Length);
-            }
+            _vanillaImage = Manager.Scene.Instance.sceneFade.image;
+            _fadeMaterial = new Material(UnityHelper.GetShader("Custom/SteamVR_Fade"));
+            _fadeMaterialColorID = Shader.PropertyToID("fadeColor");
         }
 
         private void OnPostRender()
