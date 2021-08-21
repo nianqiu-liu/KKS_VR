@@ -35,6 +35,7 @@ namespace KoikatuVR.Controls
 
             _KeySetIndex = (_KeySetIndex + 1) % keySets.Count;
             _KeySet = keySets[_KeySetIndex];
+            UpdateIcon();
         }
 
         private List<KeySet> KeySets()
@@ -58,15 +59,34 @@ namespace KoikatuVR.Controls
             var keySets = KeySets();
             _KeySetIndex = 0;
             _KeySet = keySets[0];
+            UpdateIcon();
         }
 
-        public override Texture2D Image
+        private void UpdateIcon()
         {
-            get
-            {
-                return UnityHelper.LoadImage("icon_school.png");
-            }
+            Texture2D icon =
+                _InHScene
+                    ? _Settings.HKeySets.Count > 1
+                        ? _KeySetIndex == 0
+                            ? _hand1Texture
+                            : _hand2Texture
+                        : _handTexture
+                    : _Settings.KeySets.Count > 1
+                        ? _KeySetIndex == 0
+                            ? _school1Texture
+                            : _school2Texture
+                        : _schoolTexture;
+            Graphics.CopyTexture(icon, _image);
         }
+
+        public override Texture2D Image => _image;
+        private readonly Texture2D _image = new Texture2D(512, 512);
+        private readonly Texture2D _schoolTexture = UnityHelper.LoadImage("icon_school.png");
+        private readonly Texture2D _school1Texture = UnityHelper.LoadImage("icon_school_1.png");
+        private readonly Texture2D _school2Texture = UnityHelper.LoadImage("icon_school_2.png");
+        private readonly Texture2D _handTexture = UnityHelper.LoadImage("icon_hand.png");
+        private readonly Texture2D _hand1Texture = UnityHelper.LoadImage("icon_hand_1.png");
+        private readonly Texture2D _hand2Texture = UnityHelper.LoadImage("icon_hand_2.png");
 
         protected override void OnAwake()
         {

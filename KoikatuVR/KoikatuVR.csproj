@@ -128,7 +128,7 @@
     <None Include="Resources\mirror-shader" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Plugins\Images\icon_school.png">
+    <Content Include="Plugins\Images\*.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
