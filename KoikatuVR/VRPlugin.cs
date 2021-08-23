@@ -17,7 +17,7 @@ namespace KoikatuVR
     {
         public const string GUID = "mosirnik.kk-main-game-vr";
         public const string PluginName = "Main Game VR";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
 
         void Awake()
         {
