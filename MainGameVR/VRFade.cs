@@ -17,7 +17,7 @@ namespace KoikatuVR
         /// <summary>
         /// Reference to the image used by the vanilla SceneFade object.
         /// </summary>
-        Graphic _vanillaImage;
+        CanvasGroup _vanillaImage;
         Material _fadeMaterial;
         int _fadeMaterialColorID;
         float _alpha = 0f;
@@ -29,7 +29,7 @@ namespace KoikatuVR
 
         protected override void OnAwake()
         {
-            _vanillaImage = Manager.Scene.sceneFadeCanvas.fadeImage;
+            _vanillaImage = Manager.Scene.sceneFadeCanvas.canvasGroup;
             _fadeMaterial = new Material(UnityHelper.GetShader("Custom/SteamVR_Fade"));
             _fadeMaterialColorID = Shader.PropertyToID("fadeColor");
         }
@@ -38,17 +38,17 @@ namespace KoikatuVR
         {
             if (_vanillaImage != null)
             {
-                var fadeColor = _vanillaImage.color;
-                _alpha = Mathf.Max(_alpha - 0.05f, fadeColor.a); // Use at least 20 frames to fade out.
-                fadeColor.a = _alpha;
+                var fadeColor = _vanillaImage.alpha;
+                _alpha = Mathf.Max(_alpha - 0.05f, fadeColor); // Use at least 20 frames to fade out.
+                fadeColor = _alpha;
                 if (_alpha > 0.0001f)
                 {
-                    _fadeMaterial.SetColor(_fadeMaterialColorID, fadeColor);
+                    _fadeMaterial.SetColor(_fadeMaterialColorID, new Color(1, 1, 1, fadeColor));
                     _fadeMaterial.SetPass(0);
                     GL.Begin(GL.QUADS);
 
                     GL.Vertex3(-1, -1, 0);
-                    GL.Vertex3( 1, -1, 0);
+                    GL.Vertex3(1, -1, 0);
                     GL.Vertex3(1, 1, 0);
                     GL.Vertex3(-1, 1, 0);
                     GL.End();

@@ -156,7 +156,7 @@ namespace KoikatuVR
     [HarmonyPatch(typeof(ADV.TextScenario))]
     class TextScenarioPatches
     {
-        [HarmonyPatch("ADVCameraSetting")]
+        [HarmonyPatch(nameof(ADV.TextScenario.ADVCameraSetting))]
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> TransADVCameraSetting(IEnumerable<CodeInstruction> code)
         {
@@ -191,57 +191,58 @@ namespace KoikatuVR
         }
     }
 
-    [HarmonyPatch]
-    class TalkScenePatches
-    {
-        static IEnumerable<MethodBase> TargetMethods()
-        {
-            // Our target is a particular lambda defined in TalkScene.Start.
-            // The code below is ugly and fragile, but there doesn't seem to be
-            // any good alternative.
-            var nested1 = typeof(TalkScene).GetNestedType("<Start>c__Iterator0", BindingFlags.NonPublic);
-            if (nested1 == null)
-            {
-                VRLog.Error("nested1 is null!");
-                yield break;
-            }
-
-            var nested2 = nested1.GetNestedType("<Start>c__AnonStorey8", BindingFlags.NonPublic);
-            if (nested2 == null)
-            {
-                VRLog.Error("nested2 is null");
-                yield break;
-            }
-
-            yield return AccessTools.Method(nested2, "<>m__3");
-        }
-
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code)
-        {
-            // Replace the second (!) call to Transform.SetPositionAndRotation.
-            // This is laughably fragile, but it doesn't seem worthwhile to
-            // make it more robust until an actual conflict is reported...
-            int found = 0;
-            foreach (var inst in code)
-            {
-                if ((inst.opcode == OpCodes.Call || inst.opcode == OpCodes.Callvirt) &&
-                    inst.operand is MethodInfo method &&
-                    method.ReflectedType == typeof(Transform) &&
-                    method.Name == "SetPositionAndRotation" &&
-                    found++ == 1)
-                {
-                    yield return new CodeInstruction(
-                        OpCodes.Call,
-                        AccessTools.Method(typeof(ActionCameraControl), nameof(ActionCameraControl.SetIdealPositionAndRotation)));
-                }
-                else
-                {
-                    yield return inst;
-                }
-            }
-        }
-
-    }
+    // todo different lambda in kks
+    //[HarmonyPatch]
+    //class TalkScenePatches
+    //{
+    //    static IEnumerable<MethodBase> TargetMethods()
+    //    {
+    //        // Our target is a particular lambda defined in TalkScene.Start.
+    //        // The code below is ugly and fragile, but there doesn't seem to be
+    //        // any good alternative.
+    //        var nested1 = typeof(TalkScene).GetNestedType("<Start>c__Iterator0", BindingFlags.NonPublic);
+    //        if (nested1 == null)
+    //        {
+    //            VRLog.Error("nested1 is null!");
+    //            yield break;
+    //        }
+    //
+    //        var nested2 = nested1.GetNestedType("<Start>c__AnonStorey8", BindingFlags.NonPublic);
+    //        if (nested2 == null)
+    //        {
+    //            VRLog.Error("nested2 is null");
+    //            yield break;
+    //        }
+    //
+    //        yield return AccessTools.Method(nested2, "<>m__3");
+    //    }
+    //
+    //    static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code)
+    //    {
+    //        // Replace the second (!) call to Transform.SetPositionAndRotation.
+    //        // This is laughably fragile, but it doesn't seem worthwhile to
+    //        // make it more robust until an actual conflict is reported...
+    //        int found = 0;
+    //        foreach (var inst in code)
+    //        {
+    //            if ((inst.opcode == OpCodes.Call || inst.opcode == OpCodes.Callvirt) &&
+    //                inst.operand is MethodInfo method &&
+    //                method.ReflectedType == typeof(Transform) &&
+    //                method.Name == "SetPositionAndRotation" &&
+    //                found++ == 1)
+    //            {
+    //                yield return new CodeInstruction(
+    //                    OpCodes.Call,
+    //                    AccessTools.Method(typeof(ActionCameraControl), nameof(ActionCameraControl.SetIdealPositionAndRotation)));
+    //            }
+    //            else
+    //            {
+    //                yield return inst;
+    //            }
+    //        }
+    //    }
+    //
+    //}
 
     [HarmonyPatch(typeof(ADV.EventCG.Data))]
     class EventCGDataPatches

@@ -5,6 +5,7 @@ using System.Text;
 using HarmonyLib;
 using System.Reflection;
 using System.Reflection.Emit;
+using ActionGame;
 using VRGIN.Core;
 using UnityEngine;
 using KoikatuVR.Interpreters;
@@ -109,6 +110,37 @@ namespace KoikatuVR
                 VR.Interpreter is KoikatuInterpreter interpreter &&
                 (interpreter.CurrentScene == KoikatuInterpreter.SceneType.HScene ||
                     interpreter.CurrentScene == KoikatuInterpreter.SceneType.TalkScene);
+        }
+    }
+    
+    [HarmonyPatch(typeof(SunLightInfo))]
+    public class FogHack1
+    {
+                // todo hack, handle properly
+        [HarmonyFinalizer]
+        [HarmonyPatch(nameof(SunLightInfo.Set))]
+        private static Exception PreLateUpdateForce(Exception __exception)
+        {
+            if (__exception != null)
+            {
+                UnityEngine.Debug.LogException(__exception);
+            }
+            return null;
+        }
+    }
+    [HarmonyPatch(typeof(ActionMap))]
+    public class FogHack2
+    {
+                // todo hack, handle properly
+        [HarmonyFinalizer]
+        [HarmonyPatch(nameof(ActionMap.UpdateCameraFog))]
+        private static Exception PreLateUpdateForce(Exception __exception)
+        {
+            if (__exception != null)
+            {
+                UnityEngine.Debug.LogException(__exception);
+            }
+            return null;
         }
     }
 }

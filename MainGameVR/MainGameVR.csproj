@@ -319,4 +319,11 @@
   <Import Project="..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.targets" Condition="Exists('..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.AssetBundleModule.targets')" />
   <Import Project="..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.targets" Condition="Exists('..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.targets')" />
   <Import Project="..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.ImageConversionModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.ImageConversionModule.targets" Condition="Exists('..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.ImageConversionModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.ImageConversionModule.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>copy "D:\SVN\KK_MainGameVR\MainGameVR\bin\KKS_MainGameVR.dll" "F:\Games\KKS\BepInEx\plugins\KKS_CharaStudioVR"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
