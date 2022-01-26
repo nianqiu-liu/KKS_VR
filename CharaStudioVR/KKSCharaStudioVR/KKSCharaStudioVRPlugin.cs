@@ -18,7 +18,7 @@ namespace KKSCharaStudioVR
 
         private static ManualLogSource defaultLogger;
 
-        public bool vrActivated;
+        public readonly bool vrActivated;
 
         public static ManualLogSource PluginLogger => defaultLogger;
 
@@ -33,22 +33,26 @@ namespace KKSCharaStudioVR
             }
             else
             {
-                base.Logger.LogInfo("Ignore loading VR. To load VR, specify '--studiovr' in commandline option.");
+                //base.Logger.LogInfo("Ignore loading VR. To load VR, specify '--studiovr' in commandline option.");
             }
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            defaultLogger.LogDebug($"Scene Loaded {scene.name}, {mode}");
+            //defaultLogger.LogDebug($"Scene Loaded {scene.name}, {mode}");
             if (mode == LoadSceneMode.Single)
             {
-                VRLog.Debug("Loaded Scene is " + scene.name);
+                //VRLog.Debug("Loaded Scene is " + scene.name);
                 if (vrActivated && "Studio" == scene.name)
                 {
+                    defaultLogger.LogInfo("Loading VR mode...");
+
                     VRLoader.Create(true);
                     SaveLoadSceneHook.InstallHook();
                     LoadFixHook.InstallHook();
                     VRLog.Level = VRLog.LogMode.Info;
+
+                    SceneManager.sceneLoaded -= OnSceneLoaded;
                 }
             }
         }

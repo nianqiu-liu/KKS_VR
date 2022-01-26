@@ -196,7 +196,6 @@
   <ItemGroup>
     <Compile Include="ActionCameraControl.cs" />
     <Compile Include="Background.cs" />
-    <Compile Include="BepInExLoggerBackend.cs" />
     <Compile Include="Controls\ButtonsSubtool.cs" />
     <Compile Include="CameraControlControl.cs" />
     <Compile Include="Caress\AibuColliderTracker.cs" />
@@ -206,9 +205,9 @@
     <Compile Include="Caress\LongDistanceKissMachine.cs" />
     <Compile Include="Caress\VRMouth.cs" />
     <Compile Include="Compat.cs" />
-    <Compile Include="ConfigurationManagerAttributes.cs" />
     <Compile Include="DebugHooks.cs" />
     <Compile Include="GameFixes.cs" />
+    <Compile Include="OpenVRHelperTempfixHook.cs" />
     <Compile Include="PrivacyScreen.cs" />
     <Compile Include="Interpreters\ActionSceneInterpreter.cs" />
     <Compile Include="Interpreters\CustomSceneInterpreter.cs" />
@@ -324,6 +323,6 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy "D:\SVN\KK_MainGameVR\MainGameVR\bin\KKS_MainGameVR.dll" "F:\Games\KKS\BepInEx\plugins\KKS_CharaStudioVR"</PostBuildEvent>
+    <PostBuildEvent>copy "D:\SVN\KK_MainGameVR\MainGameVR\bin\KKS_MainGameVR.dll" "F:\Games\KKS\BepInEx\plugins\KKS_VR\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

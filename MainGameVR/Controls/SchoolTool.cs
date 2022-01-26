@@ -141,7 +141,7 @@ namespace KoikatuVR.Controls
             {
                 SetScene(inHScene);
             }
-
+            
             //if (_grab != null)
             //{
             //    if (_grab.HandleGrabbing() != GrabAction.Status.Continue)

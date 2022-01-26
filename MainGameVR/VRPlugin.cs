@@ -4,6 +4,7 @@ using VRGIN.Helpers;
 using VRGIN.Core;
 using VRGIN.Native;
 using System.Collections;
+using System.Diagnostics;
 using UnityEngine;
 using HarmonyLib;
 using System.Runtime.InteropServices;
@@ -37,6 +38,8 @@ namespace KoikatuVR
             bool enabled = vrActivated;// || (!vrDeactivated && SteamVRDetector.IsRunning);
             if (enabled)
             {
+                KKSCharaStudioVR.OpenVRHelperTempfixHook.Patch();
+
                 var settings = SettingsManager.Create(Config);
                 StartCoroutine(LoadDevice(enabled, settings));
             }
@@ -141,7 +144,7 @@ namespace KoikatuVR
                 settings.AddListener("NearClipPlane", (_, _1) => UpdateNearClipPlane(settings));
                 VR.Manager.SetMode<KoikatuStandingMode>();
                 VRFade.Create();
-                //PrivacyScreen.Initialize();
+                PrivacyScreen.Initialize();
                 GraphicRaycasterPatches.Initialize();
                 // It's been reported in #28 that the game window defocues when
                 // the game is under heavy load. We disable window ghosting in

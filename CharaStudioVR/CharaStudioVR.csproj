@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CharaStudioVR</RootNamespace>
-    <AssemblyName>CharaStudioVR</AssemblyName>
+    <AssemblyName>KKS_CharaStudioVR</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -196,9 +196,7 @@
     <Compile Include="KKSCharaStudioVR\GenericStandingMode.cs" />
     <Compile Include="KKSCharaStudioVR\GripMenuHandler.cs" />
     <Compile Include="KKSCharaStudioVR\GripMoveStudioNEOV2Tool.cs" />
-    <Compile Include="KKSCharaStudioVR\GUIUtils.cs" />
     <Compile Include="KKSCharaStudioVR\IKTool.cs" />
-    <Compile Include="KKSCharaStudioVR\KeyboradSimulatorUtil.cs" />
     <Compile Include="KKSCharaStudioVR\KKSCharaStudioActor.cs" />
     <Compile Include="KKSCharaStudioVR\KKSCharaStudioInterpreter.cs" />
     <Compile Include="KKSCharaStudioVR\KKSCharaStudioVRGUI.cs" />
