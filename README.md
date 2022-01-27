@@ -1,35 +1,31 @@
-# KK_MainGameVR
+# KKS_VR - VR Plugin for Koikatsu Sunshine
+A BepInEx plugin for Koikatsu Sunshine (KKS) that allows you to play both the main game and studio in VR.
+The difference from the official VR modules is that you have access to the full game/studio, while the official modules have limited features and spotty mod support.
 
-This is a BepInEx plugin for Koikatsu that allows you to play the main game
-(including the Maker) in VR. Currently only the standing (aka room-scale)
-mode is supported.
+Currently only the standing (aka room-scale) mode is fully supported.
 
-This plugin is based on the [KoikatuVR](https://github.com/Ooetksh/KoikatuVR)
-plugin developed by vrhth, KoikatsuVrThrowaway and Ooetksh. If you are migrating
-from KoikatuVR, refer to the 'Migrating' section.
+The main game part is a fork/port of the KoikatuVR/KK_MainGameVR plugin developed by mosirnik, vrhth, KoikatsuVrThrowaway and Ooetksh.
+
+The studio part is a fork of the [KKS_CharaStudioVR](https://vr-erogamer.com/archives/1065) plugin.
 
 ## Prerequisites
 
-* Koikatu or Koikatsu Party
-* BepInEx 5.4 or later
+* Koikatsu Sunshine
+* Latest version of BepInEx 5.x and KKSAPI/ModdingAPI
 * SteamVR
 * A VR headset supported by SteamVR
 * VR controllers
 
 ## Installation
 
-1. Make sure BepInEx 5 has been installed.
-2. Download and extract the latest zip file from
-  [releases](https://github.com/mosirnik/KK_MainGameVR/releases).
-3. Copy two of the extracted folders into the game folder:
-    * If your game is Koikatsu Party (the Steam version), copy `BepInEx` and `Koikatsu Party_Data`.
-    * Otherwise, copy `BepInEx` and `Koikatu_Data`.
-
-Now you can start Koikatsu while SteamVR is running, and it should automatically
-start up in the VR mode. Alternatively, you can use the `--vr` or `--novr`
-command line option to force enable or disable VR.
+1. Make sure BepInEx, KKSAPI and all their dependencies have been installed.
+2. Download the latest [release](https://github.com/IllusionMods/KKS_VR/releases).
+3. Extract the zip into the game folder (where the abdata and BepInEx folders are).
+4. Create a shortcut to KoikatsuSunshine.exe and/or CharaStudio.exe, and add `--vr` to the command line.
 
 ## Control
+
+**Warning: This section was written for KK_MainGameVR and might not be accurate, especially in Studio.**
 
 This plugin assumes that your VR controller has the following buttons/controls:
 
@@ -115,6 +111,8 @@ touching.
 
 ## Situation-specific controls
 
+**Warning: This section was written for KK_MainGameVR and might not be accurate, especially in Studio.**
+
 The school tool can be used when you need more complex interactions than simple
 mouse clicks.
 
@@ -165,6 +163,8 @@ icon and pull the Trigger to confirm.
 
 ## Configuration
 
+**Warning: This section was written for KK_MainGameVR and might not be accurate, especially in Studio.**
+
 This plugin has a lot of configuration options. It is recommended that you use
 [ConfigurationManager](https://github.com/BepInEx/BepInEx.ConfigurationManager),
 which allows you to change settings of this plugin from within the game.
@@ -174,19 +174,15 @@ with a text editor.
 
 ## Controller Support
 
-At the moment, not all VR controllers work out of the box with this plugin. Below
-is an incomplete list of the current status.
+At the moment, most VR controllers seem to work out of the box with this plugin.
+Below is an incomplete list of the current support status. If your controllers
+are not listed here, please let us know if they work or not (either edit this 
+file or create a new issue).
 
-If you have an experience with a controller not listed here, please comment on
-<a href="https://github.com/mosirnik/KK_MainGameVR/issues/24">this issue</a>.
-
-### Oculus Quest 2
-
-Works out of the box.
-
-### Valve Index
-
-Works out of the box.
+### Works out of the box
+* Oculus Rift / Rift S / Quest 2
+* Valve Index
+* Vive
 
 ### HP motion controllers
 
@@ -200,53 +196,4 @@ In addition, you need to make it "pretend to be Vive controllers".
 
 ## Building (for developers)
 
-This repository uses a submodule, so be sure to update it as appropriate (e.g. by running `git submodule update --init` after you pull).
-
-You should be able to open KK_MainGameVR.sln in Visual Studio 2019 and just hit Build to build everything.
-
-## Using this plugin without the preload-time patcher
-
-**Normal users don't need to do this.**
-
-1. Delete `BepInEx\patchers\KK_MainGameVR_Patcher`.
-2. Modify `Koikatu_Data\globalgamemanagers` or `Koikatsu Party_Data/globalgamemanagers`:
-    1. If you already have a modified version of `globalgamemanagers` that works with a VR mod,
-      you don't need to do anything. Otherwise, proceed.
-    2. Rename the file to `globalgamemanagers.orig` (or whatever you want to call the backup).
-    3. Open `globalgamemanagers.orig` with [UABE](https://github.com/DerPopo/UABE/releases).
-    4. Select the row with the path ID "11" and the type "Build Settings", then click "Export Dump".
-    5. Use a text editor to edit the generated dump file as shown below.
-    6. Click "Import Dump" to load the edited dump file.
-    7. Click "OK" to save the modified file as `globalgamemanagers`, so that it
-      replaces the file you renamed in the first step.
-    ~~~
-    Before:
-    0 vector enabledVRDevices
-    0 Array Array (0 items)
-    0 int size = 0
-
-    After:
-    0 vector enabledVRDevices
-    0 Array Array (2 items)
-    0 int size = 2
-    [0]
-     1 string data = "None"
-    [1]
-     1 string data = "OpenVR"
-    ~~~
-
-## Migrating
-
-This section is for existing users of the KoikatuVR plugin.
-
-Major differences between this plugin and Ooetksh's version of KoikatuVR include:
-
-* It is a BepInEx 5 plugin.
-* It adds a few ways of interacting with 3D objects using conrollers, like
-  touching a character or changing location in H.
-* It no longer reads `VRContext.xml` or `VRSettings.xml`. It uses BepInEx-style
-  configuration instead.
-* All keyboard shortcuts and the seated mode have been removed.
-
-If you are migrating from KoikatuVR, make sure to remove or disable KoikatuVR
-before installing this plugin.
+You should be able to open the solution in Visual Studio 2019 and just hit Build to build everything.
