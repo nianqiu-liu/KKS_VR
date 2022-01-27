@@ -22,28 +22,22 @@ namespace KoikatuVR
     /// camera.
     /// </summary>
     [HarmonyPatch(typeof(GraphicRaycaster))]
-    class GraphicRaycasterPatches
+    internal class GraphicRaycasterPatches
     {
         [HarmonyPatch(nameof(GraphicRaycaster.sortOrderPriority), MethodType.Getter)]
         [HarmonyPostfix]
-        static void PostGetSortOrderPriority(GraphicRaycaster __instance, ref Canvas ___m_Canvas, ref int __result)
+        private static void PostGetSortOrderPriority(GraphicRaycaster __instance, ref Canvas ___m_Canvas, ref int __result)
         {
             ___m_Canvas = ___m_Canvas ?? __instance.GetComponent<Canvas>();
-            if (___m_Canvas.worldCamera == _vrGuiCamera)
-            {
-                __result = ___m_Canvas.sortingOrder;
-            }
+            if (___m_Canvas.worldCamera == _vrGuiCamera) __result = ___m_Canvas.sortingOrder;
         }
 
         [HarmonyPatch(nameof(GraphicRaycaster.renderOrderPriority), MethodType.Getter)]
         [HarmonyPostfix]
-        static void PostGetRenderOrderPriority(GraphicRaycaster __instance, ref Canvas ___m_Canvas, ref int __result)
+        private static void PostGetRenderOrderPriority(GraphicRaycaster __instance, ref Canvas ___m_Canvas, ref int __result)
         {
             ___m_Canvas = ___m_Canvas ?? __instance.GetComponent<Canvas>();
-            if (___m_Canvas.worldCamera == _vrGuiCamera)
-            {
-                __result = ___m_Canvas.rootCanvas.renderOrder;
-            }
+            if (___m_Canvas.worldCamera == _vrGuiCamera) __result = ___m_Canvas.rootCanvas.renderOrder;
         }
 
         public static void Initialize()

@@ -5,15 +5,16 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using VRGIN.Core;
+using Object = UnityEngine.Object;
 
 namespace KoikatuVR
 {
     /// <summary>
     /// Class that allows the user to hide contents of the desktop mirror screen.
     /// </summary>
-    class PrivacyScreen
+    internal class PrivacyScreen
     {
-        static Canvas _blocker;
+        private static Canvas _blocker;
 
         public static void Initialize()
         {
@@ -25,21 +26,14 @@ namespace KoikatuVR
         private static void CreateOrDestroy(KoikatuSettings settings)
         {
             if (settings.PrivacyScreen)
-            {
                 Create();
-            }
             else
-            {
                 Destroy();
-            }
         }
 
         private static void Create()
         {
-            if (_blocker != null)
-            {
-                return;
-            }
+            if (_blocker != null) return;
 
             var blocker = new GameObject("PrivacyScreen").AddComponent<Canvas>();
             blocker.transform.SetParent(VR.Camera.transform, false);
@@ -59,7 +53,7 @@ namespace KoikatuVR
         {
             if (_blocker != null)
             {
-                GameObject.Destroy(_blocker.gameObject);
+                Object.Destroy(_blocker.gameObject);
                 _blocker = null;
             }
         }

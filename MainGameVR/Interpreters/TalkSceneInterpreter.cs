@@ -10,17 +10,14 @@ using System.Collections;
 
 namespace KoikatuVR.Interpreters
 {
-    class TalkSceneInterpreter : SceneInterpreter
+    internal class TalkSceneInterpreter : SceneInterpreter
     {
-        Canvas _canvasBack;
+        private Canvas _canvasBack;
 
         public override void OnDisable()
         {
             DestroyControllerComponent<Controls.TalkSceneHandler>();
-            if (_canvasBack != null)
-            {
-                _canvasBack.enabled = true;
-            }
+            if (_canvasBack != null) _canvasBack.enabled = true;
         }
 
         public override void OnStart()
@@ -32,6 +29,7 @@ namespace KoikatuVR.Interpreters
                 VRLog.Warn("TalkScene object not found");
                 return;
             }
+
             VRLog.Warn("TalkScene init");
 
             var talkScene = TalkScene.instance;
@@ -45,7 +43,7 @@ namespace KoikatuVR.Interpreters
                 VRMover.Instance.MoveTo(
                     heroine.TransformPoint(new Vector3(0, 1.4f, 0.55f)),
                     heroine.rotation * Quaternion.Euler(0, 180f, 0),
-                    keepHeight: true);
+                    true);
 
                 // talkscene messes with camera settings
                 Camera.main.clearFlags = CameraClearFlags.Skybox;
@@ -58,10 +56,7 @@ namespace KoikatuVR.Interpreters
         {
             // We don't need the background image because we directly see
             // background objects.
-            if (_canvasBack != null)
-            {
-                _canvasBack.enabled = false;
-            }
+            if (_canvasBack != null) _canvasBack.enabled = false;
         }
     }
 }

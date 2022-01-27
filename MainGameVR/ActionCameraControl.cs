@@ -47,7 +47,7 @@ namespace KoikatuVR
     /// of this plugin to use it as a target for moving.
     /// Actually moving the VR camera is outside the scope of this class.
     /// </summary>
-    class ActionCameraControl : ProtectedBehaviour
+    internal class ActionCameraControl : ProtectedBehaviour
     {
         public Transform VRIdealCamera { get; private set; }
 
@@ -90,13 +90,9 @@ namespace KoikatuVR
             // TODO: cache?
             var control = o.GetComponent<ActionCameraControl>();
             if (control != null)
-            {
                 return control.VRIdealCamera;
-            }
             else
-            {
                 return o.transform;
-            }
         }
 
         public static void SetIdealPositionAndRotation(Transform t, Vector3 position, Quaternion rotation)
@@ -105,22 +101,22 @@ namespace KoikatuVR
             {
                 // todo keep old height?
                 var heroine = TalkScene.instance.targetHeroine.transform;
-                GetIdealTransformFor(t).SetPositionAndRotation(heroine.TransformPoint(new Vector3(0, 1.4f, 0.70f)), heroine.rotation * Quaternion.Euler(0, 180f, 0));                
+                GetIdealTransformFor(t).SetPositionAndRotation(heroine.TransformPoint(new Vector3(0, 1.4f, 0.70f)), heroine.rotation * Quaternion.Euler(0, 180f, 0));
             }
             else
             {
                 var add = rotation.eulerAngles.normalized * 1f;
                 add.y = 0;
                 var added = position + add;
-                GetIdealTransformFor(t).SetPositionAndRotation(added, rotation);                
+                GetIdealTransformFor(t).SetPositionAndRotation(added, rotation);
             }
         }
     }
 
     [HarmonyPatch]
-    class ActionCameraTransformPatches
+    internal class ActionCameraTransformPatches
     {
-        static IEnumerable<MethodBase> TargetMethods()
+        private static IEnumerable<MethodBase> TargetMethods()
         {
             yield return AccessTools.PropertySetter(typeof(BaseCameraControl), "CameraAngle");
             yield return AccessTools.Method(typeof(BaseCameraControl), "Reset");
@@ -136,25 +132,19 @@ namespace KoikatuVR
             yield return AccessTools.Method(typeof(ADV.Commands.Camera.LerpNullMove), "Do");
         }
 
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> code)
         {
             // Replace read access to Component.transform with calls to
             // GetIdealTransformForComponent.
             var newMethod = AccessTools.Method(typeof(ActionCameraControl), nameof(ActionCameraControl.GetIdealTransformFor));
             foreach (var inst in code)
-            {
                 if ((inst.opcode == OpCodes.Call || inst.opcode == OpCodes.Callvirt) &&
-                        inst.operand is MethodInfo method &&
-                        method.ReflectedType == typeof(Component) &&
-                        method.Name == "get_transform")
-                {
+                    inst.operand is MethodInfo method &&
+                    method.ReflectedType == typeof(Component) &&
+                    method.Name == "get_transform")
                     yield return new CodeInstruction(OpCodes.Call, newMethod);
-                }
                 else
-                {
                     yield return inst;
-                }
-            }
         }
 
         /*
@@ -166,38 +156,32 @@ namespace KoikatuVR
     }
 
     [HarmonyPatch(typeof(ADV.TextScenario))]
-    class TextScenarioPatches
+    internal class TextScenarioPatches
     {
         [HarmonyPatch(nameof(ADV.TextScenario.ADVCameraSetting))]
         [HarmonyTranspiler]
-        static IEnumerable<CodeInstruction> TransADVCameraSetting(IEnumerable<CodeInstruction> code)
+        private static IEnumerable<CodeInstruction> TransADVCameraSetting(IEnumerable<CodeInstruction> code)
         {
             // Replace a call to Transform.SetPositionAndRotation.
             foreach (var inst in code)
-            {
                 if ((inst.opcode == OpCodes.Call || inst.opcode == OpCodes.Callvirt) &&
                     inst.operand is MethodInfo method &&
                     method.ReflectedType == typeof(Transform) &&
                     method.Name == "SetPositionAndRotation")
-                {
                     yield return new CodeInstruction(
                         OpCodes.Call,
                         AccessTools.Method(typeof(ActionCameraControl), nameof(ActionCameraControl.SetIdealPositionAndRotation)));
-                }
                 else
-                {
                     yield return inst;
-                }
-            }
         }
     }
 
     [HarmonyPatch(typeof(ADV.Program))]
-    class ProgramPatches
+    internal class ProgramPatches
     {
         [HarmonyPatch(nameof(ADV.Program.SetNull))]
         [HarmonyPrefix]
-        static void PreSetNull(ref Transform transform)
+        private static void PreSetNull(ref Transform transform)
         {
             transform = ActionCameraControl.GetIdealTransformFor(transform);
         }
@@ -257,17 +241,17 @@ namespace KoikatuVR
     //}
 
     [HarmonyPatch(typeof(ADV.EventCG.Data))]
-    class EventCGDataPatches
+    internal class EventCGDataPatches
     {
         [HarmonyPatch(nameof(ADV.EventCG.Data.camRoot), MethodType.Setter)]
         [HarmonyPrefix]
-        static void PreSetCamRoot(ref Transform __0)
+        private static void PreSetCamRoot(ref Transform __0)
         {
             __0 = ActionCameraControl.GetIdealTransformFor(__0);
         }
     }
 
-    class TransformDebug
+    internal class TransformDebug
     {
         public static Transform targetTransform;
     }

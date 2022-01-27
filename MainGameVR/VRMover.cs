@@ -14,15 +14,15 @@ namespace KoikatuVR
     /// </summary>
     public class VRMover
     {
-        public static VRMover Instance {
-            get {
-                if (_instance == null)
-                {
-                    _instance = new VRMover();
-                }
+        public static VRMover Instance
+        {
+            get
+            {
+                if (_instance == null) _instance = new VRMover();
                 return _instance;
             }
         }
+
         private static VRMover _instance;
 
         private Vector3 _lastPosition;
@@ -30,6 +30,7 @@ namespace KoikatuVR
         private KoikatuSettings _settings;
 
         public delegate void OnMoveAction();
+
         public event OnMoveAction OnMove;
 
         public VRMover()
@@ -47,13 +48,10 @@ namespace KoikatuVR
         /// <param name="keepHeight"></param>
         public void MoveTo(Vector3 position, Quaternion rotation, bool keepHeight, bool quiet = false)
         {
-            if (!quiet)
-            {
-                VRLog.Debug($"Moving camera to {position} {rotation.eulerAngles}");
-            }
+            if (!quiet) VRLog.Debug($"Moving camera to {position} {rotation.eulerAngles}");
             _lastPosition = position;
             _lastRotation = rotation;
-            VR.Mode.MoveToPosition(position, rotation, ignoreHeight: keepHeight);
+            VR.Mode.MoveToPosition(position, rotation, keepHeight);
             OnMove?.Invoke();
         }
 
@@ -68,7 +66,7 @@ namespace KoikatuVR
         /// <param name="keepHeight"></param>
         public void MaybeMoveTo(Vector3 position, Quaternion rotation, bool keepHeight)
         {
-            MoveWithHeuristics(position, rotation, keepHeight, pretendFading: false);
+            MoveWithHeuristics(position, rotation, keepHeight, false);
         }
 
         /// <summary>
@@ -80,7 +78,7 @@ namespace KoikatuVR
         public void MaybeMoveADV(ADV.TextScenario textScenario, Vector3 position, Quaternion rotation, bool keepHeight)
         {
             var advFade = new Traverse(textScenario).Field<ADVFade>("advFade").Value;
-            MoveWithHeuristics(position, rotation, keepHeight, pretendFading: !advFade.IsEnd);
+            MoveWithHeuristics(position, rotation, keepHeight, !advFade.IsEnd);
         }
 
         /// <summary>
@@ -90,7 +88,7 @@ namespace KoikatuVR
         /// <param name="textScenario"></param>
         public void HandleTextScenarioProgress(ADV.TextScenario textScenario)
         {
-            bool isFadingOut = IsFadingOut(new Traverse(textScenario).Field<ADVFade>("advFade").Value);
+            var isFadingOut = IsFadingOut(new Traverse(textScenario).Field<ADVFade>("advFade").Value);
 
             VRLog.Debug($"HandleTextScenarioProgress isFadingOut={isFadingOut}");
 
@@ -103,7 +101,7 @@ namespace KoikatuVR
             }
             else if (ShouldApproachCharacter(textScenario, out var character))
             {
-                var distance = InCafe() ? 0.95f :  0.7f;
+                var distance = InCafe() ? 0.95f : 0.7f;
                 float height;
                 Quaternion rotation;
                 if (Manager.Scene.NowSceneNames[0] == "H")
@@ -120,17 +118,18 @@ namespace KoikatuVR
                     height = originalTarget.position.y;
                     rotation = originalTarget.rotation;
                 }
+
                 var cameraXZ = character.transform.position - rotation * (distance * Vector3.forward);
                 MoveWithHeuristics(
                     new Vector3(cameraXZ.x, height, cameraXZ.z),
                     rotation,
-                    keepHeight: false,
-                    pretendFading: isFadingOut);
+                    false,
+                    isFadingOut);
             }
             else
             {
                 var target = ActionCameraControl.GetIdealTransformFor(textScenario.AdvCamera);
-                MoveWithHeuristics(target.position, target.rotation, keepHeight: false, pretendFading: isFadingOut);
+                MoveWithHeuristics(target.position, target.rotation, false, isFadingOut);
             }
         }
 
@@ -143,7 +142,7 @@ namespace KoikatuVR
 
             var trav = new Traverse(fade);
             return IsFadingOutSub(trav.Field<ADVFade.Fade>("front").Value) ||
-                IsFadingOutSub(trav.Field<ADVFade.Fade>("back").Value);
+                   IsFadingOutSub(trav.Field<ADVFade.Fade>("back").Value);
         }
 
         private IEnumerator ImpersonateCo(bool isFadingOut, Transform head)
@@ -154,22 +153,18 @@ namespace KoikatuVR
             MoveWithHeuristics(
                 head.TransformPoint(0, 0.15f, 0.15f),
                 head.rotation,
-                keepHeight: false,
-                pretendFading: isFadingOut);
+                false,
+                isFadingOut);
         }
 
         private void MoveWithHeuristics(Vector3 position, Quaternion rotation, bool keepHeight, bool pretendFading)
         {
             var fade = Manager.Scene.sceneFadeCanvas;
-            bool fadeOk = fade.isEnd; //(fade._Fade == SimpleFade.Fade.Out) ^ fade.IsEnd;
+            var fadeOk = fade.isEnd; //(fade._Fade == SimpleFade.Fade.Out) ^ fade.IsEnd;
             if (pretendFading || fadeOk || IsDestinationFar(position, rotation))
-            {
                 MoveTo(position, rotation, keepHeight);
-            }
             else
-            {
                 VRLog.Debug("Not moving because heuristic conditions are not met");
-            }
         }
 
         private bool IsDestinationFar(Vector3 position, Quaternion rotation)
@@ -183,10 +178,7 @@ namespace KoikatuVR
         {
             male = null;
 
-            if (!Manager.Character.IsInstance())
-            {
-                return false;
-            }
+            if (!Manager.Character.IsInstance()) return false;
 
             var males = Manager.Character.dictEntryChara.Values
                 .Where(ch => ch.isActiveAndEnabled && ch.sex == 0 && ch.objTop?.activeSelf == true && ch.visibleAll)
@@ -196,6 +188,7 @@ namespace KoikatuVR
                 male = males[0];
                 return true;
             }
+
             return false;
         }
 
@@ -207,6 +200,7 @@ namespace KoikatuVR
                 control = textScenario.currentChara.chaCtrl;
                 return true;
             }
+
             control = null;
             return false;
         }
@@ -214,7 +208,7 @@ namespace KoikatuVR
         private static bool InCafe()
         {
             return ActionScene.initialized &&
-                ActionScene.instance.transform.Find("cafeChair"); //todo taken from kk, needs a test, probably not working
+                   ActionScene.instance.transform.Find("cafeChair"); //todo taken from kk, needs a test, probably not working
         }
     }
 }

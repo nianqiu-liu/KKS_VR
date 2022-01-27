@@ -16,7 +16,7 @@ using Valve.VR;
 
 namespace KoikatuVR
 {
-    [BepInPlugin(GUID: GUID, Name: PluginName, Version: Version)]
+    [BepInPlugin(GUID, PluginName, Version)]
     [BepInProcess(KoikatuAPI.GameProcessName)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)] //todo unnecessary?
     public class VRPlugin : BaseUnityPlugin
@@ -27,15 +27,15 @@ namespace KoikatuVR
 
         internal static new ManualLogSource Logger;
 
-        void Awake()
+        private void Awake()
         {
             Logger = base.Logger;
 
             //VRLog.Backend = new BepInExLoggerBackend(Logger);
             //bool vrDeactivated = Environment.CommandLine.Contains("--novr");
-            bool vrActivated = Environment.CommandLine.Contains("--vr");
+            var vrActivated = Environment.CommandLine.Contains("--vr");
 
-            bool enabled = vrActivated;// || (!vrDeactivated && SteamVRDetector.IsRunning);
+            var enabled = vrActivated; // || (!vrDeactivated && SteamVRDetector.IsRunning);
             if (enabled)
             {
                 KKSCharaStudioVR.OpenVRHelperTempfixHook.Patch();
@@ -48,7 +48,7 @@ namespace KoikatuVR
         private const string DeviceOpenVR = "OpenVR";
         private const string DeviceNone = "None";
 
-        IEnumerator LoadDevice(bool vrMode, KoikatuSettings settings)
+        private IEnumerator LoadDevice(bool vrMode, KoikatuSettings settings)
         {
             yield return new WaitUntil(() => Manager.Scene.initialized && Manager.Scene.LoadSceneName == "Title");
 
@@ -88,24 +88,26 @@ namespace KoikatuVR
             if (vrMode)
             {
                 // added from charastudio vr
-                OpenVRSettings ovrsettings = OpenVRSettings.GetSettings(true);
+                var ovrsettings = OpenVRSettings.GetSettings(true);
                 ovrsettings.StereoRenderingMode = OpenVRSettings.StereoRenderingModes.MultiPass;
                 ovrsettings.InitializationType = OpenVRSettings.InitializationTypes.Scene;
                 ovrsettings.EditorAppKey = "kss.charastudio.exe";
-                SteamVR_Settings instance = SteamVR_Settings.instance;
+                var instance = SteamVR_Settings.instance;
                 instance.autoEnableVR = true;
                 instance.editorAppKey = "kss.charastudio.exe";
-                OpenVRLoader openVRLoader = ScriptableObject.CreateInstance<OpenVRLoader>();
+                var openVRLoader = ScriptableObject.CreateInstance<OpenVRLoader>();
                 if (!openVRLoader.Initialize())
                 {
                     Logger.LogInfo("Failed to Initialize " + newDevice + ".");
                     yield break;
                 }
+
                 if (!openVRLoader.Start())
                 {
                     Logger.LogInfo("Failed to Start " + newDevice + ".");
                     yield break;
                 }
+
                 try
                 {
                     SteamVR_Behaviour.Initialize(false);
@@ -114,9 +116,10 @@ namespace KoikatuVR
                 {
                     Logger.LogError(data);
                 }
+
                 while (true)
                 {
-                    SteamVR.InitializedStates initializedState = SteamVR.initializedState;
+                    var initializedState = SteamVR.initializedState;
                     switch (initializedState)
                     {
                         case SteamVR.InitializedStates.Initializing:
@@ -131,12 +134,14 @@ namespace KoikatuVR
                             Logger.LogInfo($"Unknow SteamVR initializeState {initializedState}.");
                             yield break;
                     }
+
                     break;
                 }
+
                 Logger.LogInfo("Steam VR initialization completed.");
 
                 // original kk vr
-                new Harmony(VRPlugin.GUID).PatchAll();
+                new Harmony(GUID).PatchAll();
                 // Boot VRManager!
                 VRManager.Create<Interpreters.KoikatuInterpreter>(new KoikatuContext(settings));
                 // VRGIN doesn't update the near clip plane until a first "main" camera is created, so we set it here.
@@ -150,7 +155,7 @@ namespace KoikatuVR
                 // the game is under heavy load. We disable window ghosting in
                 // an attempt to counter this.
                 NativeMethods.DisableProcessWindowsGhosting();
-				UnityEngine.Object.DontDestroyOnLoad(VRCamera.Instance.gameObject);
+                DontDestroyOnLoad(VRCamera.Instance.gameObject);
             }
         }
 
@@ -160,7 +165,7 @@ namespace KoikatuVR
         }
     }
 
-    class NativeMethods
+    internal class NativeMethods
     {
         [DllImport("user32.dll")]
         public static extern void DisableProcessWindowsGhosting();

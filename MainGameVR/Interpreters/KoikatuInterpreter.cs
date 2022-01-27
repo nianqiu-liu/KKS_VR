@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 namespace KoikatuVR.Interpreters
 {
-    class KoikatuInterpreter : GameInterpreter
+    internal class KoikatuInterpreter : GameInterpreter
     {
         public enum SceneType
         {
@@ -16,7 +16,7 @@ namespace KoikatuVR.Interpreters
             TalkScene,
             HScene,
             NightMenuScene,
-            CustomScene,
+            CustomScene
         }
 
         public SceneType CurrentScene { get; private set; }
@@ -48,19 +48,13 @@ namespace KoikatuVR.Interpreters
         protected override void OnLateUpdate()
         {
             base.OnLateUpdate();
-            if (_kkSubtitlesCaption != null)
-            {
-                FixupKkSubtitles();
-            }
+            if (_kkSubtitlesCaption != null) FixupKkSubtitles();
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             VRLog.Info($"OnSceneLoaded {scene.name}");
-            foreach (var reflection in GameObject.FindObjectsOfType<MirrorReflection>())
-            {
-                _mirrorManager.Fix(reflection);
-            }
+            foreach (var reflection in FindObjectsOfType<MirrorReflection>()) _mirrorManager.Fix(reflection);
         }
 
         /// <summary>
@@ -70,13 +64,11 @@ namespace KoikatuVR.Interpreters
         private void FixupKkSubtitles()
         {
             foreach (Transform child in _kkSubtitlesCaption.transform)
-            {
                 if (child.localScale != Vector3.one)
                 {
                     VRLog.Info($"Fixing up scale for {child}");
                     child.localScale = Vector3.one;
                 }
-            }
         }
 
         public override bool IsIgnoredCanvas(Canvas canvas)
@@ -132,7 +124,7 @@ namespace KoikatuVR.Interpreters
         // 前回とSceneが変わっていれば切り替え処理をする
         private void UpdateScene()
         {
-            SceneType nextSceneType = DetectScene();
+            var nextSceneType = DetectScene();
 
             if (nextSceneType != CurrentScene)
             {
@@ -150,9 +142,9 @@ namespace KoikatuVR.Interpreters
             if (GameAPI.InsideHScene) return SceneType.HScene;
             if (MakerAPI.InsideMaker) return SceneType.CustomScene;
             if (TalkScene.isPaly) return SceneType.TalkScene;
-            
+
             var stack = Manager.Scene.NowSceneNames;
-            foreach (string name in stack)
+            foreach (var name in stack)
             {
                 //if (name == "H" && SceneObjPresent("HScene"))
                 //    return SceneType.HScene;
@@ -165,27 +157,26 @@ namespace KoikatuVR.Interpreters
                 //if (name == "CustomScene" && SceneObjPresent("CustomScene"))
                 //    return SceneType.CustomScene;
             }
+
             return SceneType.OtherScene;
         }
 
         private bool SceneObjPresent(string name)
         {
-            if (_sceneObjCache != null && _sceneObjCache.name == name)
-            {
-                return true;
-            }
+            if (_sceneObjCache != null && _sceneObjCache.name == name) return true;
             var obj = GameObject.Find(name);
             if (obj != null)
             {
                 _sceneObjCache = obj;
                 return true;
             }
+
             return false;
         }
 
         private static SceneInterpreter CreateSceneInterpreter(SceneType ty)
         {
-            switch(ty)
+            switch (ty)
             {
                 case SceneType.OtherScene:
                     return new OtherSceneInterpreter();
@@ -207,10 +198,7 @@ namespace KoikatuVR.Interpreters
 
         protected override CameraJudgement JudgeCameraInternal(Camera camera)
         {
-            if (camera.CompareTag("MainCamera"))
-            {
-                StartCoroutine(HandleMainCameraCo(camera));
-            }
+            if (camera.CompareTag("MainCamera")) StartCoroutine(HandleMainCameraCo(camera));
             return base.JudgeCameraInternal(camera);
         }
 
@@ -233,7 +221,7 @@ namespace KoikatuVR.Interpreters
             else if (camera.GetComponent<CameraControl_Ver2>() != null)
             {
                 VRLog.Info("New main camera detected: moving to {0} {1}", camera.transform.position, camera.transform.eulerAngles);
-                VRMover.Instance.MoveTo(camera.transform.position, camera.transform.rotation, keepHeight: false);
+                VRMover.Instance.MoveTo(camera.transform.position, camera.transform.rotation, false);
                 VRLog.Info("moved to {0} {1}", VR.Camera.Head.position, VR.Camera.Head.eulerAngles);
                 VRLog.Info("Adding CameraControlControl");
                 camera.gameObject.AddComponent<CameraControlControl>();

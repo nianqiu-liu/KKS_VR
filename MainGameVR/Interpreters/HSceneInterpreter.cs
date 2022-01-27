@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace KoikatuVR.Interpreters
 {
-    class HSceneInterpreter : SceneInterpreter
+    internal class HSceneInterpreter : SceneInterpreter
     {
         private bool _initialized;
-        Caress.VRMouth _vrMouth;
+        private Caress.VRMouth _vrMouth;
 
         public override void OnStart()
         {
@@ -18,7 +18,7 @@ namespace KoikatuVR.Interpreters
         {
             if (_initialized)
             {
-                GameObject.Destroy(_vrMouth);
+                Object.Destroy(_vrMouth);
                 DestroyControllerComponent<Caress.CaressController>();
             }
         }
@@ -26,7 +26,7 @@ namespace KoikatuVR.Interpreters
         public override void OnUpdate()
         {
             if (!_initialized &&
-                GameObject.FindObjectOfType<HSceneProc>() is HSceneProc proc
+                Object.FindObjectOfType<HSceneProc>() is HSceneProc proc
                 && proc.enabled)
             {
                 _vrMouth = VR.Camera.gameObject.AddComponent<Caress.VRMouth>();

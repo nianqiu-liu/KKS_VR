@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HarmonyLib;
 
 namespace KoikatuVR.Caress
@@ -16,7 +13,7 @@ namespace KoikatuVR.Caress
         public static void SetSelectKindTouch(HSceneProc proc, int femaleIndex, HandCtrl.AibuColliderKind colliderKind)
         {
             var hands = GetHands(proc);
-            for (int i = 0; i < hands.Count; i++)
+            for (var i = 0; i < hands.Count; i++)
             {
                 var kind = i == femaleIndex ? colliderKind : HandCtrl.AibuColliderKind.none;
                 new Traverse(hands[i]).Field("selectKindTouch").SetValue(kind);
@@ -26,10 +23,7 @@ namespace KoikatuVR.Caress
         public static List<HandCtrl> GetHands(HSceneProc proc)
         {
             var ret = new List<HandCtrl>();
-            for (int i = 0; i < proc.flags.lstHeroine.Count; i++)
-            {
-                ret.Add(i == 0 ? proc.hand : Compat.HSceenProc_hand1(proc));
-            }
+            for (var i = 0; i < proc.flags.lstHeroine.Count; i++) ret.Add(i == 0 ? proc.hand : Compat.HSceenProc_hand1(proc));
             return ret;
         }
 
@@ -39,12 +33,9 @@ namespace KoikatuVR.Caress
         /// <returns></returns>
         public static IEnumerator ClickCo()
         {
-            bool consumed = false;
+            var consumed = false;
             HandCtrlHooks.InjectMouseButtonDown(0, () => consumed = true);
-            while (!consumed)
-            {
-                yield return null;
-            }
+            while (!consumed) yield return null;
             HandCtrlHooks.InjectMouseButtonUp(0);
         }
     }

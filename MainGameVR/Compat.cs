@@ -11,7 +11,7 @@ namespace KoikatuVR
     /// Collection of compatibility methods to support different versions of the
     /// base game.
     /// </summary>
-    class Compat
+    internal class Compat
     {
         /// <summary>
         /// This method just returns proc.hand1. Since this field is absent in
@@ -41,13 +41,9 @@ namespace KoikatuVR
             var trav = new Traverse(self);
             var method2 = trav.Method("ModeChangeForce", new[] { typeof(ActionGame.CameraMode?), typeof(bool) });
             if (method2.MethodExists())
-            {
                 method2.GetValue(mode, true);
-            }
             else
-            {
                 trav.Method("ModeChangeForce", new[] { typeof(ActionGame.CameraMode?) }).GetValue(mode);
-            }
         }
     }
 }

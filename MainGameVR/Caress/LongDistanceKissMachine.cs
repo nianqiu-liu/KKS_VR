@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-
 using VRGIN.Core;
 
 namespace KoikatuVR.Caress
@@ -16,8 +15,8 @@ namespace KoikatuVR.Caress
     /// </summary>
     public class LongDistanceKissMachine
     {
-        float? _startTime; // null iff not kissing
-        bool _prevEntryConditionMet = true;
+        private float? _startTime; // null iff not kissing
+        private bool _prevEntryConditionMet = true;
 
         public bool Step(
             float currentTime,
@@ -25,7 +24,7 @@ namespace KoikatuVR.Caress
             Vector3 hmdFromFemale,
             float femaleFaceAngleY)
         {
-            bool entryConditionMet = EntryScore(femaleFromHmd, hmdFromFemale, femaleFaceAngleY) < 0;
+            var entryConditionMet = EntryScore(femaleFromHmd, hmdFromFemale, femaleFaceAngleY) < 0;
             bool result;
             if (_startTime is float startTime)
             {
@@ -41,13 +40,8 @@ namespace KoikatuVR.Caress
             _prevEntryConditionMet = entryConditionMet;
 
             if (result)
-            {
                 _startTime = _startTime ?? currentTime;
-            }
-            else if (_startTime != null)
-            {
-                _startTime = null;
-            }
+            else if (_startTime != null) _startTime = null;
             return result;
         }
 

@@ -1,7 +1,6 @@
-﻿
-namespace KoikatuVR.Interpreters
+﻿namespace KoikatuVR.Interpreters
 {
-    class OtherSceneInterpreter : SceneInterpreter
+    internal class OtherSceneInterpreter : SceneInterpreter
     {
         public override void OnStart()
         {

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+using UnityEngine;
 using VRGIN.Controls;
 using VRGIN.Core;
-using UnityEngine;
 
 namespace KoikatuVR.Controls
 {
-    class ToolUtil
+    internal class ToolUtil
     {
         public static HelpText HelpTrigger(Controller controller, string description)
         {
@@ -62,6 +59,7 @@ namespace KoikatuVR.Controls
                 VRLog.Warn($"HelpText: attach point not found for {attachNames}");
                 return null;
             }
+
             return HelpText.Create(description, attach, textOffset, lineOffset);
         }
     }

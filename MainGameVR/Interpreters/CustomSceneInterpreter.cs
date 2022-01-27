@@ -4,7 +4,7 @@ using VRGIN.Core;
 
 namespace KoikatuVR.Interpreters
 {
-    class CustomSceneInterpreter : SceneInterpreter
+    internal class CustomSceneInterpreter : SceneInterpreter
     {
         public override void OnStart()
         {

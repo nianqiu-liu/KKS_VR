@@ -12,15 +12,16 @@ namespace KoikatuVR
     /// <summary>
     /// A VR fader that synchronizes with the fader of the base game.
     /// </summary>
-    class VRFade : ProtectedBehaviour
+    internal class VRFade : ProtectedBehaviour
     {
         /// <summary>
         /// Reference to the image used by the vanilla SceneFade object.
         /// </summary>
-        CanvasGroup _vanillaImage;
-        Material _fadeMaterial;
-        int _fadeMaterialColorID;
-        float _alpha = 0f;
+        private CanvasGroup _vanillaImage;
+
+        private Material _fadeMaterial;
+        private int _fadeMaterialColorID;
+        private float _alpha = 0f;
 
         public static void Create()
         {

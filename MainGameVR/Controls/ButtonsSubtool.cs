@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using WindowsInput.Native;
-using VRGIN.Core;
 using KoikatuVR.Interpreters;
 using UnityEngine;
+using VRGIN.Core;
+using WindowsInput.Native;
 
 namespace KoikatuVR.Controls
 {
@@ -13,19 +12,21 @@ namespace KoikatuVR.Controls
     /// A subtool that handles an arbitrary number of simple actions that only
     /// requires a single button.
     /// </summary>
-    class ButtonsSubtool
+    internal class ButtonsSubtool
     {
+        private readonly KoikatuInterpreter _Interpreter;
+
         /// <summary>
         /// The set of keys for which we've sent a down message but not a
         /// corresponding up message.
         /// </summary>
         private readonly HashSet<AssignableFunction> _SentUnmatchedDown
             = new HashSet<AssignableFunction>();
-        private readonly KoikatuInterpreter _Interpreter;
+
         private readonly KoikatuSettings _Settings;
+        private int _ScrollRepeatAmount;
 
         private float _ScrollRepeatTime;
-        private int _ScrollRepeatAmount;
 
         public ButtonsSubtool(KoikatuInterpreter interpreter, KoikatuSettings settings)
         {
@@ -38,10 +39,7 @@ namespace KoikatuVR.Controls
         /// </summary>
         public void Update()
         {
-            if (_SentUnmatchedDown.Contains(AssignableFunction.PL2CAM))
-            {
-                IfActionScene(interpreter => interpreter.MovePlayerToCamera());
-            }
+            if (_SentUnmatchedDown.Contains(AssignableFunction.PL2CAM)) IfActionScene(interpreter => interpreter.MovePlayerToCamera());
             if (_ScrollRepeatAmount != 0 && _ScrollRepeatTime < Time.unscaledTime)
             {
                 _ScrollRepeatTime += 0.1f;
@@ -65,10 +63,7 @@ namespace KoikatuVR.Controls
         {
             // Make a copy because the loop below will modify the HashSet.
             var todo = _SentUnmatchedDown.ToList();
-            foreach (var key in todo)
-            {
-                ButtonUp(key);
-            }
+            foreach (var key in todo) ButtonUp(key);
         }
 
         /// <summary>
@@ -119,6 +114,7 @@ namespace KoikatuVR.Controls
                     VR.Input.Keyboard.KeyDown((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), fun.ToString()));
                     break;
             }
+
             _SentUnmatchedDown.Add(fun);
         }
 
@@ -170,6 +166,7 @@ namespace KoikatuVR.Controls
                     VR.Input.Keyboard.KeyUp((VirtualKeyCode)Enum.Parse(typeof(VirtualKeyCode), fun.ToString()));
                     break;
             }
+
             _SentUnmatchedDown.Remove(fun);
         }
 
@@ -188,25 +185,16 @@ namespace KoikatuVR.Controls
         {
             VRLog.Debug($"Rotating {degrees}");
             var actInterpreter = _Interpreter.SceneInterpreter as ActionSceneInterpreter;
-            if (actInterpreter != null)
-            {
-                actInterpreter.MoveCameraToPlayer(onlyPosition: true);
-            }
+            if (actInterpreter != null) actInterpreter.MoveCameraToPlayer(true);
             var camera = VR.Camera.transform;
             var newRotation = Quaternion.AngleAxis(degrees, Vector3.up) * camera.rotation;
-            VRMover.Instance.MoveTo(camera.position, newRotation, keepHeight: false);
-            if (actInterpreter != null)
-            {
-                actInterpreter.MovePlayerToCamera();
-            }
+            VRMover.Instance.MoveTo(camera.position, newRotation, false);
+            if (actInterpreter != null) actInterpreter.MovePlayerToCamera();
         }
 
         private void IfActionScene(Action<ActionSceneInterpreter> a)
         {
-            if (_Interpreter.SceneInterpreter is ActionSceneInterpreter actInterpreter)
-            {
-                a(actInterpreter);
-            }
+            if (_Interpreter.SceneInterpreter is ActionSceneInterpreter actInterpreter) a(actInterpreter);
         }
     }
 }

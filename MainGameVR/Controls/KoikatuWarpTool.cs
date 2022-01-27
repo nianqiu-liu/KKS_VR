@@ -1,20 +1,20 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
-using System.Text;
+using ActionGame.Chara;
 using KoikatuVR.Interpreters;
-using VRGIN.Core;
-using VRGIN.Controls;
 using UnityEngine;
+using VRGIN.Controls;
+using VRGIN.Controls.Tools;
+using VRGIN.Core;
 
 namespace KoikatuVR.Controls
 {
-    class KoikatuWarpTool : VRGIN.Controls.Tools.WarpTool
+    internal class KoikatuWarpTool : WarpTool
     {
         private KoikatuInterpreter _interpreter;
-        private KoikatuSettings _settings;
         private GameObject _protagonistToFollow;
+        private KoikatuSettings _settings;
 
         protected override void OnStart()
         {
@@ -71,17 +71,17 @@ namespace KoikatuVR.Controls
             base.OnLateUpdate();
             if (_protagonistToFollow != null)
             {
-                var player = _protagonistToFollow.GetComponent<ActionGame.Chara.Player>();
+                var player = _protagonistToFollow.GetComponent<Player>();
                 StartCoroutine(FollowDelayedCo(player));
                 _protagonistToFollow = null;
             }
         }
 
 
-        private IEnumerator FollowDelayedCo(ActionGame.Chara.Player player)
+        private IEnumerator FollowDelayedCo(Player player)
         {
             // Temporarily hide the protagonist.
-            bool oldActive = player.chaCtrl.objTop.activeSelf;
+            var oldActive = player.chaCtrl.objTop.activeSelf;
             player.chaCtrl.objTop.SetActive(false);
             // Wait for the game to correct the protagonist's position.
             yield return null;
@@ -90,6 +90,7 @@ namespace KoikatuVR.Controls
                 VRLog.Debug("Following player");
                 act.MoveCameraToPlayer();
             }
+
             player.chaCtrl.objTop.SetActive(oldActive);
         }
 
@@ -100,9 +101,10 @@ namespace KoikatuVR.Controls
 
         public override List<HelpText> GetHelpTexts()
         {
-            return new List<HelpText>(new HelpText[] {
+            return new List<HelpText>(new[]
+            {
                 ToolUtil.HelpTrackpadCenter(Owner, "Press to teleport"),
-                ToolUtil.HelpGrip(Owner, "Hold to move"),
+                ToolUtil.HelpGrip(Owner, "Hold to move")
             }.Where(x => x != null));
         }
     }

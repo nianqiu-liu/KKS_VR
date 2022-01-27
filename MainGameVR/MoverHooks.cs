@@ -14,34 +14,30 @@ using System.Reflection;
 namespace KoikatuVR
 {
     [HarmonyPatch(typeof(ADV.TextScenario))]
-    class TextScenarioPatches1
+    internal class TextScenarioPatches1
     {
         [HarmonyPatch("ADVCameraSetting")]
         [HarmonyPostfix]
-        static void PostADVCameraSetting(ADV.TextScenario __instance)
+        private static void PostADVCameraSetting(ADV.TextScenario __instance)
         {
             if (Manager.Scene.initialized && Manager.Scene.NowSceneNames[0] == "Talk")
-            {
                 // Talk scenes are handled separately.
                 return;
-            }
 
             VRLog.Debug("PostADVCameraSetting");
             var backTrans = __instance.BackCamera?.transform;
             if (backTrans == null)
-            {
                 // backTrans can be null in Roaming. We don't want to move the
                 // camera anyway in that case.
                 return;
-            }
-            VRMover.Instance.MaybeMoveADV(__instance, backTrans.position, backTrans.rotation, keepHeight: false);
+            VRMover.Instance.MaybeMoveADV(__instance, backTrans.position, backTrans.rotation, false);
         }
     }
 
     [HarmonyPatch]
-    class RequestNextLinePatches
+    internal class RequestNextLinePatches
     {
-        static IEnumerable<MethodBase> TargetMethods()
+        private static IEnumerable<MethodBase> TargetMethods()
         {
             // In some versions of the base game, MainScenario._RequestNextLine
             // duplicates the logic found in TextScenario._RequestNextLine.
@@ -49,25 +45,18 @@ namespace KoikatuVR
             // We want to patch both methods or the latter alone depending on
             // the version.
             yield return AccessTools.Method(typeof(ADV.TextScenario), "_RequestNextLine");
-            if (AccessTools.Field(typeof(ADV.MainScenario), "textHash") == null)
-            {
-                yield return AccessTools.Method(typeof(ADV.MainScenario), "_RequestNextLine");
-            }
+            if (AccessTools.Field(typeof(ADV.MainScenario), "textHash") == null) yield return AccessTools.Method(typeof(ADV.MainScenario), "_RequestNextLine");
         }
 
-        static void Postfix(ADV.TextScenario __instance, ref IEnumerator __result)
+        private static void Postfix(ADV.TextScenario __instance, ref IEnumerator __result)
         {
             if (Manager.Scene.initialized && Manager.Scene.NowSceneNames[0] == "Talk")
-            {
                 // Talk scenes are handled separately.
                 return;
-            }
 
             if (__instance.advScene == null)
-            {
                 // Outside ADV scene (probably roaming), ignore.
                 return;
-            }
 
             __result = new[] { __result, Postfix() }.GetEnumerator();
 
@@ -80,28 +69,25 @@ namespace KoikatuVR
     }
 
     [HarmonyPatch(typeof(ADV.Program))]
-    class ProgramPatches1
+    internal class ProgramPatches1
     {
         [HarmonyPatch(nameof(ADV.Program.SetNull))]
         [HarmonyPostfix]
-        static void PostSetNull(Transform transform)
+        private static void PostSetNull(Transform transform)
         {
             VRLog.Debug("PostSetNull");
-            VRMover.Instance.MaybeMoveTo(transform.position, transform.rotation, keepHeight: false);
+            VRMover.Instance.MaybeMoveTo(transform.position, transform.rotation, false);
         }
     }
 
     [HarmonyPatch(typeof(HSceneProc))]
-    class HSceneProcPatches
+    internal class HSceneProcPatches
     {
         [HarmonyPatch("ChangeAnimator")]
         [HarmonyPostfix]
         public static void PostChangeAnimator(HSceneProc __instance, bool _isForceCameraReset, List<ChaControl> ___lstFemale)
         {
-            if (_isForceCameraReset)
-            {
-                UpdateVRCamera(__instance, ___lstFemale, null);
-            }
+            if (_isForceCameraReset) UpdateVRCamera(__instance, ___lstFemale, null);
         }
 
         [HarmonyPatch("ChangeCategory")]
@@ -124,7 +110,7 @@ namespace KoikatuVR
         /// </summary>
         /// <param name="instance"></param>
         /// <param name="lstFemale"></param>
-        static void UpdateVRCamera(HSceneProc instance, List<ChaControl> lstFemale, float? previousFemaleY)
+        private static void UpdateVRCamera(HSceneProc instance, List<ChaControl> lstFemale, float? previousFemaleY)
         {
             var baseTransform = lstFemale[0].objTop.transform;
             var camDat = new Traverse(instance.flags.ctrlCamera).Field<BaseCameraControl_Ver2.CameraData>("CamDat").Value;
@@ -143,13 +129,14 @@ namespace KoikatuVR
                     dir = Vector3.back * 0.8f;
                     break;
             }
+
             var cameraPosition = cameraRotation * dir + baseTransform.TransformPoint(camDat.Pos);
             if (previousFemaleY is float prevY)
             {
                 // Keep the relative Y coordinate from the female.
                 var cameraHeight = VR.Camera.transform.position.y + baseTransform.position.y - prevY;
                 var destination = new Vector3(cameraPosition.x, cameraHeight, cameraPosition.z);
-                VRMover.Instance.MaybeMoveTo(destination, cameraRotation, keepHeight: false);
+                VRMover.Instance.MaybeMoveTo(destination, cameraRotation, false);
             }
             else
             {
@@ -157,7 +144,7 @@ namespace KoikatuVR
                 // TODO: the height calculation below assumes standing mode.
                 var cameraHeight = lstFemale[0].transform.position.y + VR.Camera.transform.localPosition.y;
                 var destination = new Vector3(cameraPosition.x, cameraHeight, cameraPosition.z);
-                VRMover.Instance.MoveTo(destination, cameraRotation, keepHeight: false);
+                VRMover.Instance.MoveTo(destination, cameraRotation, false);
             }
         }
     }

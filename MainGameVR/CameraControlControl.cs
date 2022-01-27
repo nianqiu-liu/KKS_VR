@@ -29,26 +29,19 @@ namespace KoikatuVR
     /// at the camera, and (2) the directional light, which is a child of the
     /// main camera, has the right orientation.
     /// </summary>
-    class CameraControlControl : ProtectedBehaviour
+    internal class CameraControlControl : ProtectedBehaviour
     {
-        CameraControl_Ver2 _control;
+        private CameraControl_Ver2 _control;
 
         protected override void OnStart()
         {
             _control = GetComponent<CameraControl_Ver2>();
-            if (_control == null)
-            {
-                VRLog.Error("CameraControlControl: CameraControl_Ver2 was not found");
-            }
+            if (_control == null) VRLog.Error("CameraControlControl: CameraControl_Ver2 was not found");
 
             if (_control.enabled)
-            {
                 _control.enabled = false;
-            }
             else
-            {
                 VRLog.Warn("control is already disabled");
-            }
         }
 
         protected override void OnUpdate()
@@ -57,18 +50,12 @@ namespace KoikatuVR
             transform.SetPositionAndRotation(head.position, head.rotation);
             // One of the default macros from GameObjectList enables the camera
             // control. We make sure that it remains desabled.
-            if (_control != null)
-            {
-                _control.enabled = false;
-            }
+            if (_control != null) _control.enabled = false;
         }
 
         protected override void OnLateUpdate()
         {
-            if (_control.isCursorLock && Singleton<GameCursor>.IsInstance())
-            {
-                Singleton<GameCursor>.Instance.SetCursorLock(false);
-            }
+            if (_control.isCursorLock && Singleton<GameCursor>.IsInstance()) Singleton<GameCursor>.Instance.SetCursorLock(false);
         }
     }
 }

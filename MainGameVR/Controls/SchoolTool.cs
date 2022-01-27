@@ -1,40 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using KoikatuVR.Interpreters;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using VRGIN.Controls;
 using VRGIN.Controls.Tools;
 using VRGIN.Core;
-using VRGIN.Helpers;
-//using static SteamVR_Controller;
-using WindowsInput.Native;
-using KoikatuVR.Interpreters;
-using System.ComponentModel;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-using Valve.VR;
+using VRGIN.Helpers; //using static SteamVR_Controller;
 
 namespace KoikatuVR.Controls
 {
     public class SchoolTool : Tool
     {
-        private KoikatuInterpreter _Interpreter;
-        private KoikatuSettings _Settings;
-        private KeySet _KeySet;
-        private int _KeySetIndex = 0;
-        private bool _InHScene = false;
-        private Controller.Lock _lock = VRGIN.Controls.Controller.Lock.Invalid;
+        private readonly Texture2D _hand1Texture = UnityHelper.LoadImage("icon_hand_1.png");
+        private readonly Texture2D _hand2Texture = UnityHelper.LoadImage("icon_hand_2.png");
+        private readonly Texture2D _handTexture = UnityHelper.LoadImage("icon_hand.png");
+        private readonly Texture2D _image = new Texture2D(512, 512);
+        private readonly Texture2D _school1Texture = UnityHelper.LoadImage("icon_school_1.png");
+        private readonly Texture2D _school2Texture = UnityHelper.LoadImage("icon_school_2.png");
+        private readonly Texture2D _schoolTexture = UnityHelper.LoadImage("icon_school.png");
 
         //private Controller.TrackpadDirection? _touchDirection;
         //private Controller.TrackpadDirection? _lastPressDirection;
 
         // When eneabled, exactly one of the below is non-null.
         private ButtonsSubtool _buttonsSubtool;
+        private bool _InHScene;
+        private KoikatuInterpreter _Interpreter;
+        private KeySet _KeySet;
+        private int _KeySetIndex;
+        private MoveDirection? _lastPressDirection;
+        private Controller.Lock _lock = VRGIN.Controls.Controller.Lock.Invalid;
+        private KoikatuSettings _Settings;
+        private MoveDirection? _touchDirection;
+
+        public override Texture2D Image => _image;
         //private GrabAction _grab;
 
         private void ChangeKeySet()
         {
-            List<KeySet> keySets = KeySets();
+            var keySets = KeySets();
 
             _KeySetIndex = (_KeySetIndex + 1) % keySets.Count;
             _KeySet = keySets[_KeySetIndex];
@@ -58,6 +65,7 @@ namespace KoikatuVR.Controls
                 _buttonsSubtool.Destroy();
                 _buttonsSubtool = new ButtonsSubtool(_Interpreter, _Settings);
             }
+
             _InHScene = inHScene;
             var keySets = KeySets();
             _KeySetIndex = 0;
@@ -67,7 +75,7 @@ namespace KoikatuVR.Controls
 
         private void UpdateIcon()
         {
-            Texture2D icon =
+            var icon =
                 _InHScene
                     ? _Settings.HKeySets.Count > 1
                         ? _KeySetIndex == 0
@@ -82,17 +90,6 @@ namespace KoikatuVR.Controls
             Graphics.CopyTexture(icon, _image);
         }
 
-        public override Texture2D Image => _image;
-        private readonly Texture2D _image = new Texture2D(512, 512);
-        private readonly Texture2D _schoolTexture = UnityHelper.LoadImage("icon_school.png");
-        private readonly Texture2D _school1Texture = UnityHelper.LoadImage("icon_school_1.png");
-        private readonly Texture2D _school2Texture = UnityHelper.LoadImage("icon_school_2.png");
-        private readonly Texture2D _handTexture = UnityHelper.LoadImage("icon_hand.png");
-        private readonly Texture2D _hand1Texture = UnityHelper.LoadImage("icon_hand_1.png");
-        private readonly Texture2D _hand2Texture = UnityHelper.LoadImage("icon_hand_2.png");
-        private MoveDirection? _lastPressDirection;
-        private MoveDirection? _touchDirection;
-
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -102,8 +99,8 @@ namespace KoikatuVR.Controls
         {
             base.OnStart();
 
-            _Settings = (VR.Context.Settings as KoikatuSettings);
-            SetScene(inHScene: false);
+            _Settings = VR.Context.Settings as KoikatuSettings;
+            SetScene(false);
             _Settings.AddListener("KeySets", (_, _1) => ResetKeys());
             _Settings.AddListener("HKeySets", (_, _1) => ResetKeys());
         }
@@ -119,10 +116,7 @@ namespace KoikatuVR.Controls
             _buttonsSubtool = null;
             //_grab?.Destroy();
             //_grab = null;
-            if (_lock.IsValid)
-            {
-                _lock.Release();
-            }
+            if (_lock.IsValid) _lock.Release();
             //_touchDirection = null;
             //_lastPressDirection = null;
             base.OnDisable();
@@ -142,10 +136,7 @@ namespace KoikatuVR.Controls
             UpdateLock();
 
             var inHScene = _Interpreter.CurrentScene == KoikatuInterpreter.SceneType.HScene;
-            if (inHScene != _InHScene)
-            {
-                SetScene(inHScene);
-            }
+            if (inHScene != _InHScene) SetScene(inHScene);
 
             //if (_grab != null)
             //{
@@ -157,55 +148,35 @@ namespace KoikatuVR.Controls
             //    }
             //}
 
-            if (_buttonsSubtool != null)
-            {
-                HandleButtons();
-            }
+            if (_buttonsSubtool != null) HandleButtons();
         }
 
         private void UpdateLock()
         {
-            bool wantLock = /*_grab != null ||*/ _buttonsSubtool?.WantLock() == true;
+            var wantLock = /*_grab != null ||*/ _buttonsSubtool?.WantLock() == true;
             if (wantLock && !_lock.IsValid)
-            {
-                _lock = Owner.AcquireFocus(/*keepTool: true*/);
-            }
-            else if (!wantLock && _lock.IsValid)
-            {
-                _lock.Release();
-            }
+                _lock = Owner.AcquireFocus( /*keepTool: true*/);
+            else if (!wantLock && _lock.IsValid) _lock.Release();
         }
 
         private void HandleButtons()
         {
-            var device = this.Controller;
+            var device = Controller;
 
-            if (device.GetPressDown(ButtonMask.Trigger))
-            {
-                InputDown(_KeySet.Trigger, ButtonMask.Trigger);
-            }
+            if (device.GetPressDown(ButtonMask.Trigger)) InputDown(_KeySet.Trigger, ButtonMask.Trigger);
 
-            if (device.GetPressUp(ButtonMask.Trigger))
-            {
-                InputUp(_KeySet.Trigger);
-            }
+            if (device.GetPressUp(ButtonMask.Trigger)) InputUp(_KeySet.Trigger);
 
-            if (device.GetPressDown(ButtonMask.Grip))
-            {
-                InputDown(_KeySet.Grip, ButtonMask.Grip);
-            }
+            if (device.GetPressDown(ButtonMask.Grip)) InputDown(_KeySet.Grip, ButtonMask.Grip);
 
-            if (device.GetPressUp(ButtonMask.Grip))
-            {
-                InputUp(_KeySet.Grip);
-            }
+            if (device.GetPressUp(ButtonMask.Grip)) InputUp(_KeySet.Grip);
 
             if (device.GetPressDown(ButtonMask.Touchpad))
             {
-                var axis = Controller.GetAxis(EVRButtonId.k_EButton_Axis0); //Owner.GetTrackpadDirection();
+                var axis = Controller.GetAxis(); //Owner.GetTrackpadDirection();
                 var dir = GetTrackpadDirection(axis);
                 var fun = GetTrackpadFunction(dir);
-                bool requiresPress = RequiresPress(fun);
+                var requiresPress = RequiresPress(fun);
                 if (requiresPress)
                 {
                     _lastPressDirection = dir;
@@ -213,10 +184,7 @@ namespace KoikatuVR.Controls
                 }
             }
 
-            if (_buttonsSubtool == null)
-            {
-                return;
-            }
+            if (_buttonsSubtool == null) return;
 
             // 上げたときの位置によらず、押したボタンを離す
             // Release the pressed button regardless of the position when it is raised
@@ -228,7 +196,7 @@ namespace KoikatuVR.Controls
 
             // Handle touchpad actions that don't require a press, only touch
             var newTouchDirection = device.GetTouch(ButtonMask.Touchpad)
-                ? GetTrackpadDirection(Controller.GetAxis(EVRButtonId.k_EButton_Axis0)) //(Controller.TrackpadDirection?)Owner.GetTrackpadDirection() 
+                ? GetTrackpadDirection(Controller.GetAxis()) //(Controller.TrackpadDirection?)Owner.GetTrackpadDirection() 
                 : (MoveDirection?)null;
             if (_touchDirection != newTouchDirection)
             {
@@ -238,6 +206,7 @@ namespace KoikatuVR.Controls
                     if (!RequiresPress(oldFun))
                         InputUp(oldFun);
                 }
+
                 if (newTouchDirection.HasValue)
                 {
                     var newFun = GetTrackpadFunction(newTouchDirection.Value);
@@ -282,7 +251,7 @@ namespace KoikatuVR.Controls
         /// </summary>
         /// <param name="fun"></param>
         /// <returns></returns>
-        static bool RequiresPress(AssignableFunction fun)
+        private static bool RequiresPress(AssignableFunction fun)
         {
             switch (fun)
             {
@@ -328,14 +297,15 @@ namespace KoikatuVR.Controls
 
         public override List<HelpText> GetHelpTexts()
         {
-            return new List<HelpText>(new[] {
+            return new List<HelpText>(new[]
+            {
                 ToolUtil.HelpTrigger(Owner, DescriptionFor(_KeySet.Trigger)),
                 ToolUtil.HelpGrip(Owner, DescriptionFor(_KeySet.Grip)),
                 ToolUtil.HelpTrackpadCenter(Owner, DescriptionFor(_KeySet.Center)),
                 ToolUtil.HelpTrackpadLeft(Owner, DescriptionFor(_KeySet.Left)),
                 ToolUtil.HelpTrackpadRight(Owner, DescriptionFor(_KeySet.Right)),
                 ToolUtil.HelpTrackpadUp(Owner, DescriptionFor(_KeySet.Up)),
-                ToolUtil.HelpTrackpadDown(Owner, DescriptionFor(_KeySet.Down)),
+                ToolUtil.HelpTrackpadDown(Owner, DescriptionFor(_KeySet.Down))
             }.Where(x => x != null));
         }
 

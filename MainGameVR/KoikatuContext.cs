@@ -13,11 +13,9 @@ namespace KoikatuVR
 
         private VRSettings _Settings;
 
-        [XmlIgnore]
-        public IMaterialPalette Materials => _Materials;
+        [XmlIgnore] public IMaterialPalette Materials => _Materials;
 
-        [XmlIgnore]
-        public VRSettings Settings => _Settings;
+        [XmlIgnore] public VRSettings Settings => _Settings;
 
         public bool ConfineMouse { get; set; }
 

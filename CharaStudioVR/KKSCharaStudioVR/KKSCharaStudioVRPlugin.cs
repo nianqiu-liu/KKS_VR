@@ -26,7 +26,7 @@ namespace KKSCharaStudioVR
         public KKSCharaStudioVRPlugin()
         {
             vrActivated = Environment.CommandLine.Contains("--vr") || Environment.CommandLine.Contains("--studiovr");
-            defaultLogger = base.Logger;
+            defaultLogger = Logger;
             if (vrActivated)
             {
                 OpenVRHelperTempfixHook.Patch();
@@ -42,7 +42,6 @@ namespace KKSCharaStudioVR
         {
             //defaultLogger.LogDebug($"Scene Loaded {scene.name}, {mode}");
             if (mode == LoadSceneMode.Single)
-            {
                 //VRLog.Debug("Loaded Scene is " + scene.name);
                 if (vrActivated && "Studio" == scene.name)
                 {
@@ -55,7 +54,6 @@ namespace KKSCharaStudioVR
 
                     SceneManager.sceneLoaded -= OnSceneLoaded;
                 }
-            }
         }
     }
 }

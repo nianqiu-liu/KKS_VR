@@ -16,6 +16,7 @@ namespace KoikatuVR
     public class Background
     {
         public static Background Instance { get; private set; } = new Background();
+
         /// <summary>
         /// Where in the background image the eye level (or the vanishing point) is.
         /// 0 is the bottom of the image, 1 is the top.
@@ -27,7 +28,7 @@ namespace KoikatuVR
         private Canvas _bgCanvas;
         private const float Height = 50f;
 
-        Background()
+        private Background()
         {
             VRMover.Instance.OnMove += OnCameraMove;
         }
@@ -42,10 +43,7 @@ namespace KoikatuVR
         public void TakeCanvas(Canvas canvas)
         {
             VRLog.Info($"Taking canvas: {canvas.name}");
-            if (_bgCanvas != null)
-            {
-                VRLog.Warn("taking a second canvas?");
-            }
+            if (_bgCanvas != null) VRLog.Warn("taking a second canvas?");
             canvas.renderMode = RenderMode.WorldSpace;
             canvas.worldCamera = null;
             canvas.gameObject.layer = 0;
@@ -59,13 +57,10 @@ namespace KoikatuVR
 
         private void UpdateCanvasPlacement()
         {
-            if (_bgCanvas == null)
-            {
-                return;
-            }
+            if (_bgCanvas == null) return;
 
-            float level = Mathf.Clamp(EyeLevel, 0.25f, 0.75f);
-            float y = (0.5f - level) * Height;
+            var level = Mathf.Clamp(EyeLevel, 0.25f, 0.75f);
+            var y = (0.5f - level) * Height;
             _bgCanvas.transform.SetPositionAndRotation(
                 _cameraBasePosition + _cameraBaseRotation * new Vector3(0, y, 0.3f * Height),
                 _cameraBaseRotation);
@@ -73,7 +68,7 @@ namespace KoikatuVR
     }
 
     [HarmonyPatch(typeof(Illusion.Component.UI.BackGroundParam))]
-    class BackGroundParamPatches
+    internal class BackGroundParamPatches
     {
         [HarmonyPostfix]
         [HarmonyPatch(nameof(Illusion.Component.UI.BackGroundParam.Load))]

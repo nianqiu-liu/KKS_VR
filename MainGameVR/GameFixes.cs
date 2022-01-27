@@ -14,6 +14,7 @@ using KoikatuVR.Interpreters;
 using Sirenix.Serialization.Utilities;
 using StrayTech;
 using UnityStandardAssets.ImageEffects;
+using Object = UnityEngine.Object;
 
 // Fixes issues that are in the base game but are only relevant in VR.
 
@@ -24,7 +25,7 @@ namespace KoikatuVR
     /// todo move into illusionfixes?
     /// </summary>
     [HarmonyPatch]
-    class ScenePatches
+    internal class ScenePatches
     {
         private static IEnumerable<MethodBase> TargetMethods()
         {
@@ -33,7 +34,7 @@ namespace KoikatuVR
 
         private static AsyncOperation MaybeUnloadUnusedAssets()
         {
-            bool shouldUnload = Manager.Scene.IsFadeNow;
+            var shouldUnload = Manager.Scene.IsFadeNow;
             if (shouldUnload)
             {
                 return Resources.UnloadUnusedAssets();
@@ -48,7 +49,6 @@ namespace KoikatuVR
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts, MethodBase __originalMethod)
         {
             foreach (var inst in insts)
-            {
                 if (inst.opcode == OpCodes.Call &&
                     inst.operand is MethodInfo method &&
                     method.Name == "UnloadUnusedAssets")
@@ -60,7 +60,6 @@ namespace KoikatuVR
                 {
                     yield return inst;
                 }
-            }
         }
     }
 
@@ -92,7 +91,7 @@ namespace KoikatuVR
                 control.objTop?.activeSelf == false &&
                 VR.Interpreter is KoikatuInterpreter interpreter &&
                 (interpreter.CurrentScene == KoikatuInterpreter.SceneType.HScene ||
-                    interpreter.CurrentScene == KoikatuInterpreter.SceneType.TalkScene);
+                 interpreter.CurrentScene == KoikatuInterpreter.SceneType.TalkScene);
         }
     }
 
@@ -104,13 +103,11 @@ namespace KoikatuVR
         [HarmonyPatch(nameof(SunLightInfo.Set))]
         private static Exception PreLateUpdateForce(Exception __exception)
         {
-            if (__exception != null)
-            {
-                VRPlugin.Logger.LogDebug("Caught expected crash: " + __exception);
-            }
+            if (__exception != null) VRPlugin.Logger.LogDebug("Caught expected crash: " + __exception);
             return null;
         }
     }
+
     [HarmonyPatch(typeof(ActionMap))]
     public class FogHack2
     {
@@ -119,13 +116,11 @@ namespace KoikatuVR
         [HarmonyPatch(nameof(ActionMap.UpdateCameraFog))]
         private static Exception PreLateUpdateForce(Exception __exception)
         {
-            if (__exception != null)
-            {
-                VRPlugin.Logger.LogDebug("Caught expected crash: " + __exception);
-            }
+            if (__exception != null) VRPlugin.Logger.LogDebug("Caught expected crash: " + __exception);
             return null;
         }
     }
+
     // [HarmonyPatch(typeof(ADVScene))]
     // public class ADVSceneFix1
     // {
@@ -146,12 +141,11 @@ namespace KoikatuVR
         private static void FixMissingCameraEffector(Manager.Game __instance, ref CameraEffector __result)
         {
             if (__result == null && __instance.isCameraChanged)
-            {
                 // vr camera doesn't have this component on it, which crashes game code with nullref. Use the component on original advcamera instead
-                __instance._cameraEffector = __result = GameObject.FindObjectOfType<CameraEffector>();
-            }
+                __instance._cameraEffector = __result = Object.FindObjectOfType<CameraEffector>();
         }
     }
+
     [HarmonyPatch(typeof(CameraSystem))]
     public class ADVSceneFix2
     {
@@ -192,7 +186,7 @@ namespace KoikatuVR
         private static Camera GetOriginalMainCamera()
         {
             // vr camera doesn't have this component on it
-            var originalMainCamera = (Manager.Game.instance.cameraEffector ?? GameObject.FindObjectOfType<CameraEffector>()).GetComponent<Camera>();
+            var originalMainCamera = (Manager.Game.instance.cameraEffector ?? Object.FindObjectOfType<CameraEffector>()).GetComponent<Camera>();
             VRPlugin.Logger.LogDebug($"GetOriginalMainCamera called, cam found: {originalMainCamera?.GetFullPath()}\n{new StackTrace()}");
             return originalMainCamera;
         }
@@ -200,10 +194,10 @@ namespace KoikatuVR
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts, MethodBase __originalMethod)
         {
             var targert = AccessTools.PropertyGetter(typeof(Camera), nameof(Camera.main));
-            var replacement = AccessTools.Method(typeof(ADVSceneFix3), nameof(ADVSceneFix3.GetOriginalMainCamera));
+            var replacement = AccessTools.Method(typeof(ADVSceneFix3), nameof(GetOriginalMainCamera));
             return insts.Manipulator(
-                predicate: instr => instr.opcode == OpCodes.Call && (MethodInfo)instr.operand == targert,
-                action: instr =>
+                instr => instr.opcode == OpCodes.Call && (MethodInfo)instr.operand == targert,
+                instr =>
                 {
                     instr.operand = replacement;
                     VRPlugin.Logger.LogDebug("Patched Camera.main in " + __originalMethod.GetNiceName());
@@ -222,7 +216,7 @@ namespace KoikatuVR
         private static Camera GetOriginalMainCamera()
         {
             // vr camera doesn't have this component on it
-            var originalMainCamera = (Manager.Game.instance.cameraEffector ?? GameObject.FindObjectOfType<CameraEffector>()).GetComponent<Camera>();
+            var originalMainCamera = (Manager.Game.instance.cameraEffector ?? Object.FindObjectOfType<CameraEffector>()).GetComponent<Camera>();
             VRPlugin.Logger.LogDebug($"GetOriginalMainCamera called, cam found: {originalMainCamera?.GetFullPath()}\n{new StackTrace()}");
             return originalMainCamera;
         }
@@ -230,10 +224,10 @@ namespace KoikatuVR
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts, MethodBase __originalMethod)
         {
             var targert = AccessTools.PropertyGetter(typeof(Camera), nameof(Camera.main));
-            var replacement = AccessTools.Method(typeof(ADVSceneFix4), nameof(ADVSceneFix4.GetOriginalMainCamera));
+            var replacement = AccessTools.Method(typeof(ADVSceneFix4), nameof(GetOriginalMainCamera));
             return insts.Manipulator(
-                predicate: instr => instr.opcode == OpCodes.Call && (MethodInfo)instr.operand == targert,
-                action: instr =>
+                instr => instr.opcode == OpCodes.Call && (MethodInfo)instr.operand == targert,
+                instr =>
                 {
                     instr.operand = replacement;
                     VRPlugin.Logger.LogDebug("Patched Camera.main in " + __originalMethod.GetNiceName());
@@ -251,7 +245,7 @@ namespace KoikatuVR
     {
         private static IEnumerable<MethodBase> TargetMethods()
         {
-            yield return KKAPI.Utilities.CoroutineUtils.GetMoveNext(AccessTools.Method(typeof(Cycle), nameof(Cycle.WakeUp)));
+            yield return CoroutineUtils.GetMoveNext(AccessTools.Method(typeof(Cycle), nameof(Cycle.WakeUp)));
         }
 
         private static bool IsProcessWithNullcheck(CrossFade instance)
@@ -264,8 +258,8 @@ namespace KoikatuVR
             var targert = AccessTools.PropertyGetter(typeof(CrossFade), nameof(CrossFade.isProcess));
             var replacement = AccessTools.Method(typeof(CycleCrossFadeFix1), nameof(IsProcessWithNullcheck));
             return insts.Manipulator(
-                predicate: instr => instr.opcode == OpCodes.Callvirt && (MethodInfo)instr.operand == targert,
-                action: instr =>
+                instr => instr.opcode == OpCodes.Callvirt && (MethodInfo)instr.operand == targert,
+                instr =>
                 {
                     instr.opcode = OpCodes.Call;
                     instr.operand = replacement;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using VRGIN.Core;
+using Object = UnityEngine.Object;
 
 namespace KoikatuVR.Mirror
 {
@@ -11,18 +12,15 @@ namespace KoikatuVR.Mirror
     /// Mirrors in the base game look very weird in VR. This object
     /// replaces components and materials to fix this issue.
     /// </summary>
-    class Manager
+    internal class Manager
     {
         private Material _material;
 
         public void Fix(MirrorReflection refl)
         {
-            if (refl.GetComponent<VRReflection>() != null)
-            {
-                return;
-            }
+            if (refl.GetComponent<VRReflection>() != null) return;
             var mirror = refl.gameObject;
-            GameObject.Destroy(refl);
+            Object.Destroy(refl);
             mirror.AddComponent<VRReflection>();
             mirror.GetComponent<Renderer>().material = Material();
         }
@@ -34,12 +32,10 @@ namespace KoikatuVR.Mirror
                 var shader = VRGIN.Helpers.UnityHelper.LoadFromAssetBundle<Shader>(
                     Resource.mirror_shader,
                     "Assets/MirrorReflection.shader");
-                if (shader == null)
-                {
-                    VRLog.Error("Failed to load shader");
-                }
+                if (shader == null) VRLog.Error("Failed to load shader");
                 _material = new Material(shader);
             }
+
             return _material;
         }
     }

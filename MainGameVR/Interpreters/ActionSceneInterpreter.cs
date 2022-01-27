@@ -5,7 +5,7 @@ using StrayTech;
 
 namespace KoikatuVR.Interpreters
 {
-    class ActionSceneInterpreter : SceneInterpreter
+    internal class ActionSceneInterpreter : SceneInterpreter
     {
         private KoikatuSettings _Settings;
         private ActionScene _ActionScene;
@@ -21,8 +21,8 @@ namespace KoikatuVR.Interpreters
         {
             VRLog.Info("ActionScene OnStart");
 
-            _Settings = (VR.Context.Settings as KoikatuSettings);
-            _ActionScene = GameObject.FindObjectOfType<ActionScene>();
+            _Settings = VR.Context.Settings as KoikatuSettings;
+            _ActionScene = Object.FindObjectOfType<ActionScene>();
 
             ResetState();
             HoldCamera();
@@ -56,7 +56,7 @@ namespace KoikatuVR.Interpreters
                 // トイレなどでFPS視点になっている場合にTPS視点に戻す
                 Compat.CameraStateDefinitionChange_ModeChangeForce(
                     _CameraSystem.GetComponent<ActionGame.CameraStateDefinitionChange>(),
-                    (ActionGame.CameraMode?) ActionGame.CameraMode.TPS);
+                    (ActionGame.CameraMode?)ActionGame.CameraMode.TPS);
                 //scene.GetComponent<ActionScene>().isCursorLock = false;
 
                 // カメラをプレイヤーの位置に移動
@@ -95,11 +95,10 @@ namespace KoikatuVR.Interpreters
 
         public override void OnUpdate()
         {
-            GameObject map = _ActionScene.Map.mapRoot?.gameObject;
+            var map = _ActionScene.Map.mapRoot?.gameObject;
 
             if (map != _Map)
             {
-
                 VRLog.Info("! map changed.");
 
                 ResetState();
@@ -107,15 +106,9 @@ namespace KoikatuVR.Interpreters
                 _NeedsResetCamera = true;
             }
 
-            if (_Walking)
-            {
-                MoveCameraToPlayer(true, true);
-            }
+            if (_Walking) MoveCameraToPlayer(true, true);
 
-            if (_NeedsResetCamera)
-            {
-                ResetCamera();
-            }
+            if (_NeedsResetCamera) ResetCamera();
 
             UpdateCrouch();
         }
@@ -130,13 +123,8 @@ namespace KoikatuVR.Interpreters
                 var delta_y = cam.position.y - pl.transform.position.y;
 
                 if (_IsStanding && delta_y < _Settings.CrouchThreshold)
-                {
                     Crouch();
-                }
-                else if (!_IsStanding && delta_y > _Settings.StandUpThreshold)
-                {
-                    StandUp();
-                }
+                else if (!_IsStanding && delta_y > _Settings.StandUpThreshold) StandUp();
             }
         }
 
@@ -147,7 +135,7 @@ namespace KoikatuVR.Interpreters
             var playerHead = player.chaCtrl.objHead.transform;
             var headCam = VR.Camera.transform;
 
-            Vector3 cf = Vector3.Scale(player.transform.forward, new Vector3(1, 0, 1)).normalized;
+            var cf = Vector3.Scale(player.transform.forward, new Vector3(1, 0, 1)).normalized;
 
             Vector3 pos;
             if (_Settings.UsingHeadPos)
@@ -163,8 +151,8 @@ namespace KoikatuVR.Interpreters
             VRMover.Instance.MoveTo(
                 pos + cf * 0.23f, // 首が見えるとうざいのでほんの少し前目にする
                 onlyPosition ? headCam.rotation : player.rotation,
-                keepHeight: false,
-                quiet: quiet);
+                false,
+                quiet);
         }
 
         public void MovePlayerToCamera(bool onlyRotation = false)
@@ -178,12 +166,9 @@ namespace KoikatuVR.Interpreters
 
             var delta_y = headCam.rotation.eulerAngles.y - player.rotation.eulerAngles.y;
             player.transform.Rotate(Vector3.up * delta_y);
-            Vector3 cf = Vector3.Scale(player.transform.forward, new Vector3(1, 0, 1)).normalized;
+            var cf = Vector3.Scale(player.transform.forward, new Vector3(1, 0, 1)).normalized;
 
-            if (!onlyRotation)
-            {
-                player.position = pos - cf * 0.1f;
-            }
+            if (!onlyRotation) player.position = pos - cf * 0.1f;
         }
 
         public void Crouch()

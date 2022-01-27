@@ -1,26 +1,29 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using VRGIN.Core;
-using VRGIN.Controls;
-using UnityEngine;
+using H;
 using HarmonyLib;
+using Illusion.Game;
+using Manager;
+using UnityEngine;
+using Valve.VR;
+using VRGIN.Controls;
+using VRGIN.Core;
+using Utils = Illusion.Game.Utils;
 
 namespace KoikatuVR.Controls
 {
     /// <summary>
     /// A component to add to the controllers the ability to pick a new location in H scenes.
     /// </summary>
-    class LocationPicker : ProtectedBehaviour
+    internal class LocationPicker : ProtectedBehaviour
     {
-        Controller _controller;
-        LineRenderer _laser;
-        bool _laserEnabled;
-        H.HPointData _selection; // may be null
-        Animator _selectionAnim; // may be null. Also, null if _selection is null.
-        Controller.Lock _lock; // may be null. Also, null if _selection is null.
+        private Controller _controller;
+        private LineRenderer _laser;
+        private bool _laserEnabled;
+        private Controller.Lock _lock; // may be null. Also, null if _selection is null.
+        private HPointData _selection; // may be null
+        private Animator _selectionAnim; // may be null. Also, null if _selection is null.
 
 
         protected override void OnAwake()
@@ -35,7 +38,7 @@ namespace KoikatuVR.Controls
             base.OnUpdate();
 
             // TODO: somehow arrange that this component is only enabled during location selection?
-            if (Manager.Scene.NowSceneNames[0] == "HPointMove"
+            if (Scene.NowSceneNames[0] == "HPointMove"
                 && (_lock != null || _controller.CanAcquireFocus()))
             {
                 if (!_laserEnabled)
@@ -68,12 +71,9 @@ namespace KoikatuVR.Controls
                 .OrderBy(h => h.distance)
                 .FirstOrDefault();
 
-            if (hit.collider?.transform.parent.GetComponent<H.HPointData>() is H.HPointData point)
+            if (hit.collider?.transform.parent.GetComponent<HPointData>() is HPointData point)
             {
-                if (point != _selection)
-                {
-                    Select(point);
-                }
+                if (point != _selection) Select(point);
             }
             else
             {
@@ -87,11 +87,8 @@ namespace KoikatuVR.Controls
         private void HandleTrigger()
         {
             var device = _controller.Input;
-            if (_lock == null || !device.GetPressDown(Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger))
-            {
-                return;
-            }
-            var hPointMove = GameObject.FindObjectOfType<HPointMove>();
+            if (_lock == null || !device.GetPressDown(EVRButtonId.k_EButton_SteamVR_Trigger)) return;
+            var hPointMove = FindObjectOfType<HPointMove>();
             if (hPointMove == null)
             {
                 VRLog.Warn("LocationPicker: failed to find HPointMove");
@@ -100,8 +97,8 @@ namespace KoikatuVR.Controls
 
             var trav = new Traverse(hPointMove);
             var selection = _selection;
-            var actionSelect = trav.Field<Action<H.HPointData, int>>("actionSelect").Value;
-            int category = trav.Field<int>("nowCategory").Value;
+            var actionSelect = trav.Field<Action<HPointData, int>>("actionSelect").Value;
+            var category = trav.Field<int>("nowCategory").Value;
 
             StartCoroutine(ChangeLocation(() => actionSelect(selection, category)));
         }
@@ -110,7 +107,7 @@ namespace KoikatuVR.Controls
         {
             yield return null;
             action();
-            Manager.Scene.Unload();
+            Scene.Unload();
         }
 
         private void Unselect()
@@ -118,15 +115,11 @@ namespace KoikatuVR.Controls
             if (_selectionAnim != null)
             {
                 if (_selectionAnim.GetCurrentAnimatorStateInfo(0).IsName("upidle"))
-                {
                     _selectionAnim.SetTrigger("down");
-                }
                 else
-                {
                     _selectionAnim.Play("idle");
-                }
-
             }
+
             CleanupSelection();
         }
 
@@ -138,27 +131,18 @@ namespace KoikatuVR.Controls
             _lock = null;
         }
 
-        private void Select(H.HPointData point)
+        private void Select(HPointData point)
         {
             Unselect();
-            if (point == null)
-            {
-                return;
-            }
+            if (point == null) return;
             _selection = point;
 
             var anim = point.GetComponentInChildren<Animator>();
-            if (anim == null)
-            {
-                return;
-            }
+            if (anim == null) return;
             _selectionAnim = anim;
 
-            if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle"))
-            {
-                anim.SetTrigger("up");
-            }
-            Illusion.Game.Utils.Sound.Play(Illusion.Game.SystemSE.sel);
+            if (anim.GetCurrentAnimatorStateInfo(0).IsName("idle")) anim.SetTrigger("up");
+            Utils.Sound.Play(SystemSE.sel);
             _controller.TryAcquireFocus(out _lock);
         }
 
@@ -174,6 +158,7 @@ namespace KoikatuVR.Controls
                     VRLog.Warn("LocationPicker: Attach position not found for laser!");
                     attachPosition = transform;
                 }
+
                 _laser = new GameObject("LocationPicker laser").AddComponent<LineRenderer>();
                 _laser.transform.SetParent(attachPosition, false);
                 _laser.material = new Material(Shader.Find("Sprites/Default"));

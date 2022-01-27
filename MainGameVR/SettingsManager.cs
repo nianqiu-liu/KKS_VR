@@ -24,7 +24,7 @@ namespace KoikatuVR
     ///   are code paths where VRGIN tries to modify it. We simply attempt
     ///   to avoid executing those code paths.
     /// </summary>
-    class SettingsManager
+    internal class SettingsManager
     {
         /// <summary>
         /// Create config entries under the given ConfigFile. Also create a fresh
@@ -160,13 +160,14 @@ namespace KoikatuVR
             Tie(firstPersonADV, v => settings.FirstPersonADV = v);
 
             KeySetsConfig keySetsConfig = null;
+
             void updateKeySets()
             {
                 keySetsConfig.CurrentKeySets(out var keySets, out var hKeySets);
                 settings.KeySets = keySets;
                 settings.HKeySets = hKeySets;
             }
-            
+
             keySetsConfig = new KeySetsConfig(config, updateKeySets);
             updateKeySets();
 
@@ -180,7 +181,7 @@ namespace KoikatuVR
         }
     }
 
-    class KeySetsConfig
+    internal class KeySetsConfig
     {
         private readonly KeySetConfig _main;
         private readonly KeySetConfig _main1;
@@ -197,10 +198,10 @@ namespace KoikatuVR
             const string sectionHP = "3. H button assignments (primary)";
             const string sectionHS = "3. H button assignments (secondary)";
 
-            _main = new KeySetConfig(config, onUpdate, sectionP, isH: false, advanced: false);
-            _main1 = new KeySetConfig(config, onUpdate, sectionS, isH: false, advanced: true);
-            _h = new KeySetConfig(config, onUpdate, sectionHP, isH: true, advanced: false);
-            _h1 = new KeySetConfig(config, onUpdate, sectionHS, isH: true, advanced: true);
+            _main = new KeySetConfig(config, onUpdate, sectionP, false, false);
+            _main1 = new KeySetConfig(config, onUpdate, sectionS, false, true);
+            _h = new KeySetConfig(config, onUpdate, sectionHP, true, false);
+            _h1 = new KeySetConfig(config, onUpdate, sectionHS, true, true);
 
             _useMain1 = config.Bind(sectionS, "Use secondary assignments", false,
                 new ConfigDescription("", null, new ConfigurationManagerAttributes { IsAdvanced = true }));
@@ -214,21 +215,15 @@ namespace KoikatuVR
         {
             keySets = new List<KeySet>();
             keySets.Add(_main.CurrentKeySet());
-            if (_useMain1.Value)
-            {
-                keySets.Add(_main1.CurrentKeySet());
-            }
+            if (_useMain1.Value) keySets.Add(_main1.CurrentKeySet());
 
             hKeySets = new List<KeySet>();
             hKeySets.Add(_h.CurrentKeySet());
-            if (_useH1.Value)
-            {
-                hKeySets.Add(_h1.CurrentKeySet());
-            }
+            if (_useH1.Value) hKeySets.Add(_h1.CurrentKeySet());
         }
     }
 
-    class KeySetConfig
+    internal class KeySetConfig
     {
         private readonly ConfigEntry<AssignableFunction> _trigger;
         private readonly ConfigEntry<AssignableFunction> _grip;
@@ -240,7 +235,8 @@ namespace KoikatuVR
 
         public KeySetConfig(ConfigFile config, Action onUpdate, string section, bool isH, bool advanced)
         {
-            int order = -1;
+            var order = -1;
+
             ConfigEntry<AssignableFunction> create(string name, AssignableFunction def)
             {
                 var entry = config.Bind(section, name, def, new ConfigDescription("", null,
@@ -249,6 +245,7 @@ namespace KoikatuVR
                 order -= 1;
                 return entry;
             }
+
             if (isH)
             {
                 _trigger = create("Trigger", AssignableFunction.LBUTTON);
@@ -274,14 +271,13 @@ namespace KoikatuVR
         public KeySet CurrentKeySet()
         {
             return new KeySet(
-                trigger: _trigger.Value,
-                grip: _grip.Value,
-                Up: _up.Value,
-                Down: _down.Value,
-                Right: _right.Value,
-                Left: _left.Value,
-                Center: _center.Value);
+                _trigger.Value,
+                _grip.Value,
+                _up.Value,
+                _down.Value,
+                _right.Value,
+                _left.Value,
+                _center.Value);
         }
-
     }
 }

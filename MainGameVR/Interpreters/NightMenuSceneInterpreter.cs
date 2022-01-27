@@ -2,7 +2,7 @@
 
 namespace KoikatuVR.Interpreters
 {
-    class NightMenuSceneInterpreter : SceneInterpreter
+    internal class NightMenuSceneInterpreter : SceneInterpreter
     {
         public override void OnStart()
         {

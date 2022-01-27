@@ -15,9 +15,9 @@ namespace KoikatuVR.Caress
     /// faking mouse clicks using VR.Input, but is safer because it doesn't
     /// accidentally interact with the game UI.
     /// </summary>
-    class HandCtrlHooks
+    internal class HandCtrlHooks
     {
-        static HandCtrlHooks _instance;
+        private static HandCtrlHooks _instance;
 
         // one instance for each button
         private readonly Dictionary<int, ButtonHandler> _buttonHandlers = new Dictionary<int, ButtonHandler>();
@@ -83,33 +83,29 @@ namespace KoikatuVR.Caress
 
         private static HandCtrlHooks GetInstance()
         {
-            if (_instance == null)
-            {
-                _instance = new HandCtrlHooks();
-            }
+            if (_instance == null) _instance = new HandCtrlHooks();
             return _instance;
         }
 
         private ButtonHandler GetButtonHandler(int button)
         {
-            if (!_buttonHandlers.ContainsKey(button))
-            {
-                _buttonHandlers.Add(button, new ButtonHandler(button));
-            }
+            if (!_buttonHandlers.ContainsKey(button)) _buttonHandlers.Add(button, new ButtonHandler(button));
             return _buttonHandlers[button];
         }
 
-        class ButtonHandler
+        private class ButtonHandler
         {
-
             private readonly int _button;
+
             private int _lastUpdate = -1;
+
             // [0] for down, [1] for up.
             internal readonly Queue<Action>[] _queues = new Queue<Action>[2]
             {
                 new Queue<Action>(),
-                new Queue<Action>(),
+                new Queue<Action>()
             };
+
             internal bool _pressed = false;
             internal bool _pressedSelf = false;
             internal bool _down = false;
@@ -126,10 +122,7 @@ namespace KoikatuVR.Caress
             /// <returns>this</returns>
             internal ButtonHandler UpdateForFrame()
             {
-                if (Time.frameCount == _lastUpdate)
-                {
-                    return this;
-                }
+                if (Time.frameCount == _lastUpdate) return this;
 
                 _lastUpdate = Time.frameCount;
                 var pressedNative = Input.GetMouseButton(_button);
@@ -165,18 +158,14 @@ namespace KoikatuVR.Caress
 
             private bool TryDequeue(int downUp)
             {
-                if (_queues[downUp].Count == 0)
-                {
-                    return false;
-                }
+                if (_queues[downUp].Count == 0) return false;
 
                 _queues[downUp].Dequeue()?.Invoke();
                 return true;
             }
-
         }
 
-        class WheelHandler
+        private class WheelHandler
         {
             internal int _lastUpdate = -1;
             internal float _currentValue;
@@ -184,10 +173,7 @@ namespace KoikatuVR.Caress
 
             internal WheelHandler UpdateForFrame()
             {
-                if (Time.frameCount == _lastUpdate)
-                {
-                    return this;
-                }
+                if (Time.frameCount == _lastUpdate) return this;
 
                 _lastUpdate = Time.frameCount;
                 _currentValue = _request;
@@ -198,9 +184,9 @@ namespace KoikatuVR.Caress
     }
 
     [HarmonyPatch]
-    class HandCtrlPatches
+    internal class HandCtrlPatches
     {
-        static IEnumerable<MethodBase> TargetMethods()
+        private static IEnumerable<MethodBase> TargetMethods()
         {
             yield return AccessTools.Method(typeof(HandCtrl), "ClickAction");
             yield return AccessTools.Method(typeof(HandCtrl), "DragAction");
@@ -216,15 +202,14 @@ namespace KoikatuVR.Caress
         /// </summary>
         /// <param name="insts"></param>
         /// <returns></returns>
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts)
         {
             var methodsToReplace = new string[] { "GetMouseButtonDown", "GetMouseButtonUp", "GetMouseButton", "GetAxis" };
             foreach (var inst in insts)
-            {
                 if (inst.opcode == OpCodes.Call &&
-                        inst.operand is MethodInfo method &&
-                        method.ReflectedType == typeof(Input) &&
-                        methodsToReplace.Contains(method.Name))
+                    inst.operand is MethodInfo method &&
+                    method.ReflectedType == typeof(Input) &&
+                    methodsToReplace.Contains(method.Name))
                 {
                     var newMethod = AccessTools.Method(typeof(HandCtrlHooks), method.Name);
                     yield return new CodeInstruction(OpCodes.Call, newMethod);
@@ -233,8 +218,6 @@ namespace KoikatuVR.Caress
                 {
                     yield return inst;
                 }
-            }
         }
-
     }
 }

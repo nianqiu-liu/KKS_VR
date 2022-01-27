@@ -10,7 +10,7 @@ namespace KoikatuVR
     /// <summary>
     /// A component to be attached to every male character.
     /// </summary>
-    class VRMale : ProtectedBehaviour
+    internal class VRMale : ProtectedBehaviour
     {
         public static bool ForceHideHead { get; set; }
 
@@ -33,7 +33,7 @@ namespace KoikatuVR
                 var vrEye = VR.Camera.transform;
                 var headCenter = head.TransformPoint(0, 0.12f, -0.04f);
                 var sqrDistance = (vrEye.position - headCenter).sqrMagnitude;
-                bool visible = !ForceHideHead && 0.0361f < sqrDistance; // 19 centimeters
+                var visible = !ForceHideHead && 0.0361f < sqrDistance; // 19 centimeters
                 _control.fileStatus.visibleHeadAlways = visible;
                 if (wasVisible && !visible)
                 {
@@ -41,10 +41,7 @@ namespace KoikatuVR
                     // this case, it's important that the head disappears with
                     // 0 frame delay, so we proactively deactive it here.
                     _control.objHead.SetActive(false);
-                    foreach (var hair in _control.objHair)
-                    {
-                        hair.SetActive(false);
-                    }
+                    foreach (var hair in _control.objHair) hair.SetActive(false);
                 }
             }
             else
@@ -55,16 +52,13 @@ namespace KoikatuVR
     }
 
     [HarmonyPatch(typeof(ChaControl))]
-    class ChaControlPatches
+    internal class ChaControlPatches
     {
         [HarmonyPatch(nameof(ChaControl.Initialize))]
         [HarmonyPostfix]
-        static void PostInitialize(ChaControl __instance)
+        private static void PostInitialize(ChaControl __instance)
         {
-            if (__instance.sex == 0)
-            {
-                __instance.GetOrAddComponent<VRMale>();
-            }
+            if (__instance.sex == 0) __instance.GetOrAddComponent<VRMale>();
         }
     }
 }

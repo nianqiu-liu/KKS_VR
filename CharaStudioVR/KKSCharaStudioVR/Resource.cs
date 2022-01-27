@@ -7,45 +7,36 @@ using System.Runtime.CompilerServices;
 
 namespace KKSCharaStudioVR
 {
-	[GeneratedCode("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
-	[DebuggerNonUserCode]
-	[CompilerGenerated]
-	internal class Resource
-	{
-		private static ResourceManager resourceMan;
+    [GeneratedCode("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [DebuggerNonUserCode]
+    [CompilerGenerated]
+    internal class Resource
+    {
+        private static ResourceManager resourceMan;
 
-		private static CultureInfo resourceCulture;
+        private static CultureInfo resourceCulture;
 
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		internal static ResourceManager ResourceManager
-		{
-			get
-			{
-				if (resourceMan == null)
-				{
-					resourceMan = new ResourceManager("KKSCharaStudioVR.Resource", typeof(Resource).Assembly);
-				}
-				return resourceMan;
-			}
-		}
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        internal static ResourceManager ResourceManager
+        {
+            get
+            {
+                if (resourceMan == null) resourceMan = new ResourceManager("KKSCharaStudioVR.Resource", typeof(Resource).Assembly);
+                return resourceMan;
+            }
+        }
 
-		[EditorBrowsable(EditorBrowsableState.Advanced)]
-		internal static CultureInfo Culture
-		{
-			get
-			{
-				return resourceCulture;
-			}
-			set
-			{
-				resourceCulture = value;
-			}
-		}
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        internal static CultureInfo Culture
+        {
+            get => resourceCulture;
+            set => resourceCulture = value;
+        }
 
-		internal static byte[] KKSCharaStudioVRShader => (byte[])ResourceManager.GetObject("KKSCharaStudioVRShader", resourceCulture);
+        internal static byte[] KKSCharaStudioVRShader => (byte[])ResourceManager.GetObject("KKSCharaStudioVRShader", resourceCulture);
 
-		internal Resource()
-		{
-		}
-	}
+        internal Resource()
+        {
+        }
+    }
 }

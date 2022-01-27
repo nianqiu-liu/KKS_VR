@@ -7,21 +7,18 @@ using VRGIN.Modes;
 
 namespace KKSCharaStudioVR
 {
-	internal class GenericSeatedMode : SeatedMode
-	{
-		protected override IEnumerable<IShortcut> CreateShortcuts()
-		{
-			return base.CreateShortcuts().Concat(new IShortcut[1]
-			{
-				new MultiKeyboardShortcut(new KeyStroke("Ctrl+C"), new KeyStroke("Ctrl+C"), delegate
-				{
-					VR.Manager.SetMode<GenericStandingMode>();
-				})
-			});
-		}
+    internal class GenericSeatedMode : SeatedMode
+    {
+        protected override IEnumerable<IShortcut> CreateShortcuts()
+        {
+            return base.CreateShortcuts().Concat(new IShortcut[1]
+            {
+                new MultiKeyboardShortcut(new KeyStroke("Ctrl+C"), new KeyStroke("Ctrl+C"), delegate { VR.Manager.SetMode<GenericStandingMode>(); })
+            });
+        }
 
-		protected override void CreateControllers()
-		{
-		}
-	}
+        protected override void CreateControllers()
+        {
+        }
+    }
 }
