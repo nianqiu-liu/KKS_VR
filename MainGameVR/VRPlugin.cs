@@ -10,6 +10,7 @@ using HarmonyLib;
 using System.Runtime.InteropServices;
 using BepInEx.Logging;
 using KKAPI;
+using Shared;
 using Unity.XR.OpenVR;
 using UnityEngine.XR;
 using Valve.VR;
@@ -23,7 +24,7 @@ namespace KoikatuVR
     {
         public const string GUID = "KKS_MainGameVR";
         public const string PluginName = "Main Game VR";
-        public const string Version = "0.0.3";
+        public const string Version = Constants.Version;
 
         internal static new ManualLogSource Logger;
 

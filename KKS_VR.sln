@@ -7,7 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainGameVR", "MainGameVR\Ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharaStudioVR", "CharaStudioVR\CharaStudioVR.csproj", "{07ECD6A8-61D0-4409-A009-C138E76DFA1F}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared", "Shared\Shared.shproj", "{C21C1A1B-5045-4BBE-818B-8574756D1F34}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Shared\Shared.projitems*{07ecd6a8-61d0-4409-a009-c138e76dfa1f}*SharedItemsImports = 4
+		Shared\Shared.projitems*{1f634b93-f4c6-45e9-894d-2f3556a74d67}*SharedItemsImports = 4
+		Shared\Shared.projitems*{c21c1a1b-5045-4bbe-818b-8574756d1f34}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64

@@ -2,6 +2,7 @@ using System;
 using BepInEx;
 using BepInEx.Logging;
 using KKAPI;
+using Shared;
 using UnityEngine.SceneManagement;
 using VRGIN.Core;
 
@@ -15,7 +16,7 @@ namespace KKSCharaStudioVR
 
         public const string NAME = "KKS_CharaStudioVR";
 
-        public const string VERSION = "0.0.3";
+        public const string VERSION = Constants.Version;
 
         private static ManualLogSource defaultLogger;
 
