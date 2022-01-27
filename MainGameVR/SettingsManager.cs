@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BepInEx.Configuration;
 using System.ComponentModel;
+using KKAPI.Utilities;
 using VRGIN.Core;
 
 namespace KoikatuVR

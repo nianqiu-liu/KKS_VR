@@ -27,15 +27,18 @@ namespace KoikatuVR.Interpreters
         {
             AddControllerComponent<Controls.TalkSceneHandler>();
 
-            var talkScene = GameObject.FindObjectOfType<TalkScene>();
-            if (talkScene == null)
+            if (!TalkScene.initialized)
             {
                 VRLog.Warn("TalkScene object not found");
                 return;
             }
+            VRLog.Warn("TalkScene init");
+
+            var talkScene = TalkScene.instance;
 
             talkScene.otherInitialize += () =>
             {
+                VRLog.Warn("talkScene.otherInitialize");
                 // The default camera location is a bit too far for a friendly
                 // conversation.
                 var heroine = talkScene.targetHeroine.transform;
@@ -43,9 +46,12 @@ namespace KoikatuVR.Interpreters
                     heroine.TransformPoint(new Vector3(0, 1.4f, 0.55f)),
                     heroine.rotation * Quaternion.Euler(0, 180f, 0),
                     keepHeight: true);
+
+                // talkscene messes with camera settings
+                Camera.main.clearFlags = CameraClearFlags.Skybox;
             };
 
-            _canvasBack = new Traverse(talkScene).Field<Canvas>("canvasBack").Value;
+            _canvasBack = talkScene.canvasBack;
         }
 
         public override void OnUpdate()

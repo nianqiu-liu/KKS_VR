@@ -10,6 +10,9 @@ using VRGIN.Helpers;
 using WindowsInput.Native;
 using KoikatuVR.Interpreters;
 using System.ComponentModel;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using Valve.VR;
 
 namespace KoikatuVR.Controls
 {
@@ -87,6 +90,8 @@ namespace KoikatuVR.Controls
         private readonly Texture2D _handTexture = UnityHelper.LoadImage("icon_hand.png");
         private readonly Texture2D _hand1Texture = UnityHelper.LoadImage("icon_hand_1.png");
         private readonly Texture2D _hand2Texture = UnityHelper.LoadImage("icon_hand_2.png");
+        private MoveDirection? _lastPressDirection;
+        private MoveDirection? _touchDirection;
 
         protected override void OnAwake()
         {
@@ -141,7 +146,7 @@ namespace KoikatuVR.Controls
             {
                 SetScene(inHScene);
             }
-            
+
             //if (_grab != null)
             //{
             //    if (_grab.HandleGrabbing() != GrabAction.Status.Continue)
@@ -165,7 +170,7 @@ namespace KoikatuVR.Controls
             {
                 _lock = Owner.AcquireFocus(/*keepTool: true*/);
             }
-            else if(!wantLock && _lock.IsValid)
+            else if (!wantLock && _lock.IsValid)
             {
                 _lock.Release();
             }
@@ -195,71 +200,81 @@ namespace KoikatuVR.Controls
                 InputUp(_KeySet.Grip);
             }
 
-            //if (device.GetPressDown(ButtonMask.Touchpad))
-            //{
-            //    var dir = Owner.GetTrackpadDirection();
-            //    var fun = GetTrackpadFunction(dir);
-            //    bool requiresPress = RequiresPress(fun);
-            //    if (requiresPress)
-            //    {
-            //        _lastPressDirection = dir;
-            //        InputDown(fun, ButtonMask.Touchpad);
-            //    }
-            //}
+            if (device.GetPressDown(ButtonMask.Touchpad))
+            {
+                var axis = Controller.GetAxis(EVRButtonId.k_EButton_Axis0); //Owner.GetTrackpadDirection();
+                var dir = GetTrackpadDirection(axis);
+                var fun = GetTrackpadFunction(dir);
+                bool requiresPress = RequiresPress(fun);
+                if (requiresPress)
+                {
+                    _lastPressDirection = dir;
+                    InputDown(fun, ButtonMask.Touchpad);
+                }
+            }
 
             if (_buttonsSubtool == null)
             {
                 return;
             }
 
-            //// 上げたときの位置によらず、押したボタンを離す
-            //if (device.GetPressUp(ButtonMask.Touchpad) && _lastPressDirection is Controller.TrackpadDirection dirP)
-            //{
-            //    InputUp(GetTrackpadFunction(dirP));
-            //    _lastPressDirection = null;
-            //}
-            //
-            //var newTouchDirection =
-            //    device.GetTouch(ButtonMask.Touchpad) ? (Controller.TrackpadDirection?)Owner.GetTrackpadDirection() : null;
-            //
-            //if (_touchDirection != newTouchDirection)
-            //{
-            //    if (_touchDirection is Controller.TrackpadDirection oldDir &&
-            //        GetTrackpadFunction(oldDir) is var oldFun &&
-            //        !RequiresPress(oldFun))
-            //    {
-            //        InputUp(oldFun);
-            //
-            //    }
-            //
-            //    if (newTouchDirection is Controller.TrackpadDirection newDir &&
-            //        GetTrackpadFunction(newDir) is var newFun &&
-            //        !RequiresPress(newFun))
-            //    {
-            //        InputDown(newFun, ButtonMask.Touchpad);
-            //    }
-            //    _touchDirection = newTouchDirection;
-            //}
+            // 上げたときの位置によらず、押したボタンを離す
+            // Release the pressed button regardless of the position when it is raised
+            if (device.GetPressUp(ButtonMask.Touchpad) && _lastPressDirection.HasValue)
+            {
+                InputUp(GetTrackpadFunction(_lastPressDirection.Value));
+                _lastPressDirection = null;
+            }
+
+            // Handle touchpad actions that don't require a press, only touch
+            var newTouchDirection = device.GetTouch(ButtonMask.Touchpad)
+                ? GetTrackpadDirection(Controller.GetAxis(EVRButtonId.k_EButton_Axis0)) //(Controller.TrackpadDirection?)Owner.GetTrackpadDirection() 
+                : (MoveDirection?)null;
+            if (_touchDirection != newTouchDirection)
+            {
+                if (_touchDirection.HasValue)
+                {
+                    var oldFun = GetTrackpadFunction(_touchDirection.Value);
+                    if (!RequiresPress(oldFun))
+                        InputUp(oldFun);
+                }
+                if (newTouchDirection.HasValue)
+                {
+                    var newFun = GetTrackpadFunction(newTouchDirection.Value);
+                    if (!RequiresPress(newFun))
+                        InputDown(newFun, ButtonMask.Touchpad);
+                }
+
+                _touchDirection = newTouchDirection;
+            }
 
             _buttonsSubtool.Update();
         }
 
-        //private AssignableFunction GetTrackpadFunction(Controller.TrackpadDirection dir)
-        //{
-        //    switch (dir)
-        //    {
-        //        case VRGIN.Controls.Controller.TrackpadDirection.Up:
-        //            return _KeySet.Up;
-        //        case VRGIN.Controls.Controller.TrackpadDirection.Down:
-        //            return _KeySet.Down;
-        //        case VRGIN.Controls.Controller.TrackpadDirection.Left:
-        //            return _KeySet.Left;
-        //        case VRGIN.Controls.Controller.TrackpadDirection.Right:
-        //            return _KeySet.Right;
-        //        default:
-        //            return _KeySet.Center;
-        //    }
-        //}
+        private AssignableFunction GetTrackpadFunction(MoveDirection dir)
+        {
+            switch (dir)
+            {
+                case MoveDirection.Left: return _KeySet.Left;
+                case MoveDirection.Up: return _KeySet.Up;
+                case MoveDirection.Right: return _KeySet.Right;
+                case MoveDirection.Down: return _KeySet.Down;
+                case MoveDirection.None: return _KeySet.Center;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static MoveDirection GetTrackpadDirection(Vector2 dir)
+        {
+            const float deadzone = 0.5f;
+            var x = dir.x;
+            var y = dir.y;
+            if (Mathf.Abs(x) < deadzone && y > deadzone) return MoveDirection.Up;
+            if (Mathf.Abs(x) < deadzone && y < -deadzone) return MoveDirection.Down;
+            if (x < -deadzone && Mathf.Abs(y) < deadzone) return MoveDirection.Left;
+            if (x > deadzone && Mathf.Abs(y) < deadzone) return MoveDirection.Right;
+            return MoveDirection.None;
+        }
 
         /// <summary>
         /// When this function is assigned to trackpad, does it require a press

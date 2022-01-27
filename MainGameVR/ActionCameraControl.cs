@@ -101,7 +101,19 @@ namespace KoikatuVR
 
         public static void SetIdealPositionAndRotation(Transform t, Vector3 position, Quaternion rotation)
         {
-            GetIdealTransformFor(t).SetPositionAndRotation(position, rotation);
+            if (TalkScene.isPaly)
+            {
+                // todo keep old height?
+                var heroine = TalkScene.instance.targetHeroine.transform;
+                GetIdealTransformFor(t).SetPositionAndRotation(heroine.TransformPoint(new Vector3(0, 1.4f, 0.70f)), heroine.rotation * Quaternion.Euler(0, 180f, 0));                
+            }
+            else
+            {
+                var add = rotation.eulerAngles.normalized * 1f;
+                add.y = 0;
+                var added = position + add;
+                GetIdealTransformFor(t).SetPositionAndRotation(added, rotation);                
+            }
         }
     }
 

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using VRGIN.Core;
 using System.Collections;
+using KKAPI.MainGame;
+using KKAPI.Maker;
 using UnityEngine.SceneManagement;
 
 namespace KoikatuVR.Interpreters
@@ -134,7 +136,7 @@ namespace KoikatuVR.Interpreters
 
             if (nextSceneType != CurrentScene)
             {
-                VRLog.Info($"Start {nextSceneType}");
+                VRLog.Info($"Load interpreter for new scene type: {nextSceneType}");
                 SceneInterpreter.OnDisable();
 
                 CurrentScene = nextSceneType;
@@ -145,19 +147,23 @@ namespace KoikatuVR.Interpreters
 
         private SceneType DetectScene()
         {
+            if (GameAPI.InsideHScene) return SceneType.HScene;
+            if (MakerAPI.InsideMaker) return SceneType.CustomScene;
+            if (TalkScene.isPaly) return SceneType.TalkScene;
+            
             var stack = Manager.Scene.NowSceneNames;
             foreach (string name in stack)
             {
-                if (name == "H" && SceneObjPresent("HScene"))
-                    return SceneType.HScene;
-                if (name == "Action" && SceneObjPresent("ActionScene"))
+                //if (name == "H" && SceneObjPresent("HScene"))
+                //    return SceneType.HScene;
+                if (ActionScene.initialized && name == "Action")
                     return SceneType.ActionScene;
-                if (name == "Talk" && SceneObjPresent("TalkScene"))
-                    return SceneType.TalkScene;
+                //if (name == "Talk" && SceneObjPresent("TalkScene"))
+                //    return SceneType.TalkScene;
                 if (name == "NightMenu" && SceneObjPresent("NightMenuScene"))
                     return SceneType.NightMenuScene;
-                if (name == "CustomScene" && SceneObjPresent("CustomScene"))
-                    return SceneType.CustomScene;
+                //if (name == "CustomScene" && SceneObjPresent("CustomScene"))
+                //    return SceneType.CustomScene;
             }
             return SceneType.OtherScene;
         }

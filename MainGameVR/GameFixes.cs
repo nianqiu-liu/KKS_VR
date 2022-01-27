@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using HarmonyLib;
 using System.Reflection;
@@ -11,6 +12,7 @@ using VRGIN.Core;
 using UnityEngine;
 using KoikatuVR.Interpreters;
 using Sirenix.Serialization.Utilities;
+using StrayTech;
 using UnityStandardAssets.ImageEffects;
 
 // Fixes issues that are in the base game but are only relevant in VR.
@@ -148,6 +150,99 @@ namespace KoikatuVR
                 // vr camera doesn't have this component on it, which crashes game code with nullref. Use the component on original advcamera instead
                 __instance._cameraEffector = __result = GameObject.FindObjectOfType<CameraEffector>();
             }
+        }
+    }
+    [HarmonyPatch(typeof(CameraSystem))]
+    public class ADVSceneFix2
+    {
+        // fixes being unable to do some actions in roaming mode
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(CameraSystem.SystemStatus), MethodType.Getter)]
+        private static bool FixNeverEndingTransition(ref CameraSystem.CameraSystemStatus __result)
+        {
+            __result = CameraSystem.CameraSystemStatus.Inactive;
+            return false;
+        }
+    }
+
+    //[HarmonyPatch(typeof(Transform))]
+    //public class debugss
+    //{
+    //    private static HashSet<string> _seen = new HashSet<string>();
+    //
+    //    [HarmonyPrefix]
+    //    [HarmonyPatch(typeof(Transform))]
+    //    [HarmonyPatch(nameof(Transform.SetPositionAndRotation))]
+    //    private static void FixNeverEndingTransition(Transform __instance)
+    //    {
+    //        var stackTrace = new StackTrace().ToString();
+    //        var str = @$"TRANSFORM GET: {__instance.GetFullPath()}\n{stackTrace}";
+    //        if (_seen.Add(str)) Console.WriteLine(str);
+    //    }
+    //}
+
+    [HarmonyPatch]
+    public class ADVSceneFix3
+    {
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            yield return CoroutineUtils.GetMoveNext(AccessTools.Method(typeof(TalkScene), nameof(TalkScene.Setup)));
+        }
+
+        private static Camera GetOriginalMainCamera()
+        {
+            // vr camera doesn't have this component on it
+            var originalMainCamera = (Manager.Game.instance.cameraEffector ?? GameObject.FindObjectOfType<CameraEffector>()).GetComponent<Camera>();
+            VRPlugin.Logger.LogDebug($"GetOriginalMainCamera called, cam found: {originalMainCamera?.GetFullPath()}\n{new StackTrace()}");
+            return originalMainCamera;
+        }
+
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts, MethodBase __originalMethod)
+        {
+            var targert = AccessTools.PropertyGetter(typeof(Camera), nameof(Camera.main));
+            var replacement = AccessTools.Method(typeof(ADVSceneFix3), nameof(ADVSceneFix3.GetOriginalMainCamera));
+            return insts.Manipulator(
+                predicate: instr => instr.opcode == OpCodes.Call && (MethodInfo)instr.operand == targert,
+                action: instr =>
+                {
+                    instr.operand = replacement;
+                    VRPlugin.Logger.LogDebug("Patched Camera.main in " + __originalMethod.GetNiceName());
+                });
+        }
+    }
+
+    [HarmonyPatch]
+    public class ADVSceneFix4
+    {
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            yield return AccessTools.Method(typeof(ADVScene), nameof(ADVScene.Init));
+        }
+
+        private static Camera GetOriginalMainCamera()
+        {
+            // vr camera doesn't have this component on it
+            var originalMainCamera = (Manager.Game.instance.cameraEffector ?? GameObject.FindObjectOfType<CameraEffector>()).GetComponent<Camera>();
+            VRPlugin.Logger.LogDebug($"GetOriginalMainCamera called, cam found: {originalMainCamera?.GetFullPath()}\n{new StackTrace()}");
+            return originalMainCamera;
+        }
+
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts, MethodBase __originalMethod)
+        {
+            var targert = AccessTools.PropertyGetter(typeof(Camera), nameof(Camera.main));
+            var replacement = AccessTools.Method(typeof(ADVSceneFix4), nameof(ADVSceneFix4.GetOriginalMainCamera));
+            return insts.Manipulator(
+                predicate: instr => instr.opcode == OpCodes.Call && (MethodInfo)instr.operand == targert,
+                action: instr =>
+                {
+                    instr.operand = replacement;
+                    VRPlugin.Logger.LogDebug("Patched Camera.main in " + __originalMethod.GetNiceName());
+                });
+        }
+
+        private static void Postfix(ADVScene __instance)
+        {
+            Manager.Sound.Listener = Camera.main.transform;
         }
     }
 
