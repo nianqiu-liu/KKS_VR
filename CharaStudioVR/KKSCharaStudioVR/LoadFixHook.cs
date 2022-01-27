@@ -59,15 +59,16 @@ namespace KKSCharaStudioVR
 			}
 		}
 
-		[HarmonyPostfix]
-		[HarmonyPatch(typeof(Map), "OnLoadAfter", new Type[] { typeof(string) })]
-		public static void OnLoadAfter(Map __instance, string levelName)
-		{
-			if (standingMode)
-			{
-				KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "Start Scene or Map Unloading.");
-				(VR.Manager.Interpreter as KKSCharaStudioInterpreter).ForceResetVRMode();
-			}
-		}
+		// todo invalid patch target
+		//[HarmonyPostfix]
+		//[HarmonyPatch(typeof(Map), nameof(Map.OnLoadAfter), new Type[] { typeof(string) })]
+		//public static void OnLoadAfter(Map __instance, string levelName)
+		//{
+		//	if (standingMode)
+		//	{
+		//		KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "Start Scene or Map Unloading.");
+		//		(VR.Manager.Interpreter as KKSCharaStudioInterpreter).ForceResetVRMode();
+		//	}
+		//}
 	}
 }

@@ -1,20 +1,21 @@
 using System;
 using BepInEx;
 using BepInEx.Logging;
+using KKAPI;
 using UnityEngine.SceneManagement;
 using VRGIN.Core;
 
 namespace KKSCharaStudioVR
 {
-    [BepInProcess("CharaStudio")]
-    [BepInPlugin("KKS_CharaStudioVR", "KKS_CharaStudioVR", "0.0.2")]
+    [BepInProcess(KoikatuAPI.StudioProcessName)]
+    [BepInPlugin(GUID, NAME, VERSION)]
     public class KKSCharaStudioVRPlugin : BaseUnityPlugin
     {
         public const string GUID = "KKS_CharaStudioVR";
 
         public const string NAME = "KKS_CharaStudioVR";
 
-        public const string VERSION = "0.0.2";
+        public const string VERSION = "0.0.3";
 
         private static ManualLogSource defaultLogger;
 

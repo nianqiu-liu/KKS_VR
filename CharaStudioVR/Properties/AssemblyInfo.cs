@@ -1,17 +1,9 @@
-using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
+using KKSCharaStudioVR;
 
-[assembly: AssemblyTitle("KKS_CharaStudioVR")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KKS_CharaStudioVR")]
+[assembly: AssemblyTitle(KKSCharaStudioVRPlugin.NAME)]
+[assembly: AssemblyDescription("Adds VR support. Launch the game with a --vr switch to enable the plugin.")]
+[assembly: AssemblyCompany("https://github.com/IllusionMods/KKS_VR")]
+[assembly: AssemblyProduct(KKSCharaStudioVRPlugin.NAME)]
 [assembly: AssemblyCopyright("Copyright ©  2020, 2021")]
-[assembly: AssemblyTrademark("")]
-[assembly: ComVisible(false)]
-[assembly: Guid("3C3DFCC3-2BB8-43AD-B0ED-A644F768A7F8")]
-[assembly: AssemblyFileVersion("0.0.2.0")]
-[assembly: AssemblyVersion("0.0.2.0")]
+[assembly: AssemblyVersion(KKSCharaStudioVRPlugin.VERSION)]

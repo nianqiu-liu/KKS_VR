@@ -21,9 +21,9 @@ namespace KoikatuVR
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)] //todo unnecessary?
     public class VRPlugin : BaseUnityPlugin
     {
-        public const string GUID = "mosirnik.kk-main-game-vr";
+        public const string GUID = "KKS_MainGameVR";
         public const string PluginName = "Main Game VR";
-        public const string Version = "1.0.1";
+        public const string Version = "0.0.3";
 
         internal static new ManualLogSource Logger;
 
