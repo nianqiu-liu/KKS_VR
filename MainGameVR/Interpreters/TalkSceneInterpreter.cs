@@ -37,6 +37,7 @@ namespace KoikatuVR.Interpreters
             talkScene.otherInitialize += () =>
             {
                 VRLog.Warn("talkScene.otherInitialize");
+
                 // The default camera location is a bit too far for a friendly
                 // conversation.
                 var heroine = talkScene.targetHeroine.transform;
@@ -47,6 +48,8 @@ namespace KoikatuVR.Interpreters
 
                 // talkscene messes with camera settings
                 Camera.main.clearFlags = CameraClearFlags.Skybox;
+
+                talkScene.backGround.visible = false;
             };
 
             _canvasBack = talkScene.canvasBack;

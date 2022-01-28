@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using HarmonyLib;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -13,7 +12,7 @@ using UnityEngine;
 using KoikatuVR.Interpreters;
 using Sirenix.Serialization.Utilities;
 using StrayTech;
-using UnityStandardAssets.ImageEffects;
+using VRGIN.Controls;
 using Object = UnityEngine.Object;
 
 // Fixes issues that are in the base game but are only relevant in VR.
@@ -121,18 +120,6 @@ namespace KoikatuVR
         }
     }
 
-    // [HarmonyPatch(typeof(ADVScene))]
-    // public class ADVSceneFix1
-    // {
-    //     // todo hack, handle properly
-    //     [HarmonyPrefix]
-    //     [HarmonyPatch(nameof(ADVScene.blur),MethodType.Getter)]
-    //     private static bool PreLateUpdateForce(ADVScene __instance)
-    //     {
-    //         // If null, don't run the method so it returns null by default
-    //         return __instance.cameraEffector != null;
-    //     }
-    // }
     [HarmonyPatch(typeof(Manager.Game))]
     public class ADVSceneFix1
     {
@@ -158,22 +145,6 @@ namespace KoikatuVR
             return false;
         }
     }
-
-    //[HarmonyPatch(typeof(Transform))]
-    //public class debugss
-    //{
-    //    private static HashSet<string> _seen = new HashSet<string>();
-    //
-    //    [HarmonyPrefix]
-    //    [HarmonyPatch(typeof(Transform))]
-    //    [HarmonyPatch(nameof(Transform.SetPositionAndRotation))]
-    //    private static void FixNeverEndingTransition(Transform __instance)
-    //    {
-    //        var stackTrace = new StackTrace().ToString();
-    //        var str = @$"TRANSFORM GET: {__instance.GetFullPath()}\n{stackTrace}";
-    //        if (_seen.Add(str)) Console.WriteLine(str);
-    //    }
-    //}
 
     [HarmonyPatch]
     public class ADVSceneFix3
@@ -265,6 +236,57 @@ namespace KoikatuVR
                     instr.operand = replacement;
                     VRPlugin.Logger.LogDebug("Patched CrossFade.isProcess in " + __originalMethod.GetFullName());
                 });
+        }
+    }
+
+    /// <summary>
+    /// Fix custom tool icons not being on top of the black circle
+    /// </summary>
+    [HarmonyPatch(typeof(Controller))]
+    public class ToolIconFix
+    {
+        private static Shader _guiShader;
+
+        public static Shader GetGuiShader()
+        {
+            if (_guiShader == null)
+            {
+                var bundle = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("topmostguishader"));
+                _guiShader = bundle.LoadAsset<Shader>("topmostgui");
+                if (_guiShader == null) throw new ArgumentNullException(nameof(_guiShader));
+                //_guiShader = new Material(guiShader);
+                bundle.Unload(false);
+            }
+
+            return _guiShader;
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch("OnUpdate")]
+        private static void ToolIconFixHook(Controller __instance)
+        {
+            var tools = __instance.Tools;
+            var any = 0;
+
+            foreach (var tool in tools)
+            {
+                var canvasRenderer = tool.Icon?.GetComponent<CanvasRenderer>();
+                if (canvasRenderer == null) return;
+
+                var orig = canvasRenderer.GetMaterial();
+                if (orig == null || orig.shader == _guiShader) continue;
+
+                any++;
+
+                var copy = new Material(GetGuiShader());
+                canvasRenderer.SetMaterial(copy, 0);
+            }
+
+            if (any == 0) return;
+
+            Canvas.ForceUpdateCanvases();
+
+            VRLog.Debug($"Replaced materials on {any} tool icon renderers");
         }
     }
 }

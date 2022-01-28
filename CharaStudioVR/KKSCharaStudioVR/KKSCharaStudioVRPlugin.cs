@@ -8,6 +8,9 @@ using VRGIN.Core;
 
 namespace KKSCharaStudioVR
 {
+    /// <summary>
+    /// Studio code was forked from KKS_CharaStudioVR at https://vr-erogamer.com/archives/1065
+    /// </summary>
     [BepInProcess(KoikatuAPI.StudioProcessName)]
     [BepInPlugin(GUID, NAME, VERSION)]
     public class KKSCharaStudioVRPlugin : BaseUnityPlugin

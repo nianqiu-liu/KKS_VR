@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VRGIN.Controls;
-using VRGIN.Controls.Tools;
-using VRGIN.Core;
-using VRGIN.Helpers;
 using VRGIN.Modes;
-using UnityEngine;
 
 namespace KoikatuVR
 {
@@ -24,12 +19,7 @@ namespace KoikatuVR
             // (if any) by ourselves.
             return Enumerable.Empty<IShortcut>();
         }
-
-        protected override void OnStart()
-        {
-            base.OnStart();
-        }
-
+        
         protected override Controller CreateLeftController()
         {
             return AddComponents(base.CreateLeftController());

@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ActionGame.Chara;
+using HarmonyLib;
 using KoikatuVR.Interpreters;
 using UnityEngine;
+using Valve.VR;
 using VRGIN.Controls;
 using VRGIN.Controls.Tools;
 using VRGIN.Core;
@@ -37,10 +40,25 @@ namespace KoikatuVR.Controls
 
         protected override void OnUpdate()
         {
+            // If current state is moving/rotating the teleport target, cancel it so that grab moving
+            // can be done (by default it's stuck in teleport mode until you switch tools)
+            if (Controller.GetPressDown(EVRButtonId.k_EButton_Grip))
+            {
+                var tv = Traverse.Create(this);
+                var state = tv.Field("State");
+                var stateVal = state.GetValue<int>();
+                if (stateVal == 1 || stateVal == 2)
+                {
+                    state.SetValue(0);
+                    tv.Method("SetVisibility", new[] { typeof(bool) }).GetValue(false);
+                }
+            }
+
             var origin = VR.Camera.Origin;
             var oldOriginPosition = origin.position;
             var oldOriginRotation = origin.rotation;
             var oldCameraPos = VR.Camera.transform.position;
+
             base.OnUpdate();
 
             // Detect teleporting in Roam mode.
@@ -104,7 +122,7 @@ namespace KoikatuVR.Controls
             return new List<HelpText>(new[]
             {
                 ToolUtil.HelpTrackpadCenter(Owner, "Press to teleport"),
-                ToolUtil.HelpGrip(Owner, "Hold to move")
+                ToolUtil.HelpGrip(Owner, "Hold to move"),
             }.Where(x => x != null));
         }
     }

@@ -5,10 +5,11 @@ using System.Linq;
 using KoikatuVR.Interpreters;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Valve.VR;
 using VRGIN.Controls;
 using VRGIN.Controls.Tools;
 using VRGIN.Core;
-using VRGIN.Helpers; //using static SteamVR_Controller;
+using VRGIN.Helpers;
 
 namespace KoikatuVR.Controls
 {
@@ -22,8 +23,8 @@ namespace KoikatuVR.Controls
         private readonly Texture2D _school2Texture = UnityHelper.LoadImage("icon_school_2.png");
         private readonly Texture2D _schoolTexture = UnityHelper.LoadImage("icon_school.png");
 
-        //private Controller.TrackpadDirection? _touchDirection;
-        //private Controller.TrackpadDirection? _lastPressDirection;
+        private MoveDirection? _touchDirection;
+        private MoveDirection? _lastPressDirection;
 
         // When eneabled, exactly one of the below is non-null.
         private ButtonsSubtool _buttonsSubtool;
@@ -31,13 +32,11 @@ namespace KoikatuVR.Controls
         private KoikatuInterpreter _Interpreter;
         private KeySet _KeySet;
         private int _KeySetIndex;
-        private MoveDirection? _lastPressDirection;
-        private Controller.Lock _lock = VRGIN.Controls.Controller.Lock.Invalid;
+        //private Controller.Lock _lock = VRGIN.Controls.Controller.Lock.Invalid;
         private KoikatuSettings _Settings;
-        private MoveDirection? _touchDirection;
 
         public override Texture2D Image => _image;
-        //private GrabAction _grab;
+        private GrabAction _grab;
 
         private void ChangeKeySet()
         {
@@ -90,11 +89,6 @@ namespace KoikatuVR.Controls
             Graphics.CopyTexture(icon, _image);
         }
 
-        protected override void OnAwake()
-        {
-            base.OnAwake();
-        }
-
         protected override void OnStart()
         {
             base.OnStart();
@@ -104,7 +98,7 @@ namespace KoikatuVR.Controls
             _Settings.AddListener("KeySets", (_, _1) => ResetKeys());
             _Settings.AddListener("HKeySets", (_, _1) => ResetKeys());
         }
-
+        
         protected override void OnDestroy()
         {
             // nothing to do.
@@ -114,11 +108,11 @@ namespace KoikatuVR.Controls
         {
             _buttonsSubtool?.Destroy();
             _buttonsSubtool = null;
-            //_grab?.Destroy();
-            //_grab = null;
-            if (_lock.IsValid) _lock.Release();
-            //_touchDirection = null;
-            //_lastPressDirection = null;
+            _grab?.Destroy();
+            _grab = null;
+            //if (_lock.IsValid) _lock.Release();
+            _touchDirection = null;
+            _lastPressDirection = null;
             base.OnDisable();
         }
 
@@ -133,54 +127,53 @@ namespace KoikatuVR.Controls
         {
             base.OnUpdate();
 
-            UpdateLock();
+            //UpdateLock();
 
             var inHScene = _Interpreter.CurrentScene == KoikatuInterpreter.SceneType.HScene;
             if (inHScene != _InHScene) SetScene(inHScene);
 
-            //if (_grab != null)
-            //{
-            //    if (_grab.HandleGrabbing() != GrabAction.Status.Continue)
-            //    {
-            //        _grab.Destroy();
-            //        _grab = null;
-            //        _buttonsSubtool = new ButtonsSubtool(_Interpreter, _Settings);
-            //    }
-            //}
+            if (_grab != null)
+            {
+                if (!_grab.HandleGrabbing())
+                {
+                    _grab.Destroy();
+                    _grab = null;
+                    _buttonsSubtool = new ButtonsSubtool(_Interpreter, _Settings);
+                }
+            }
 
             if (_buttonsSubtool != null) HandleButtons();
         }
 
-        private void UpdateLock()
-        {
-            var wantLock = /*_grab != null ||*/ _buttonsSubtool?.WantLock() == true;
-            if (wantLock && !_lock.IsValid)
-                _lock = Owner.AcquireFocus( /*keepTool: true*/);
-            else if (!wantLock && _lock.IsValid) _lock.Release();
-        }
+        //private void UpdateLock()
+        //{
+        //    var wantLock = /*_grab != null ||*/ _buttonsSubtool?.WantLock() == true;
+        //    if (wantLock && !_lock.IsValid)
+        //        _lock = Owner.AcquireFocus( /*keepTool: true*/);
+        //    else if (!wantLock && _lock.IsValid) _lock.Release();
+        //}
 
         private void HandleButtons()
         {
             var device = Controller;
 
-            if (device.GetPressDown(ButtonMask.Trigger)) InputDown(_KeySet.Trigger, ButtonMask.Trigger);
+            if (device.GetPressDown(EVRButtonId.k_EButton_SteamVR_Trigger)) InputDown(_KeySet.Trigger, EVRButtonId.k_EButton_SteamVR_Trigger);
 
-            if (device.GetPressUp(ButtonMask.Trigger)) InputUp(_KeySet.Trigger);
+            if (device.GetPressUp(EVRButtonId.k_EButton_SteamVR_Trigger)) InputUp(_KeySet.Trigger);
 
-            if (device.GetPressDown(ButtonMask.Grip)) InputDown(_KeySet.Grip, ButtonMask.Grip);
+            if (device.GetPressDown(EVRButtonId.k_EButton_Grip)) InputDown(_KeySet.Grip, EVRButtonId.k_EButton_Grip);
 
-            if (device.GetPressUp(ButtonMask.Grip)) InputUp(_KeySet.Grip);
+            if (device.GetPressUp(EVRButtonId.k_EButton_Grip)) InputUp(_KeySet.Grip);
 
-            if (device.GetPressDown(ButtonMask.Touchpad))
+            if (device.GetPressDown(EVRButtonId.k_EButton_SteamVR_Touchpad))
             {
-                var axis = Controller.GetAxis(); //Owner.GetTrackpadDirection();
+                var axis = Controller.GetAxis();
                 var dir = GetTrackpadDirection(axis);
                 var fun = GetTrackpadFunction(dir);
-                var requiresPress = RequiresPress(fun);
-                if (requiresPress)
+                if (RequiresPress(fun))
                 {
                     _lastPressDirection = dir;
-                    InputDown(fun, ButtonMask.Touchpad);
+                    InputDown(fun, EVRButtonId.k_EButton_SteamVR_Touchpad);
                 }
             }
 
@@ -188,30 +181,37 @@ namespace KoikatuVR.Controls
 
             // 上げたときの位置によらず、押したボタンを離す
             // Release the pressed button regardless of the position when it is raised
-            if (device.GetPressUp(ButtonMask.Touchpad) && _lastPressDirection.HasValue)
+            if (device.GetPressUp(EVRButtonId.k_EButton_SteamVR_Touchpad) && _lastPressDirection.HasValue)
             {
                 InputUp(GetTrackpadFunction(_lastPressDirection.Value));
                 _lastPressDirection = null;
             }
 
             // Handle touchpad actions that don't require a press, only touch
-            var newTouchDirection = device.GetTouch(ButtonMask.Touchpad)
-                ? GetTrackpadDirection(Controller.GetAxis()) //(Controller.TrackpadDirection?)Owner.GetTrackpadDirection() 
+            var newTouchDirection = device.GetTouch(EVRButtonId.k_EButton_SteamVR_Touchpad)
+                ? GetTrackpadDirection(Controller.GetAxis())
                 : (MoveDirection?)null;
             if (_touchDirection != newTouchDirection)
             {
+                //Console.WriteLine("changed to " + newTouchDirection);
                 if (_touchDirection.HasValue)
                 {
                     var oldFun = GetTrackpadFunction(_touchDirection.Value);
                     if (!RequiresPress(oldFun))
+                    {
+                        //Console.WriteLine("up " + oldFun);
                         InputUp(oldFun);
+                    }
                 }
 
                 if (newTouchDirection.HasValue)
                 {
                     var newFun = GetTrackpadFunction(newTouchDirection.Value);
                     if (!RequiresPress(newFun))
-                        InputDown(newFun, ButtonMask.Touchpad);
+                    {
+                        //Console.WriteLine("down " + newFun);
+                        InputDown(newFun, EVRButtonId.k_EButton_SteamVR_Touchpad);
+                    }
                 }
 
                 _touchDirection = newTouchDirection;
@@ -263,8 +263,9 @@ namespace KoikatuVR.Controls
             }
         }
 
-        private void InputDown(AssignableFunction fun, ulong buttonMask)
+        private void InputDown(AssignableFunction fun, EVRButtonId buttonMask)
         {
+
             switch (fun)
             {
                 case AssignableFunction.NEXT:
@@ -272,8 +273,40 @@ namespace KoikatuVR.Controls
                 case AssignableFunction.GRAB:
                     _buttonsSubtool.Destroy();
                     _buttonsSubtool = null;
-                    //_grab = new GrabAction(Owner, Controller, buttonMask);
+                    _grab = new GrabAction(Owner, buttonMask);
                     break;
+
+                /* Proper way of doing it needs special handling for different H modes and to be inside _buttonsSubtool
+                 case AssignableFunction.SCROLLUP:
+                    if (_InHScene)
+                    {
+                        var f = FindObjectOfType<HFlag>();
+                        f.SpeedUpClick(-f.rateWheelSpeedUp, 1f);
+                        break;
+                    }
+                    goto default;
+                case AssignableFunction.SCROLLDOWN:
+                    if (_InHScene)
+                    {
+                        var f = FindObjectOfType<HFlag>();
+                        f.SpeedUpClick(f.rateWheelSpeedUp, 1f);
+                        break;
+                    }
+                    goto default;*/
+
+                case AssignableFunction.SCROLLUP:
+                case AssignableFunction.SCROLLDOWN:
+                case AssignableFunction.LBUTTON:
+                case AssignableFunction.MBUTTON:
+                case AssignableFunction.RBUTTON:
+                    // Move the cursor to the bottom right corner so buttons/scrolling affect the H speed control
+                    // Extremely fiddly but what can you do
+                    if (_InHScene) VR.Input.Mouse.MoveMouseBy(Screen.width - 10, Screen.height - 10);
+
+                    //todo maybe force focus the window here so the cursor doesn't go off into the desktop?
+                    //https://stackoverflow.com/questions/29092145/any-way-to-bring-unity3d-to-the-foreground
+                    goto default;
+
                 default:
                     _buttonsSubtool.ButtonDown(fun);
                     break;

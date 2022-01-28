@@ -205,6 +205,7 @@
     <Compile Include="Caress\LongDistanceKissMachine.cs" />
     <Compile Include="Caress\VRMouth.cs" />
     <Compile Include="Compat.cs" />
+    <Compile Include="Controls\GrabAction.cs" />
     <Compile Include="DebugHooks.cs" />
     <Compile Include="GameFixes.cs" />
     <Compile Include="OpenVRHelperTempfixHook.cs" />
@@ -246,6 +247,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Resources\mirror-shader" />
+    <EmbeddedResource Include="topmostguishader" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Plugins\Images\icon_hand.png">
