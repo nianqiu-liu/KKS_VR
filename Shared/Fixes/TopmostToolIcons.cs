@@ -10,9 +10,13 @@ namespace KKS_VR.Fixes
     /// <summary>
     /// Fix custom tool icons not being on top of the black circle
     /// </summary>
-    [HarmonyPatch(typeof(Controller))]
     public class TopmostToolIcons
     {
+        public static void Patch()
+        {
+            new Harmony("TopmostToolIconsHook").PatchAll(typeof(TopmostToolIcons));
+        }
+
         private static Shader _guiShader;
 
         public static Shader GetGuiShader()
@@ -30,7 +34,7 @@ namespace KKS_VR.Fixes
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch("OnUpdate")]
+        [HarmonyPatch(typeof(Controller), "OnUpdate")]
         private static void ToolIconFixHook(Controller __instance)
         {
             var tools = __instance.Tools;

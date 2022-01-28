@@ -105,19 +105,26 @@ namespace KKS_VR
             }
 
             base.Logger.LogInfo("Initializing the plugin...");
-            
+
             SaveLoadSceneHook.InstallHook();
             LoadFixHook.InstallHook();
 
+            TopmostToolIcons.Patch();
+
             VRManager.Create<KKSCharaStudioInterpreter>(CreateContext("KKS_CharaStudioVRContext.xml"));
+
             VR.Manager.SetMode<GenericStandingMode>();
+
             var obj = new GameObject("KKSCharaStudioVR");
             DontDestroyOnLoad(obj);
             IKTool.Create(obj);
             VRCameraMoveHelper.Install(obj);
             VRItemObjMoveHelper.Install(obj);
+
             //todo PrivacyScreen.Initialize();
+
             NativeMethods.DisableProcessWindowsGhosting();
+
             DontDestroyOnLoad(VRCamera.Instance.gameObject);
 
             base.Logger.LogInfo("Finished loading into VR mode!");

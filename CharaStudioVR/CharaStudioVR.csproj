@@ -205,7 +205,6 @@
     <Compile Include="Util\MaterialHelper.cs" />
     <Compile Include="Util\MoveableGUIObject.cs" />
     <Compile Include="Controls\ObjMoveHelper.cs" />
-    <Compile Include="Fixes\OpenVRHelperTempfixHook.cs" />
     <Compile Include="Fixes\SaveLoadSceneHook.cs" />
     <Compile Include="Interpreters\TransientHead.cs" />
     <Compile Include="Controls\VRCameraMoveHelper.cs" />
@@ -266,6 +265,6 @@
   <Import Project="..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.targets" Condition="Exists('..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.TextRenderingModule.targets')" />
   <Import Project="..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.ImageConversionModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.ImageConversionModule.targets" Condition="Exists('..\packages\IllusionLibs.KoikatsuSunshine.UnityEngine.ImageConversionModule.2019.4.9\build\IllusionLibs.KoikatsuSunshine.UnityEngine.ImageConversionModule.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>copy "D:\SVN\KK_MainGameVR\CharaStudioVR\bin\Debug\KKS_CharaStudioVR.dll" "F:\Games\KKS\BepInEx\plugins\KKS_VR\"</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetDir)\KKS_CharaStudioVR.dll" KKS</PostBuildEvent>
   </PropertyGroup>
 </Project>

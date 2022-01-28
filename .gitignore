@@ -39,3 +39,4 @@ packages/
 KoikatuVR/Libs
 PatcherLoader/Libs
 /bin
+/PostBuild.bat

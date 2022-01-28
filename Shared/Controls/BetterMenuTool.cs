@@ -11,7 +11,10 @@ using Object = UnityEngine.Object;
 
 namespace KKS_VR.Controls
 {
-    internal class KoikatuMenuTool : MenuTool
+    /// <summary>
+    /// MenuTool that supports right clicks by pressing the trackpad
+    /// </summary>
+    internal class BetterMenuTool : MenuTool
     {
         public override List<HelpText> GetHelpTexts()
         {

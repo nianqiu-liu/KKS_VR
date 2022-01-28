@@ -10,5 +10,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\BetterMenuTool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\BetterWarpTool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ToolUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fixes\OpenVRHelperTempfixHook.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fixes\TopmostToolIcons.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Fixes\topmostguishader" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Fixes\topmostgui.shader" />
   </ItemGroup>
 </Project>

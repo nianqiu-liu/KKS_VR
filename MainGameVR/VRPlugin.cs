@@ -102,19 +102,25 @@ namespace KKS_VR
             Logger.LogInfo("Initializing the plugin...");
 
             new Harmony(GUID).PatchAll(typeof(VRPlugin).Assembly);
-            // Boot VRManager!
+            TopmostToolIcons.Patch();
+            
             VRManager.Create<Interpreters.KoikatuInterpreter>(new KoikatuContext(settings));
+            
             // VRGIN doesn't update the near clip plane until a first "main" camera is created, so we set it here.
             UpdateNearClipPlane(settings);
             settings.AddListener("NearClipPlane", (_, _1) => UpdateNearClipPlane(settings));
+            
             VR.Manager.SetMode<KoikatuStandingMode>();
+            
             VRFade.Create();
             PrivacyScreen.Initialize();
             GraphicRaycasterPatches.Initialize();
+            
             // It's been reported in #28 that the game window defocues when
             // the game is under heavy load. We disable window ghosting in
             // an attempt to counter this.
             NativeMethods.DisableProcessWindowsGhosting();
+            
             DontDestroyOnLoad(VRCamera.Instance.gameObject);
 
             Logger.LogInfo("Finished loading into VR mode!");

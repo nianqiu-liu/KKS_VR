@@ -30,7 +30,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>embedded</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\bin\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE;KKS MainGame</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -198,7 +198,6 @@
     <Compile Include="Camera\ActionCameraControl.cs" />
     <Compile Include="Camera\BackgroundDisplayer.cs" />
     <Compile Include="Fixes\ReduceAssetUnloads.cs" />
-    <Compile Include="Fixes\TopmostToolIcons.cs" />
     <Compile Include="Features\VRBoop.cs" />
     <Compile Include="Controls\ButtonsSubtool.cs" />
     <Compile Include="Camera\CameraControlControl.cs" />
@@ -211,7 +210,6 @@
     <Compile Include="Controls\GrabAction.cs" />
     <Compile Include="Util\DebugHooks.cs" />
     <Compile Include="Fixes\GameFixes.cs" />
-    <Compile Include="Fixes\OpenVRHelperTempfixHook.cs" />
     <Compile Include="Features\PrivacyScreen.cs" />
     <Compile Include="Interpreters\ActionSceneInterpreter.cs" />
     <Compile Include="Interpreters\CustomSceneInterpreter.cs" />
@@ -224,9 +222,7 @@
     <Compile Include="Camera\CameraMoveHooks.cs" />
     <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Controls\TalkSceneHandler.cs" />
-    <Compile Include="Controls\KoikatuMenuTool.cs" />
     <Compile Include="Controls\KoikatuWarpTool.cs" />
-    <Compile Include="Controls\ToolUtil.cs" />
     <Compile Include="Fixes\UnityPatches.cs" />
     <Compile Include="Util\Extensions.cs" />
     <Compile Include="Interpreters\HSceneInterpreter.cs" />
@@ -244,10 +240,8 @@
     <Compile Include="Settings\KoikatuSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Fixes\topmostgui.shader" />
     <None Include="packages.config" />
     <EmbeddedResource Include="Fixes\Mirror\mirror-shader" />
-    <EmbeddedResource Include="Fixes\topmostguishader" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
@@ -303,6 +297,6 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy "D:\SVN\KK_MainGameVR\MainGameVR\bin\KKS_MainGameVR.dll" "F:\Games\KKS\BepInEx\plugins\KKS_VR\"</PostBuildEvent>
+    <PostBuildEvent>IF EXIST "$(SolutionDir)PostBuild.bat" CALL "$(SolutionDir)PostBuild.bat" "$(TargetDir)\KKS_MainGameVR.dll" KKS</PostBuildEvent>
   </PropertyGroup>
 </Project>

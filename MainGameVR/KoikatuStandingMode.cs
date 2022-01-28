@@ -15,7 +15,7 @@ namespace KKS_VR
     {
         public override IEnumerable<Type> Tools
         {
-            get { return new[] { typeof(Controls.KoikatuMenuTool), typeof(Controls.KoikatuWarpTool), typeof(Controls.SchoolTool) }; }
+            get { return new[] { typeof(Controls.BetterMenuTool), typeof(Controls.KoikatuWarpTool), typeof(Controls.SchoolTool) }; }
         }
 
         protected override IEnumerable<IShortcut> CreateShortcuts()
