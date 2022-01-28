@@ -196,6 +196,7 @@
   <ItemGroup>
     <Compile Include="ActionCameraControl.cs" />
     <Compile Include="Background.cs" />
+    <Compile Include="VRBoop.cs" />
     <Compile Include="Controls\ButtonsSubtool.cs" />
     <Compile Include="CameraControlControl.cs" />
     <Compile Include="Caress\AibuColliderTracker.cs" />

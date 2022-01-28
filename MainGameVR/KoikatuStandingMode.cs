@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.XR;
 using VRGIN.Controls;
 using VRGIN.Modes;
 
@@ -19,23 +20,26 @@ namespace KoikatuVR
             // (if any) by ourselves.
             return Enumerable.Empty<IShortcut>();
         }
-        
+
         protected override Controller CreateLeftController()
         {
-            return AddComponents(base.CreateLeftController());
+            var controller = base.CreateLeftController();
+            AddComponents(controller, EyeSide.Left);
+            return controller;
         }
 
         protected override Controller CreateRightController()
         {
-            var controller = AddComponents(base.CreateRightController());
+            var controller = base.CreateRightController();
+            AddComponents(controller, EyeSide.Right);
             controller.ToolIndex = 1;
             return controller;
         }
 
-        private static Controller AddComponents(Controller controller)
+        private static void AddComponents(Controller controller, EyeSide controllerSide)
         {
             controller.gameObject.AddComponent<Controls.LocationPicker>();
-            return controller;
+            VRBoop.Initialize(controller, controllerSide);
         }
 
         protected override void SyncCameras()
