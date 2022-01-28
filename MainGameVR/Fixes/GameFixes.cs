@@ -1,67 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using HarmonyLib;
 using System.Reflection;
 using System.Reflection.Emit;
 using ActionGame;
 using ADV;
+using HarmonyLib;
 using KKAPI.Utilities;
-using VRGIN.Core;
-using UnityEngine;
 using KoikatuVR.Interpreters;
+using KoikatuVR.Settings;
 using Sirenix.Serialization.Utilities;
 using StrayTech;
-using VRGIN.Controls;
+using UnityEngine;
+using VRGIN.Core;
 using Object = UnityEngine.Object;
 
-// Fixes issues that are in the base game but are only relevant in VR.
-
-namespace KoikatuVR
+/*
+ * Fixes for issues that are in the base game but are only relevant in VR.
+ */
+namespace KoikatuVR.Fixes
 {
-    /// <summary>
-    /// Avoid triggering resource unload when loading UI-only scenes.
-    /// todo move into illusionfixes?
-    /// </summary>
-    [HarmonyPatch]
-    internal class ScenePatches
-    {
-        private static IEnumerable<MethodBase> TargetMethods()
-        {
-            yield return CoroutineUtils.GetMoveNext(AccessTools.Method(typeof(Manager.Scene), nameof(Manager.Scene.LoadStart)));
-        }
-
-        private static AsyncOperation MaybeUnloadUnusedAssets()
-        {
-            var shouldUnload = Manager.Scene.IsFadeNow;
-            if (shouldUnload)
-            {
-                return Resources.UnloadUnusedAssets();
-            }
-            else
-            {
-                VRLog.Info("Skipping unload");
-                return null;
-            }
-        }
-
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts, MethodBase __originalMethod)
-        {
-            foreach (var inst in insts)
-                if (inst.opcode == OpCodes.Call &&
-                    inst.operand is MethodInfo method &&
-                    method.Name == "UnloadUnusedAssets")
-                {
-                    yield return CodeInstruction.Call(() => MaybeUnloadUnusedAssets());
-                    VRPlugin.Logger.LogDebug("Patched UnloadUnusedAssets in " + __originalMethod.GetFullName());
-                }
-                else
-                {
-                    yield return inst;
-                }
-        }
-    }
-
     /// <summary>
     /// Suppress character update for invisible characters in some sub-scenes of Roaming.
     /// </summary>
@@ -94,10 +52,13 @@ namespace KoikatuVR
         }
     }
 
+    /// <summary>
+    /// Fix game crash during map load
+    /// todo hack, handle properly?
+    /// </summary>
     [HarmonyPatch(typeof(SunLightInfo))]
     public class FogHack1
     {
-        // todo hack, handle properly
         [HarmonyFinalizer]
         [HarmonyPatch(nameof(SunLightInfo.Set))]
         private static Exception PreLateUpdateForce(Exception __exception)
@@ -107,6 +68,10 @@ namespace KoikatuVR
         }
     }
 
+    /// <summary>
+    /// Fix game crash during map load
+    /// todo hack, handle properly?
+    /// </summary>
     [HarmonyPatch(typeof(ActionMap))]
     public class FogHack2
     {
@@ -120,6 +85,9 @@ namespace KoikatuVR
         }
     }
 
+    /// <summary>
+    /// Fix game crash during ADV scene load
+    /// </summary>
     [HarmonyPatch(typeof(Manager.Game))]
     public class ADVSceneFix1
     {
@@ -133,10 +101,12 @@ namespace KoikatuVR
         }
     }
 
+    /// <summary>
+    /// Fix being unable to do some actions in roaming mode
+    /// </summary>
     [HarmonyPatch(typeof(CameraSystem))]
     public class ADVSceneFix2
     {
-        // fixes being unable to do some actions in roaming mode
         [HarmonyPrefix]
         [HarmonyPatch(nameof(CameraSystem.SystemStatus), MethodType.Getter)]
         private static bool FixNeverEndingTransition(ref CameraSystem.CameraSystemStatus __result)
@@ -146,6 +116,9 @@ namespace KoikatuVR
         }
     }
 
+    /// <summary>
+    /// Fix ADV scenes messing with the VR camera by moving it or setting flags on it. Feed it the default 2D camera instead so it's happy.
+    /// </summary>
     [HarmonyPatch]
     public class ADVSceneFix3
     {
@@ -176,6 +149,9 @@ namespace KoikatuVR
         }
     }
 
+    /// <summary>
+    /// Fix ADV scenes messing with the VR camera by moving it or setting flags on it. Feed it the default 2D camera instead so it's happy.
+    /// </summary>
     [HarmonyPatch]
     public class ADVSceneFix4
     {
@@ -211,6 +187,9 @@ namespace KoikatuVR
         }
     }
 
+    /// <summary>
+    /// Fix crash when playing ADV scenes
+    /// </summary>
     [HarmonyPatch]
     public class CycleCrossFadeFix1
     {
@@ -236,57 +215,6 @@ namespace KoikatuVR
                     instr.operand = replacement;
                     VRPlugin.Logger.LogDebug("Patched CrossFade.isProcess in " + __originalMethod.GetFullName());
                 });
-        }
-    }
-
-    /// <summary>
-    /// Fix custom tool icons not being on top of the black circle
-    /// </summary>
-    [HarmonyPatch(typeof(Controller))]
-    public class ToolIconFix
-    {
-        private static Shader _guiShader;
-
-        public static Shader GetGuiShader()
-        {
-            if (_guiShader == null)
-            {
-                var bundle = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("topmostguishader"));
-                _guiShader = bundle.LoadAsset<Shader>("topmostgui");
-                if (_guiShader == null) throw new ArgumentNullException(nameof(_guiShader));
-                //_guiShader = new Material(guiShader);
-                bundle.Unload(false);
-            }
-
-            return _guiShader;
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch("OnUpdate")]
-        private static void ToolIconFixHook(Controller __instance)
-        {
-            var tools = __instance.Tools;
-            var any = 0;
-
-            foreach (var tool in tools)
-            {
-                var canvasRenderer = tool.Icon?.GetComponent<CanvasRenderer>();
-                if (canvasRenderer == null) return;
-
-                var orig = canvasRenderer.GetMaterial();
-                if (orig == null || orig.shader == _guiShader) continue;
-
-                any++;
-
-                var copy = new Material(GetGuiShader());
-                canvasRenderer.SetMaterial(copy, 0);
-            }
-
-            if (any == 0) return;
-
-            Canvas.ForceUpdateCanvases();
-
-            VRLog.Debug($"Replaced materials on {any} tool icon renderers");
         }
     }
 }

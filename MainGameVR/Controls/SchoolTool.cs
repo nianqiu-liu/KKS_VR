@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using KoikatuVR.Interpreters;
+using KoikatuVR.Settings;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Valve.VR;

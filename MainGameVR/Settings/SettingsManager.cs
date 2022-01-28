@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BepInEx.Configuration;
-using System.ComponentModel;
 using KKAPI.Utilities;
 using VRGIN.Core;
 
-namespace KoikatuVR
+namespace KoikatuVR.Settings
 {
     /// <summary>
     /// Manages configuration and keeps it up to date.
@@ -31,7 +28,6 @@ namespace KoikatuVR
         /// KoikatuSettings object and arrange that it be synced with the config
         /// entries.
         /// </summary>
-        /// <param name="config"></param>
         /// <returns>The new KoikatuSettings object.</returns>
         public static KoikatuSettings Create(ConfigFile config)
         {

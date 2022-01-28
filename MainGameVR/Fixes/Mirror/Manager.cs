@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using KKAPI.Utilities;
 using UnityEngine;
 using VRGIN.Core;
 using Object = UnityEngine.Object;
 
-namespace KoikatuVR.Mirror
+namespace KoikatuVR.Fixes.Mirror
 {
     /// <summary>
     /// Mirrors in the base game look very weird in VR. This object
@@ -29,9 +26,9 @@ namespace KoikatuVR.Mirror
         {
             if (_material == null)
             {
-                var shader = VRGIN.Helpers.UnityHelper.LoadFromAssetBundle<Shader>(
-                    Resource.mirror_shader,
-                    "Assets/MirrorReflection.shader");
+                var bundle = ResourceUtils.GetEmbeddedResource("mirror-shader");
+                if (bundle == null) VRLog.Error("Failed to load shader bundle");
+                var shader = VRGIN.Helpers.UnityHelper.LoadFromAssetBundle<Shader>(bundle, "Assets/MirrorReflection.shader");
                 if (shader == null) VRLog.Error("Failed to load shader");
                 _material = new Material(shader);
             }

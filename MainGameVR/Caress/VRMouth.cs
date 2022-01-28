@@ -7,6 +7,7 @@ using UnityEngine;
 using VRGIN.Core;
 using HarmonyLib;
 using KoikatuVR.Interpreters;
+using KoikatuVR.Settings;
 
 namespace KoikatuVR.Caress
 {

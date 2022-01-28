@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using KKAPI.MainGame;
 using KoikatuVR.Interpreters;
+using KoikatuVR.Settings;
 using UnityEngine;
 using VRGIN.Core;
 using WindowsInput.Native;
@@ -189,7 +190,7 @@ namespace KoikatuVR.Controls
             if (actInterpreter != null) actInterpreter.MoveCameraToPlayer(true);
             var camera = VR.Camera.transform;
             var newRotation = Quaternion.AngleAxis(degrees, Vector3.up) * camera.rotation;
-            VRMover.Instance.MoveTo(camera.position, newRotation, false);
+            VRCameraMover.Instance.MoveTo(camera.position, newRotation, false);
             if (actInterpreter != null) actInterpreter.MovePlayerToCamera();
         }
 

@@ -23,7 +23,7 @@ namespace KoikatuVR.Caress
         public static List<HandCtrl> GetHands(HSceneProc proc)
         {
             var ret = new List<HandCtrl>();
-            for (var i = 0; i < proc.flags.lstHeroine.Count; i++) ret.Add(i == 0 ? proc.hand : Compat.HSceenProc_hand1(proc));
+            for (var i = 0; i < proc.flags.lstHeroine.Count; i++) ret.Add(i == 0 ? proc.hand : proc.hand1);
             return ret;
         }
 

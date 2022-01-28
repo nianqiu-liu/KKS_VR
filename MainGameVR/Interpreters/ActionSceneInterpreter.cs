@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using ActionGame;
+using KoikatuVR.Settings;
+using UnityEngine;
 using VRGIN.Core;
 using WindowsInput.Native;
 using StrayTech;
@@ -54,9 +56,7 @@ namespace KoikatuVR.Interpreters
                 _CameraSystem = MonoBehaviourSingleton<CameraSystem>.Instance.gameObject;
 
                 // トイレなどでFPS視点になっている場合にTPS視点に戻す
-                Compat.CameraStateDefinitionChange_ModeChangeForce(
-                    _CameraSystem.GetComponent<ActionGame.CameraStateDefinitionChange>(),
-                    (ActionGame.CameraMode?)ActionGame.CameraMode.TPS);
+                _CameraSystem.GetComponent<ActionGame.CameraStateDefinitionChange>().ModeChangeForce((ActionGame.CameraMode?)ActionGame.CameraMode.TPS, true);
                 //scene.GetComponent<ActionScene>().isCursorLock = false;
 
                 // カメラをプレイヤーの位置に移動
@@ -148,7 +148,7 @@ namespace KoikatuVR.Interpreters
                 pos.y += _IsStanding ? _Settings.StandingCameraPos : _Settings.CrouchingCameraPos;
             }
 
-            VRMover.Instance.MoveTo(
+            VRCameraMover.Instance.MoveTo(
                 pos + cf * 0.23f, // 首が見えるとうざいのでほんの少し前目にする
                 onlyPosition ? headCam.rotation : player.rotation,
                 false,
@@ -203,7 +203,7 @@ namespace KoikatuVR.Interpreters
             _Walking = true;
             // Force hide the protagonist's head while walking, so that it
             // remains hidden when the game lags.
-            VRMale.ForceHideHead = true;
+            HideMaleHead.ForceHideHead = true;
         }
 
         public void StopWalking()
@@ -217,7 +217,7 @@ namespace KoikatuVR.Interpreters
             }
 
             _Walking = false;
-            VRMale.ForceHideHead = false;
+            HideMaleHead.ForceHideHead = false;
         }
     }
 }

@@ -7,6 +7,9 @@ using VRGIN.Modes;
 
 namespace KoikatuVR
 {
+    /// <summary>
+    /// Initialize controllers and custom tools
+    /// </summary>
     internal class KoikatuStandingMode : StandingMode
     {
         public override IEnumerable<Type> Tools

@@ -5,6 +5,7 @@ using System.Linq;
 using ActionGame.Chara;
 using HarmonyLib;
 using KoikatuVR.Interpreters;
+using KoikatuVR.Settings;
 using UnityEngine;
 using Valve.VR;
 using VRGIN.Controls;
@@ -29,13 +30,13 @@ namespace KoikatuVR.Controls
         protected override void OnEnable()
         {
             base.OnEnable();
-            VRMover.Instance.OnMove += OnCameraMove;
+            VRCameraMover.Instance.OnMove += OnCameraMove;
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
-            VRMover.Instance.OnMove -= OnCameraMove;
+            VRCameraMover.Instance.OnMove -= OnCameraMove;
         }
 
         protected override void OnUpdate()

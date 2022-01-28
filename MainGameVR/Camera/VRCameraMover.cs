@@ -1,39 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using UnityEngine;
 using VRGIN.Core;
 using HarmonyLib;
 using System.Collections;
+using KoikatuVR.Settings;
 
 namespace KoikatuVR
 {
     /// <summary>
     /// A class responsible for moving the VR camera.
+    /// TODO probably has some bugs since it was copied mostly as it is from KK to KKS
     /// </summary>
-    public class VRMover
+    public class VRCameraMover
     {
-        public static VRMover Instance
-        {
-            get
-            {
-                if (_instance == null) _instance = new VRMover();
-                return _instance;
-            }
-        }
+        public static VRCameraMover Instance => _instance ?? (_instance = new VRCameraMover());
 
-        private static VRMover _instance;
+        private static VRCameraMover _instance;
 
         private Vector3 _lastPosition;
         private Quaternion _lastRotation;
-        private KoikatuSettings _settings;
+        private readonly KoikatuSettings _settings;
 
         public delegate void OnMoveAction();
 
         public event OnMoveAction OnMove;
 
-        public VRMover()
+        public VRCameraMover()
         {
             _lastPosition = Vector3.zero;
             _lastRotation = Quaternion.identity;
@@ -43,9 +35,6 @@ namespace KoikatuVR
         /// <summary>
         /// Move the camera to the specified pose.
         /// </summary>
-        /// <param name="position"></param>
-        /// <param name="rotation"></param>
-        /// <param name="keepHeight"></param>
         public void MoveTo(Vector3 position, Quaternion rotation, bool keepHeight, bool quiet = false)
         {
             if (!quiet) VRLog.Debug($"Moving camera to {position} {rotation.eulerAngles}");
@@ -72,9 +61,6 @@ namespace KoikatuVR
         /// <summary>
         /// Similar to MaybeMoveTo, but also considers the ADV fade state.
         /// </summary>
-        /// <param name="position"></param>
-        /// <param name="rotation"></param>
-        /// <param name="keepHeight"></param>
         public void MaybeMoveADV(ADV.TextScenario textScenario, Vector3 position, Quaternion rotation, bool keepHeight)
         {
             var advFade = new Traverse(textScenario).Field<ADVFade>("advFade").Value;
@@ -85,7 +71,6 @@ namespace KoikatuVR
         /// This should be called every time a set of ADV commands has been executed.
         /// Moves the camera appropriately.
         /// </summary>
-        /// <param name="textScenario"></param>
         public void HandleTextScenarioProgress(ADV.TextScenario textScenario)
         {
             var isFadingOut = IsFadingOut(new Traverse(textScenario).Field<ADVFade>("advFade").Value);
@@ -133,7 +118,7 @@ namespace KoikatuVR
             }
         }
 
-        private bool IsFadingOut(ADVFade fade)
+        private static bool IsFadingOut(ADVFade fade)
         {
             bool IsFadingOutSub(ADVFade.Fade f)
             {
@@ -174,7 +159,7 @@ namespace KoikatuVR
             return 1f < distance / 2f + angleDistance / 90f;
         }
 
-        private bool FindMaleToImpersonate(out ChaControl male)
+        private static bool FindMaleToImpersonate(out ChaControl male)
         {
             male = null;
 
@@ -192,7 +177,7 @@ namespace KoikatuVR
             return false;
         }
 
-        private bool ShouldApproachCharacter(ADV.TextScenario textScenario, out ChaControl control)
+        private static bool ShouldApproachCharacter(ADV.TextScenario textScenario, out ChaControl control)
         {
             if ((Manager.Scene.NowSceneNames[0] == "H" || textScenario.BGParam.visible) &&
                 textScenario.currentChara != null)

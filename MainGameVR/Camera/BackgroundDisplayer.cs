@@ -13,9 +13,9 @@ namespace KoikatuVR
     /// A singleton object that is responsible for displaying the
     /// background image as a background.
     /// </summary>
-    public class Background
+    public class BackgroundDisplayer
     {
-        public static Background Instance { get; private set; } = new Background();
+        public static BackgroundDisplayer Instance { get; private set; } = new BackgroundDisplayer();
 
         /// <summary>
         /// Where in the background image the eye level (or the vanishing point) is.
@@ -28,9 +28,9 @@ namespace KoikatuVR
         private Canvas _bgCanvas;
         private const float Height = 50f;
 
-        private Background()
+        private BackgroundDisplayer()
         {
-            VRMover.Instance.OnMove += OnCameraMove;
+            VRCameraMover.Instance.OnMove += OnCameraMove;
         }
 
         public void OnCameraMove()
@@ -74,7 +74,7 @@ namespace KoikatuVR
         [HarmonyPatch(nameof(Illusion.Component.UI.BackGroundParam.Load))]
         private static void PostLoad(string assetName)
         {
-            Background.Instance.EyeLevel = EyeLevelFor(assetName);
+            BackgroundDisplayer.Instance.EyeLevel = EyeLevelFor(assetName);
         }
 
         private static float EyeLevelFor(string assetName)

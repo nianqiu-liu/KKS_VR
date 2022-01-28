@@ -194,87 +194,58 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionCameraControl.cs" />
-    <Compile Include="Background.cs" />
-    <Compile Include="VRBoop.cs" />
+    <Compile Include="Camera\ActionCameraControl.cs" />
+    <Compile Include="Camera\BackgroundDisplayer.cs" />
+    <Compile Include="Fixes\ReduceAssetUnloads.cs" />
+    <Compile Include="Fixes\TopmostToolIcons.cs" />
+    <Compile Include="Features\VRBoop.cs" />
     <Compile Include="Controls\ButtonsSubtool.cs" />
-    <Compile Include="CameraControlControl.cs" />
+    <Compile Include="Camera\CameraControlControl.cs" />
     <Compile Include="Caress\AibuColliderTracker.cs" />
     <Compile Include="Caress\CaressController.cs" />
     <Compile Include="Caress\CaressUtil.cs" />
     <Compile Include="Caress\HandCtrlHooks.cs" />
     <Compile Include="Caress\LongDistanceKissMachine.cs" />
     <Compile Include="Caress\VRMouth.cs" />
-    <Compile Include="Compat.cs" />
     <Compile Include="Controls\GrabAction.cs" />
-    <Compile Include="DebugHooks.cs" />
-    <Compile Include="GameFixes.cs" />
-    <Compile Include="OpenVRHelperTempfixHook.cs" />
-    <Compile Include="PrivacyScreen.cs" />
+    <Compile Include="Util\DebugHooks.cs" />
+    <Compile Include="Fixes\GameFixes.cs" />
+    <Compile Include="Fixes\OpenVRHelperTempfixHook.cs" />
+    <Compile Include="Features\PrivacyScreen.cs" />
     <Compile Include="Interpreters\ActionSceneInterpreter.cs" />
     <Compile Include="Interpreters\CustomSceneInterpreter.cs" />
-    <Compile Include="KoikatuContext.cs" />
+    <Compile Include="Settings\KoikatuContext.cs" />
     <Compile Include="KoikatuStandingMode.cs" />
     <Compile Include="Interpreters\TalkSceneInterpreter.cs" />
     <Compile Include="Controls\LocationPicker.cs" />
-    <Compile Include="Mirror\Manager.cs" />
-    <Compile Include="Mirror\VRReflection.cs" />
-    <Compile Include="MoverHooks.cs" />
-    <Compile Include="Resource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.resx</DependentUpon>
-    </Compile>
-    <Compile Include="SettingsManager.cs" />
+    <Compile Include="Fixes\Mirror\Manager.cs" />
+    <Compile Include="Fixes\Mirror\VRReflection.cs" />
+    <Compile Include="Camera\CameraMoveHooks.cs" />
+    <Compile Include="Settings\SettingsManager.cs" />
     <Compile Include="Controls\TalkSceneHandler.cs" />
     <Compile Include="Controls\KoikatuMenuTool.cs" />
     <Compile Include="Controls\KoikatuWarpTool.cs" />
     <Compile Include="Controls\ToolUtil.cs" />
-    <Compile Include="UnityPatches.cs" />
-    <Compile Include="Util.cs" />
+    <Compile Include="Fixes\UnityPatches.cs" />
+    <Compile Include="Util\Extensions.cs" />
     <Compile Include="Interpreters\HSceneInterpreter.cs" />
-    <Compile Include="Interpreters\KoikatuInterpreter.cs" />
+    <Compile Include="Interpreters\KoikatuGameInterpreter.cs" />
     <Compile Include="Interpreters\OtherSceneInterpreter.cs" />
     <Compile Include="Interpreters\NightMenuSceneInterpreter.cs" />
     <Compile Include="Interpreters\SceneInterpreter.cs" />
-    <Compile Include="VRFade.cs" />
-    <Compile Include="VRMale.cs" />
-    <Compile Include="VRMover.cs" />
+    <Compile Include="Features\VRFade.cs" />
+    <Compile Include="Features\HideMaleHead.cs" />
+    <Compile Include="Camera\VRCameraMover.cs" />
     <Compile Include="VRPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\SchoolTool.cs" />
-    <Compile Include="KoikatuSettings.cs" />
+    <Compile Include="Settings\KoikatuSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Fixes\topmostgui.shader" />
     <None Include="packages.config" />
-    <None Include="Resources\mirror-shader" />
-    <EmbeddedResource Include="topmostguishader" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Plugins\Images\icon_hand.png">
-    </Content>
-    <Content Include="Plugins\Images\icon_hand.png" />
-    <Content Include="Plugins\Images\icon_hand_1.png">
-    </Content>
-    <Content Include="Plugins\Images\icon_hand_1.png" />
-    <Content Include="Plugins\Images\icon_hand_2.png">
-    </Content>
-    <Content Include="Plugins\Images\icon_hand_2.png" />
-    <Content Include="Plugins\Images\icon_school.png">
-    </Content>
-    <Content Include="Plugins\Images\icon_school.png" />
-    <Content Include="Plugins\Images\icon_school_1.png">
-    </Content>
-    <Content Include="Plugins\Images\icon_school_1.png" />
-    <Content Include="Plugins\Images\icon_school_2.png">
-    </Content>
-    <Content Include="Plugins\Images\icon_school_2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Fixes\Mirror\mirror-shader" />
+    <EmbeddedResource Include="Fixes\topmostguishader" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

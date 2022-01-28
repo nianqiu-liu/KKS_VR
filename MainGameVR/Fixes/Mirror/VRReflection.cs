@@ -1,12 +1,13 @@
 ﻿// Gratefully copied and adapted from
 // https://forum.unity.com/threads/reflection-rendering-wrong-in-openvr-htc-vive.398756/#post-2623563
 
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 using Valve.VR;
 
-namespace KoikatuVR.Mirror
+namespace KoikatuVR.Fixes.Mirror
 {
+    // TODO borked
     [ExecuteInEditMode] // Make mirror live-update even when not in play mode
     public class VRReflection : MonoBehaviour
     {

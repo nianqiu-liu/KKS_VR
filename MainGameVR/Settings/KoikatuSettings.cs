@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Xml.Linq;
-using System.Xml.Serialization;
-using UnityEngine;
-using VRGIN.Controls;
 using VRGIN.Core;
-using VRGIN.Helpers;
-using static VRGIN.Visuals.GUIMonitor;
 
-namespace KoikatuVR
+namespace KoikatuVR.Settings
 {
     /// <summary>
     /// User settings. SettingsManager is responsible for updating this.

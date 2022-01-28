@@ -30,7 +30,7 @@ namespace KoikatuVR
                 // backTrans can be null in Roaming. We don't want to move the
                 // camera anyway in that case.
                 return;
-            VRMover.Instance.MaybeMoveADV(__instance, backTrans.position, backTrans.rotation, false);
+            VRCameraMover.Instance.MaybeMoveADV(__instance, backTrans.position, backTrans.rotation, false);
         }
     }
 
@@ -62,7 +62,7 @@ namespace KoikatuVR
 
             IEnumerator Postfix()
             {
-                VRMover.Instance.HandleTextScenarioProgress(__instance);
+                VRCameraMover.Instance.HandleTextScenarioProgress(__instance);
                 yield break;
             }
         }
@@ -76,7 +76,7 @@ namespace KoikatuVR
         private static void PostSetNull(Transform transform)
         {
             VRLog.Debug("PostSetNull");
-            VRMover.Instance.MaybeMoveTo(transform.position, transform.rotation, false);
+            VRCameraMover.Instance.MaybeMoveTo(transform.position, transform.rotation, false);
         }
     }
 
@@ -136,7 +136,7 @@ namespace KoikatuVR
                 // Keep the relative Y coordinate from the female.
                 var cameraHeight = VR.Camera.transform.position.y + baseTransform.position.y - prevY;
                 var destination = new Vector3(cameraPosition.x, cameraHeight, cameraPosition.z);
-                VRMover.Instance.MaybeMoveTo(destination, cameraRotation, false);
+                VRCameraMover.Instance.MaybeMoveTo(destination, cameraRotation, false);
             }
             else
             {
@@ -144,7 +144,7 @@ namespace KoikatuVR
                 // TODO: the height calculation below assumes standing mode.
                 var cameraHeight = lstFemale[0].transform.position.y + VR.Camera.transform.localPosition.y;
                 var destination = new Vector3(cameraPosition.x, cameraHeight, cameraPosition.z);
-                VRMover.Instance.MoveTo(destination, cameraRotation, false);
+                VRCameraMover.Instance.MoveTo(destination, cameraRotation, false);
             }
         }
     }

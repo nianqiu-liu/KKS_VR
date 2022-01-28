@@ -1,4 +1,5 @@
 ﻿using System;
+using KoikatuVR.Settings;
 using Manager;
 using UnityEngine;
 using Valve.VR;

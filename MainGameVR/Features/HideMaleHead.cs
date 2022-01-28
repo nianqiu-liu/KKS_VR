@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRGIN.Core;
+﻿using VRGIN.Core;
 using HarmonyLib;
 
 namespace KoikatuVR
@@ -10,7 +6,7 @@ namespace KoikatuVR
     /// <summary>
     /// A component to be attached to every male character.
     /// </summary>
-    internal class VRMale : ProtectedBehaviour
+    internal class HideMaleHead : ProtectedBehaviour
     {
         public static bool ForceHideHead { get; set; }
 
@@ -23,7 +19,7 @@ namespace KoikatuVR
 
         protected override void OnLateUpdate()
         {
-            // Hide the head iff the VR camera is inside it.
+            // Hide the head if the VR camera is inside it.
             // This also essentially negates the effect of scenairo-controlled
             // head hiding, which is found in some ADV scenes.
             var head = _control.objHead?.transform;
@@ -52,13 +48,13 @@ namespace KoikatuVR
     }
 
     [HarmonyPatch(typeof(ChaControl))]
-    internal class ChaControlPatches
+    internal class HideMaleHeadPatches
     {
         [HarmonyPatch(nameof(ChaControl.Initialize))]
         [HarmonyPostfix]
         private static void PostInitialize(ChaControl __instance)
         {
-            if (__instance.sex == 0) __instance.GetOrAddComponent<VRMale>();
+            if (__instance.sex == 0) __instance.GetOrAddComponent<HideMaleHead>();
         }
     }
 }

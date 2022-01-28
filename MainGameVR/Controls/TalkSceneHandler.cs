@@ -57,7 +57,7 @@ namespace KoikatuVR.Controls
                 .OrderBy(_col => (_col.transform.position - transform.position).sqrMagnitude)
                 .FirstOrDefault();
             if (nearest == null) return;
-            var kind = Util.StripPrefix("Com/Hit/", nearest.tag);
+            var kind = Extensions.StripPrefix("Com/Hit/", nearest.tag);
             if (kind != null) new Traverse(_talkScene).Method("TouchFunc", new[] { typeof(string), typeof(Vector3) }).GetValue(kind, Vector3.zero);
         }
 

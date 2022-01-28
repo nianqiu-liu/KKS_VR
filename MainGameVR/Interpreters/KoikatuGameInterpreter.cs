@@ -22,7 +22,7 @@ namespace KoikatuVR.Interpreters
         public SceneType CurrentScene { get; private set; }
         public SceneInterpreter SceneInterpreter;
 
-        private Mirror.Manager _mirrorManager;
+        private Fixes.Mirror.Manager _mirrorManager;
         private int _kkapiCanvasHackWait;
         private Canvas _kkSubtitlesCaption;
         private GameObject _sceneObjCache;
@@ -34,7 +34,7 @@ namespace KoikatuVR.Interpreters
             CurrentScene = SceneType.OtherScene;
             SceneInterpreter = new OtherSceneInterpreter();
             SceneManager.sceneLoaded += OnSceneLoaded;
-            _mirrorManager = new Mirror.Manager();
+            _mirrorManager = new Fixes.Mirror.Manager();
         }
 
         protected override void OnUpdate()
@@ -79,7 +79,7 @@ namespace KoikatuVR.Interpreters
             }
             else if (canvas.name == "Canvas_BackGround")
             {
-                Background.Instance.TakeCanvas(canvas);
+                BackgroundDisplayer.Instance.TakeCanvas(canvas);
                 return true;
             }
             else if (canvas.name == "CvsMenuTree")
@@ -221,7 +221,7 @@ namespace KoikatuVR.Interpreters
             else if (camera.GetComponent<CameraControl_Ver2>() != null)
             {
                 VRLog.Info("New main camera detected: moving to {0} {1}", camera.transform.position, camera.transform.eulerAngles);
-                VRMover.Instance.MoveTo(camera.transform.position, camera.transform.rotation, false);
+                VRCameraMover.Instance.MoveTo(camera.transform.position, camera.transform.rotation, false);
                 VRLog.Info("moved to {0} {1}", VR.Camera.Head.position, VR.Camera.Head.eulerAngles);
                 VRLog.Info("Adding CameraControlControl");
                 camera.gameObject.AddComponent<CameraControlControl>();

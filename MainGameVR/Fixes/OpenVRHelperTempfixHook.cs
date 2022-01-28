@@ -2,8 +2,11 @@ using System;
 using HarmonyLib;
 using Unity.XR.OpenVR;
 
-namespace KKSCharaStudioVR
+namespace KoikatuVR.Fixes
 {
+    /// <summary>
+    /// No idea what exactly it does but it doesn't seem to hurt anything. Originally a part of KKS_CharaStudioVR
+    /// </summary>
     public static class OpenVRHelperTempfixHook
     {
         public static void Patch()

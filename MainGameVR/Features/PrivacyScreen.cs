@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using KoikatuVR.Settings;
 using UnityEngine;
 using UnityEngine.UI;
 using VRGIN.Core;

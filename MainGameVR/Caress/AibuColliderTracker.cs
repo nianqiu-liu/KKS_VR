@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using KoikatuVR.Interpreters;
 using UnityEngine;
 using VRGIN.Core;
+using Object = UnityEngine.Object;
 
 namespace KoikatuVR.Caress
 {
@@ -34,11 +36,11 @@ namespace KoikatuVR.Caress
                 { "Reaction/legR", new[] { HandCtrl.AibuColliderKind.reac_legR } }
             };
 
-        private readonly IDictionary<Collider, Util.ValueTuple<int /*female index*/, HandCtrl.AibuColliderKind>> _currentlyIntersecting
-            = new Dictionary<Collider, Util.ValueTuple<int, HandCtrl.AibuColliderKind>>();
+        private readonly IDictionary<Collider, ValueTuple<int /*female index*/, HandCtrl.AibuColliderKind>> _currentlyIntersecting
+            = new Dictionary<Collider, ValueTuple<int, HandCtrl.AibuColliderKind>>();
 
-        private readonly IDictionary<Collider, Util.ValueTuple<int /*female index*/, HandCtrl.AibuColliderKind[]>> _knownColliders
-            = new Dictionary<Collider, Util.ValueTuple<int, HandCtrl.AibuColliderKind[]>>();
+        private readonly IDictionary<Collider, ValueTuple<int /*female index*/, HandCtrl.AibuColliderKind[]>> _knownColliders
+            = new Dictionary<Collider, ValueTuple<int, HandCtrl.AibuColliderKind[]>>();
 
         private readonly Transform _referencePoint;
 
@@ -54,10 +56,10 @@ namespace KoikatuVR.Caress
                 var colliders = lstFemale[i].GetComponentsInChildren<Collider>(true);
                 foreach (var collider in colliders)
                 {
-                    var aibuHit = Util.StripPrefix("H/Aibu/Hit/", collider.tag);
+                    var aibuHit = Extensions.StripPrefix("H/Aibu/Hit/", collider.tag);
                     if (aibuHit == null) continue;
 
-                    if (aibuTagTable.TryGetValue(aibuHit, out var kinds)) _knownColliders[collider] = Util.ValueTuple.Create(i, kinds);
+                    if (aibuTagTable.TryGetValue(aibuHit, out var kinds)) _knownColliders[collider] = ValueTuple.Create(i, kinds);
                 }
             }
         }
@@ -95,13 +97,13 @@ namespace KoikatuVR.Caress
         {
             if (!_knownColliders.TryGetValue(other, out var idx_kinds)) return false;
 
-            var idx = idx_kinds.Field1;
-            var kinds = idx_kinds.Field2;
-            var hand = idx == 0 ? Proc.hand : Compat.HSceenProc_hand1(Proc);
+            var idx = idx_kinds.Item1;
+            var kinds = idx_kinds.Item2;
+            var hand = idx == 0 ? Proc.hand : Proc.hand1;
             var kind = kinds.Where(k => AibuKindAllowed(hand, k)).FirstOrDefault();
             if (kind != HandCtrl.AibuColliderKind.none)
             {
-                _currentlyIntersecting[other] = Util.ValueTuple.Create(idx, kind);
+                _currentlyIntersecting[other] = ValueTuple.Create(idx, kind);
                 return true;
             }
 
@@ -131,13 +133,13 @@ namespace KoikatuVR.Caress
             }
 
             // Only consider the colliders with the highest priority.
-            var priority = _currentlyIntersecting.Values.Select(idx_kind => ColliderPriority(idx_kind.Field2)).Max();
+            var priority = _currentlyIntersecting.Values.Select(idx_kind => ColliderPriority(idx_kind.Item2)).Max();
             var refPosition = _referencePoint.position;
-            var best = _currentlyIntersecting.Where(kv => ColliderPriority(kv.Value.Field2) == priority)
+            var best = _currentlyIntersecting.Where(kv => ColliderPriority(kv.Value.Item2) == priority)
                 .OrderBy(kv => (kv.Key.transform.position - refPosition).sqrMagnitude)
                 .Select(kv => kv.Value).FirstOrDefault();
-            femaleIndex = best.Field1;
-            return best.Field2;
+            femaleIndex = best.Item1;
+            return best.Item2;
         }
 
         /// <summary>
