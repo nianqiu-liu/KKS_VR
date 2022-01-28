@@ -16,6 +16,9 @@ New-Item -ItemType Directory -Force -Path $copy
 
 Copy-Item -Path ($dir + "\KKS_*.dll") -Destination $copy -Recurse -Force
 
+Copy-Item -Path ($solutionDir + "\README.md") -Destination $copy -Recurse -Force
+Copy-Item -Path ($solutionDir + "\LICENSE") -Destination $copy -Recurse -Force
+
 New-Item -ItemType Directory -Force -Path ($copy + "\Images")
 Copy-Item -Path ($solutionDir + "\Images\*") -Destination ($copy + "\Images") -Recurse -Force
 
