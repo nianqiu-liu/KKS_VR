@@ -12,6 +12,7 @@ using KKS_VR.Interpreters;
 using KKS_VR.Settings;
 using Unity.XR.OpenVR;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Valve.VR;
 using VRGIN.Core;
 
@@ -45,12 +46,10 @@ namespace KKS_VR
 
         private IEnumerator LoadDevice()
         {
-            SaveLoadSceneHook.InstallHook();
-            LoadFixHook.InstallHook();
+            // For some reason using Scene.LoadSceneName instead of SceneManager will break the background color, probably some timing issue
+            yield return new WaitUntil(() => Manager.Scene.initialized && SceneManager.GetActiveScene().name == "Studio");
+
             VRLog.Level = VRLog.LogMode.Info;
-
-            yield return new WaitUntil(() => Manager.Scene.initialized && Manager.Scene.LoadSceneName == "Studio");
-
             base.Logger.LogInfo("Loading OpenVR...");
 
             var ovrsettings = OpenVRSettings.GetSettings(true);
@@ -106,8 +105,10 @@ namespace KKS_VR
             }
 
             base.Logger.LogInfo("Initializing the plugin...");
+            
+            SaveLoadSceneHook.InstallHook();
+            LoadFixHook.InstallHook();
 
-            // Boot VRManager!
             VRManager.Create<KKSCharaStudioInterpreter>(CreateContext("KKS_CharaStudioVRContext.xml"));
             VR.Manager.SetMode<GenericStandingMode>();
             var obj = new GameObject("KKSCharaStudioVR");
