@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
-using VRGIN.Core;
 
 // Collection of patches to Unity.
 
-namespace KoikatuVR
+namespace KKS_VR.Fixes
 {
     /// <summary>
     /// GraphicRaycaster.sortOrderPriority and GraphicRaycaster.renderOrderPriority
@@ -42,9 +37,9 @@ namespace KoikatuVR
 
         public static void Initialize()
         {
-            _vrGuiCamera = GameObject.Find("VRGIN_GUICamera")?.GetComponent<Camera>();
+            _vrGuiCamera = GameObject.Find("VRGIN_GUICamera")?.GetComponent<UnityEngine.Camera>();
         }
 
-        private static Camera _vrGuiCamera;
+        private static UnityEngine.Camera _vrGuiCamera;
     }
 }

@@ -4,7 +4,7 @@ using VRGIN.Controls;
 using VRGIN.Core;
 using VRGIN.Helpers;
 
-namespace KoikatuVR.Controls
+namespace KKS_VR.Controls
 {
     internal class GrabAction
     {

@@ -1,7 +1,7 @@
-﻿using VRGIN.Core;
-using HarmonyLib;
+﻿using HarmonyLib;
+using VRGIN.Core;
 
-namespace KoikatuVR
+namespace KKS_VR.Features
 {
     /// <summary>
     /// A component to be attached to every male character.

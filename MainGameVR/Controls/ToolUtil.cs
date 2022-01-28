@@ -3,7 +3,7 @@ using UnityEngine;
 using VRGIN.Controls;
 using VRGIN.Core;
 
-namespace KoikatuVR.Controls
+namespace KKS_VR.Controls
 {
     internal class ToolUtil
     {

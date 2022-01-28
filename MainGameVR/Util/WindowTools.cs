@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
-using BepInEx.Configuration;
-using UnityEngine.SceneManagement;
 
-namespace KoikatuVR.Util
+namespace KKS_VR
 {
     internal static class WindowTools
     {
@@ -23,22 +18,12 @@ namespace KoikatuVR.Util
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
-        [DllImport("user32.dll")]
-        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll")]
-        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
         [DllImport("User32.dll")]
         private static extern int SetForegroundWindow(IntPtr hWnd);
 
-        private const int GWL_STYLE = -16;
-        private const int WS_THICKFRAME = 0x40000;
-        private const int WS_MAXIMIZEBOX = 0x10000;
         private const string GET_CLASS_NAME_MAGIC = "UnityWndClass";
 
         private static IntPtr WindowHandle = IntPtr.Zero;
-        private static bool prev = false;
 
         private static void GetWindowHandle()
         {

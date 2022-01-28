@@ -1,17 +1,14 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRGIN.Core;
-using UnityEngine;
-using HarmonyLib;
-using System.Collections;
 using System.Reflection;
+using HarmonyLib;
+using UnityEngine;
+using VRGIN.Core;
 
 // This file is a collection of hooks to move the VR camera at appropriate
 // points of the game.
 
-namespace KoikatuVR
+namespace KKS_VR.Camera
 {
     [HarmonyPatch(typeof(ADV.TextScenario))]
     internal class TextScenarioPatches1

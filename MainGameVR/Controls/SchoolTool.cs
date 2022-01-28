@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using KoikatuVR.Interpreters;
-using KoikatuVR.Settings;
-using KoikatuVR.Util;
+using KKS_VR.Interpreters;
+using KKS_VR.Settings;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Valve.VR;
@@ -13,7 +12,7 @@ using VRGIN.Controls.Tools;
 using VRGIN.Core;
 using VRGIN.Helpers;
 
-namespace KoikatuVR.Controls
+namespace KKS_VR.Controls
 {
     public class SchoolTool : Tool
     {

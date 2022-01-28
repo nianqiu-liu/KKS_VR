@@ -1,27 +1,27 @@
-﻿using BepInEx;
-using System;
-using VRGIN.Core;
+﻿using System;
 using System.Collections;
-using UnityEngine;
-using HarmonyLib;
 using System.Runtime.InteropServices;
+using BepInEx;
 using BepInEx.Logging;
+using HarmonyLib;
 using KKAPI;
-using KoikatuVR.Fixes;
-using KoikatuVR.Settings;
-using Shared;
+using KKS_VR.Features;
+using KKS_VR.Fixes;
+using KKS_VR.Settings;
 using Unity.XR.OpenVR;
+using UnityEngine;
 using Valve.VR;
+using VRGIN.Core;
 
-namespace KoikatuVR
+namespace KKS_VR
 {
     [BepInPlugin(GUID, PluginName, Version)]
     [BepInProcess(KoikatuAPI.GameProcessName)]
-    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)] //todo unnecessary?
+    [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public class VRPlugin : BaseUnityPlugin
     {
         public const string GUID = "KKS_MainGameVR";
-        public const string PluginName = "Main Game VR";
+        public const string PluginName = "KKS Main Game VR";
         public const string Version = Constants.Version;
 
         internal static new ManualLogSource Logger;
@@ -50,10 +50,10 @@ namespace KoikatuVR
             var ovrsettings = OpenVRSettings.GetSettings(true);
             ovrsettings.StereoRenderingMode = OpenVRSettings.StereoRenderingModes.MultiPass;
             ovrsettings.InitializationType = OpenVRSettings.InitializationTypes.Scene;
-            ovrsettings.EditorAppKey = "kss.charastudio.exe";
+            ovrsettings.EditorAppKey = "kss.maingame.exe";
             var instance = SteamVR_Settings.instance;
             instance.autoEnableVR = true;
-            instance.editorAppKey = "kss.charastudio.exe";
+            instance.editorAppKey = "kss.maingame.exe";
             var openVRLoader = ScriptableObject.CreateInstance<OpenVRLoader>();
             if (!openVRLoader.Initialize())
             {
@@ -122,7 +122,7 @@ namespace KoikatuVR
 
         private void UpdateNearClipPlane(KoikatuSettings settings)
         {
-            VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = settings.NearClipPlane;
+            VR.Camera.gameObject.GetComponent<UnityEngine.Camera>().nearClipPlane = settings.NearClipPlane;
         }
 
         private static class NativeMethods

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRGIN.Core;
-using VRGIN.Controls;
+﻿using KKS_VR.Camera;
 using UnityEngine;
-using HarmonyLib;
-using System.Collections;
+using VRGIN.Core;
 
-namespace KoikatuVR.Interpreters
+namespace KKS_VR.Interpreters
 {
     internal class TalkSceneInterpreter : SceneInterpreter
     {
@@ -47,7 +41,7 @@ namespace KoikatuVR.Interpreters
                     true);
 
                 // talkscene messes with camera settings
-                Camera.main.clearFlags = CameraClearFlags.Skybox;
+                UnityEngine.Camera.main.clearFlags = CameraClearFlags.Skybox;
 
                 talkScene.backGround.visible = false;
             };

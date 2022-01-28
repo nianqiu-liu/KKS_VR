@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using KoikatuVR.Settings;
+﻿using KKS_VR.Settings;
 using UnityEngine;
 using UnityEngine.UI;
 using VRGIN.Core;
 using Object = UnityEngine.Object;
 
-namespace KoikatuVR
+namespace KKS_VR.Features
 {
     /// <summary>
     /// Class that allows the user to hide contents of the desktop mirror screen.

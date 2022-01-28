@@ -6,11 +6,10 @@ using Valve.VR;
 using VRGIN.Controls;
 using VRGIN.Controls.Tools;
 using VRGIN.Core;
-using VRGIN.Native;
 using VRGIN.Visuals;
 using Object = UnityEngine.Object;
 
-namespace KoikatuVR.Controls
+namespace KKS_VR.Controls
 {
     internal class KoikatuMenuTool : MenuTool
     {

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.XR;
 using VRGIN.Controls;
 
-namespace KoikatuVR
+namespace KKS_VR.Features
 {
     /// <summary>
     /// Adds colliders to the controllers so you can boop things

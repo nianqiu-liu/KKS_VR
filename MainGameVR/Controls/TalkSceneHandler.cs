@@ -7,7 +7,7 @@ using VRGIN.Controls;
 using VRGIN.Core;
 using VRGIN.Helpers;
 
-namespace KoikatuVR.Controls
+namespace KKS_VR.Controls
 {
     /// <summary>
     /// A handler component to be attached to a controller, providing touch/look

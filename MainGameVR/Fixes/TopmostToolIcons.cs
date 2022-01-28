@@ -5,7 +5,7 @@ using UnityEngine;
 using VRGIN.Controls;
 using VRGIN.Core;
 
-namespace KoikatuVR.Fixes
+namespace KKS_VR.Fixes
 {
     /// <summary>
     /// Fix custom tool icons not being on top of the black circle

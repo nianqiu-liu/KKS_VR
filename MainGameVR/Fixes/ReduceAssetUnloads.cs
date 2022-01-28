@@ -7,7 +7,7 @@ using Sirenix.Serialization.Utilities;
 using UnityEngine;
 using VRGIN.Core;
 
-namespace KoikatuVR.Fixes
+namespace KKS_VR.Fixes
 {
     /// <summary>
     /// Avoid triggering resource unload when loading UI-only scenes.

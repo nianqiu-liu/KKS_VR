@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using HarmonyLib;
 
-namespace KoikatuVR.Caress
+namespace KKS_VR.Caress
 {
     public class CaressUtil
     {

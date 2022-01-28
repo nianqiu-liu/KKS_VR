@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using HarmonyLib;
-using System.Reflection;
-using System.IO;
-using VRGIN.Core;
-using UnityEngine;
-using System.Diagnostics;
+﻿
 
 // Collection of patches that are to be enabled only during development.
 
-namespace KoikatuVR
+namespace KKS_VR
 {
 #if false
     /// Report every time TransformDebug.targetTransform is rotated.

@@ -11,7 +11,7 @@ using VRGIN.Controls;
 using VRGIN.Core;
 using Utils = Illusion.Game.Utils;
 
-namespace KoikatuVR.Controls
+namespace KKS_VR.Controls
 {
     /// <summary>
     /// A component to add to the controllers the ability to pick a new location in H scenes.

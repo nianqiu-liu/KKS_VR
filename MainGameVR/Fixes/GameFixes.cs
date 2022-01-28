@@ -7,18 +7,17 @@ using ActionGame;
 using ADV;
 using HarmonyLib;
 using KKAPI.Utilities;
-using KoikatuVR.Interpreters;
-using KoikatuVR.Settings;
+using KKS_VR.Interpreters;
+using KKS_VR.Settings;
 using Sirenix.Serialization.Utilities;
 using StrayTech;
-using UnityEngine;
 using VRGIN.Core;
 using Object = UnityEngine.Object;
 
 /*
  * Fixes for issues that are in the base game but are only relevant in VR.
  */
-namespace KoikatuVR.Fixes
+namespace KKS_VR.Fixes
 {
     /// <summary>
     /// Suppress character update for invisible characters in some sub-scenes of Roaming.
@@ -127,17 +126,17 @@ namespace KoikatuVR.Fixes
             yield return CoroutineUtils.GetMoveNext(AccessTools.Method(typeof(TalkScene), nameof(TalkScene.Setup)));
         }
 
-        private static Camera GetOriginalMainCamera()
+        private static UnityEngine.Camera GetOriginalMainCamera()
         {
             // vr camera doesn't have this component on it
-            var originalMainCamera = (Manager.Game.instance.cameraEffector ?? Object.FindObjectOfType<CameraEffector>()).GetComponent<Camera>();
+            var originalMainCamera = (Manager.Game.instance.cameraEffector ?? Object.FindObjectOfType<CameraEffector>()).GetComponent<UnityEngine.Camera>();
             VRPlugin.Logger.LogDebug($"GetOriginalMainCamera called, cam found: {originalMainCamera?.GetFullPath()}\n{new StackTrace()}");
             return originalMainCamera;
         }
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts, MethodBase __originalMethod)
         {
-            var targert = AccessTools.PropertyGetter(typeof(Camera), nameof(Camera.main));
+            var targert = AccessTools.PropertyGetter(typeof(UnityEngine.Camera), nameof(UnityEngine.Camera.main));
             var replacement = AccessTools.Method(typeof(ADVSceneFix3), nameof(GetOriginalMainCamera));
             return insts.Manipulator(
                 instr => instr.opcode == OpCodes.Call && (MethodInfo)instr.operand == targert,
@@ -160,17 +159,17 @@ namespace KoikatuVR.Fixes
             yield return AccessTools.Method(typeof(ADVScene), nameof(ADVScene.Init));
         }
 
-        private static Camera GetOriginalMainCamera()
+        private static UnityEngine.Camera GetOriginalMainCamera()
         {
             // vr camera doesn't have this component on it
-            var originalMainCamera = (Manager.Game.instance.cameraEffector ?? Object.FindObjectOfType<CameraEffector>()).GetComponent<Camera>();
+            var originalMainCamera = (Manager.Game.instance.cameraEffector ?? Object.FindObjectOfType<CameraEffector>()).GetComponent<UnityEngine.Camera>();
             VRPlugin.Logger.LogDebug($"GetOriginalMainCamera called, cam found: {originalMainCamera?.GetFullPath()}\n{new StackTrace()}");
             return originalMainCamera;
         }
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts, MethodBase __originalMethod)
         {
-            var targert = AccessTools.PropertyGetter(typeof(Camera), nameof(Camera.main));
+            var targert = AccessTools.PropertyGetter(typeof(UnityEngine.Camera), nameof(UnityEngine.Camera.main));
             var replacement = AccessTools.Method(typeof(ADVSceneFix4), nameof(GetOriginalMainCamera));
             return insts.Manipulator(
                 instr => instr.opcode == OpCodes.Call && (MethodInfo)instr.operand == targert,
@@ -183,7 +182,7 @@ namespace KoikatuVR.Fixes
 
         private static void Postfix(ADVScene __instance)
         {
-            Manager.Sound.Listener = Camera.main.transform;
+            Manager.Sound.Listener = UnityEngine.Camera.main.transform;
         }
     }
 

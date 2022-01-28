@@ -1,11 +1,12 @@
-﻿using ActionGame;
-using KoikatuVR.Settings;
+﻿using KKS_VR.Camera;
+using KKS_VR.Features;
+using KKS_VR.Settings;
+using StrayTech;
 using UnityEngine;
 using VRGIN.Core;
 using WindowsInput.Native;
-using StrayTech;
 
-namespace KoikatuVR.Interpreters
+namespace KKS_VR.Interpreters
 {
     internal class ActionSceneInterpreter : SceneInterpreter
     {

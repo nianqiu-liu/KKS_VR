@@ -1,11 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
+using HarmonyLib;
+using KKS_VR.Settings;
 using UnityEngine;
 using VRGIN.Core;
-using HarmonyLib;
-using System.Collections;
-using KoikatuVR.Settings;
 
-namespace KoikatuVR
+namespace KKS_VR.Camera
 {
     /// <summary>
     /// A class responsible for moving the VR camera.

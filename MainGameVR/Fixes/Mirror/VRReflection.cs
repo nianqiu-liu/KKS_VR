@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
 
-namespace KoikatuVR.Fixes.Mirror
+namespace KKS_VR.Fixes.Mirror
 {
     // TODO borked
     [ExecuteInEditMode] // Make mirror live-update even when not in play mode
@@ -23,13 +23,13 @@ namespace KoikatuVR.Fixes.Mirror
 
         private class ReflectionData
         {
-            public Camera camera;
+            public UnityEngine.Camera camera;
             public RenderTexture left;
             public RenderTexture right;
             public MaterialPropertyBlock propertyBlock;
         }
 
-        private Dictionary<Camera, ReflectionData> m_ReflectionCameras = new Dictionary<Camera, ReflectionData>();
+        private Dictionary<UnityEngine.Camera, ReflectionData> m_ReflectionCameras = new Dictionary<UnityEngine.Camera, ReflectionData>();
 
         private RenderTexture m_SharedReflectionTextureLeft = null;
         private RenderTexture m_SharedReflectionTextureRight = null;
@@ -55,7 +55,7 @@ namespace KoikatuVR.Fixes.Mirror
             if (!enabled || !rend || !rend.enabled)
                 return;
 
-            var cam = Camera.current;
+            var cam = UnityEngine.Camera.current;
             if (!cam)
                 return;
 
@@ -122,7 +122,7 @@ namespace KoikatuVR.Fixes.Mirror
             s_InsideRendering = false;
         }
 
-        private void RenderMirror(Camera reflectionCamera, RenderTexture targetTexture, Vector3 camPosition, Quaternion camRotation, Matrix4x4 camProjectionMatrix)
+        private void RenderMirror(UnityEngine.Camera reflectionCamera, RenderTexture targetTexture, Vector3 camPosition, Quaternion camRotation, Matrix4x4 camProjectionMatrix)
         {
             // Copy camera position/rotation/projection data into the reflectionCamera
             reflectionCamera.ResetWorldToCameraMatrix();
@@ -181,7 +181,7 @@ namespace KoikatuVR.Fixes.Mirror
         }
 
 
-        private void UpdateCameraModes(Camera src, Camera dest)
+        private void UpdateCameraModes(UnityEngine.Camera src, UnityEngine.Camera dest)
         {
             if (dest == null)
                 return;
@@ -215,7 +215,7 @@ namespace KoikatuVR.Fixes.Mirror
         }
 
         // On-demand create any objects we need
-        private void CreateMirrorObjects(Camera currentCamera, out ReflectionData reflectionData)
+        private void CreateMirrorObjects(UnityEngine.Camera currentCamera, out ReflectionData reflectionData)
         {
             if (!m_ReflectionCameras.TryGetValue(currentCamera, out reflectionData))
             {
@@ -227,8 +227,8 @@ namespace KoikatuVR.Fixes.Mirror
             // Camera for reflection
             if (!reflectionData.camera)
             {
-                var go = new GameObject("Mirror Refl Camera id" + GetInstanceID() + " for " + currentCamera.GetInstanceID(), typeof(Camera), typeof(Skybox), typeof(FlareLayer));
-                reflectionData.camera = go.GetComponent<Camera>();
+                var go = new GameObject("Mirror Refl Camera id" + GetInstanceID() + " for " + currentCamera.GetInstanceID(), typeof(UnityEngine.Camera), typeof(Skybox), typeof(FlareLayer));
+                reflectionData.camera = go.GetComponent<UnityEngine.Camera>();
                 reflectionData.camera.enabled = false;
                 go.hideFlags = HideFlags.HideAndDontSave;
             }
@@ -314,7 +314,7 @@ namespace KoikatuVR.Fixes.Mirror
         }
 
         // Given position/normal of the plane, calculates plane in camera space.
-        private Vector4 CameraSpacePlane(Camera cam, Vector3 pos, Vector3 normal)
+        private Vector4 CameraSpacePlane(UnityEngine.Camera cam, Vector3 pos, Vector3 normal)
         {
             var m = cam.worldToCameraMatrix;
             var cpos = m.MultiplyPoint(pos);
@@ -350,7 +350,7 @@ namespace KoikatuVR.Fixes.Mirror
             return reflectionMat;
         }
 
-        public static Matrix4x4 GetSteamVRProjectionMatrix(Camera cam, EVREye eye)
+        public static Matrix4x4 GetSteamVRProjectionMatrix(UnityEngine.Camera cam, EVREye eye)
         {
             var proj = SteamVR.instance.hmd.GetProjectionMatrix(eye, cam.nearClipPlane, cam.farClipPlane);
             var m = new Matrix4x4();

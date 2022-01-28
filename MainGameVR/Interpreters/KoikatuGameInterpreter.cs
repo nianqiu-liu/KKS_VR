@@ -1,11 +1,13 @@
-﻿using UnityEngine;
-using VRGIN.Core;
-using System.Collections;
+﻿using System.Collections;
 using KKAPI.MainGame;
 using KKAPI.Maker;
+using KKS_VR.Camera;
+using KKS_VR.Features;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using VRGIN.Core;
 
-namespace KoikatuVR.Interpreters
+namespace KKS_VR.Interpreters
 {
     internal class KoikatuInterpreter : GameInterpreter
     {
@@ -196,7 +198,7 @@ namespace KoikatuVR.Interpreters
             }
         }
 
-        protected override CameraJudgement JudgeCameraInternal(Camera camera)
+        protected override CameraJudgement JudgeCameraInternal(UnityEngine.Camera camera)
         {
             if (camera.CompareTag("MainCamera")) StartCoroutine(HandleMainCameraCo(camera));
             return base.JudgeCameraInternal(camera);
@@ -207,7 +209,7 @@ namespace KoikatuVR.Interpreters
         /// </summary>
         /// <param name="camera"></param>
         /// <returns></returns>
-        private IEnumerator HandleMainCameraCo(Camera camera)
+        private IEnumerator HandleMainCameraCo(UnityEngine.Camera camera)
         {
             // Unity might have messed with the camera transform for this frame,
             // so we wait for the next frame to get clean data.

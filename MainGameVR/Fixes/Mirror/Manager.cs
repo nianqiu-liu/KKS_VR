@@ -3,7 +3,7 @@ using UnityEngine;
 using VRGIN.Core;
 using Object = UnityEngine.Object;
 
-namespace KoikatuVR.Fixes.Mirror
+namespace KKS_VR.Fixes.Mirror
 {
     /// <summary>
     /// Mirrors in the base game look very weird in VR. This object

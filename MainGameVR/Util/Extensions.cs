@@ -1,4 +1,4 @@
-﻿namespace KoikatuVR
+﻿namespace KKS_VR
 {
     internal static class Extensions
     {

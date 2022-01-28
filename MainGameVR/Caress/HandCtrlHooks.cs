@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using HarmonyLib;
 using System.Reflection;
 using System.Reflection.Emit;
-using VRGIN.Core;
+using HarmonyLib;
 using UnityEngine;
 
-namespace KoikatuVR.Caress
+namespace KKS_VR.Caress
 {
     /// <summary>
     /// Allows injecting simulated user inputs to HandCtrl. This is similar to

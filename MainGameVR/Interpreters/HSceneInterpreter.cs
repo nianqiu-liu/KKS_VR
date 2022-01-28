@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using VRGIN.Core;
-using HarmonyLib;
-using System.Collections.Generic;
 
-namespace KoikatuVR.Interpreters
+namespace KKS_VR.Interpreters
 {
     internal class HSceneInterpreter : SceneInterpreter
     {

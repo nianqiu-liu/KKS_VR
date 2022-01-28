@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 using VRGIN.Core;
 using VRGIN.Helpers;
 
-namespace KoikatuVR
+namespace KKS_VR.Features
 {
     /// <summary>
     /// A VR fader that synchronizes with the fader of the base game.

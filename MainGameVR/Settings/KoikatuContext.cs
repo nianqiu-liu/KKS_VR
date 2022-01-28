@@ -4,7 +4,7 @@ using UnityEngine;
 using VRGIN.Core;
 using VRGIN.Visuals;
 
-namespace KoikatuVR.Settings
+namespace KKS_VR.Settings
 {
     [XmlRoot("Context")]
     public class KoikatuContext : IVRManagerContext

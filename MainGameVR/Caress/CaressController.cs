@@ -1,5 +1,5 @@
 ﻿using System;
-using KoikatuVR.Settings;
+using KKS_VR.Settings;
 using Manager;
 using UnityEngine;
 using Valve.VR;
@@ -7,7 +7,7 @@ using VRGIN.Controls;
 using VRGIN.Core;
 using VRGIN.Helpers;
 
-namespace KoikatuVR.Caress
+namespace KKS_VR.Caress
 {
     /// <summary>
     /// An extra component to be attached to each controller, providing the caress

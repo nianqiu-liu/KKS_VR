@@ -4,7 +4,7 @@ using BepInEx.Configuration;
 using KKAPI.Utilities;
 using VRGIN.Core;
 
-namespace KoikatuVR.Settings
+namespace KKS_VR.Settings
 {
     /// <summary>
     /// Manages configuration and keeps it up to date.

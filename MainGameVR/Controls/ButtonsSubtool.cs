@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using KKAPI.MainGame;
-using KoikatuVR.Interpreters;
-using KoikatuVR.Settings;
+using KKS_VR.Camera;
+using KKS_VR.Interpreters;
+using KKS_VR.Settings;
 using UnityEngine;
 using VRGIN.Core;
 using WindowsInput.Native;
 
-namespace KoikatuVR.Controls
+namespace KKS_VR.Controls
 {
     /// <summary>
     /// A subtool that handles an arbitrary number of simple actions that only

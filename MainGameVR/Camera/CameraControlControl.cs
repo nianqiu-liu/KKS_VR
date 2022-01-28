@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VRGIN.Core;
-using UnityEngine;
+﻿using VRGIN.Core;
 
-namespace KoikatuVR
+namespace KKS_VR.Camera
 {
     /// <summary>
     /// CameraControlControl disables a CameraControl_Ver2 object and

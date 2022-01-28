@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using VRGIN.Core;
 
-namespace KoikatuVR.Settings
+namespace KKS_VR.Settings
 {
     /// <summary>
     /// User settings. SettingsManager is responsible for updating this.

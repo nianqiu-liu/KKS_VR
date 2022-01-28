@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using KoikatuVR;
+using KKS_VR;
 
 [assembly: AssemblyTitle(VRPlugin.PluginName)]
 [assembly: AssemblyDescription("Adds VR support. Launch the game with a --vr switch to enable the plugin.")]

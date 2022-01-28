@@ -1,8 +1,4 @@
-﻿using System;
-using UnityEngine;
-using VRGIN.Core;
-
-namespace KoikatuVR.Interpreters
+﻿namespace KKS_VR.Interpreters
 {
     internal class CustomSceneInterpreter : SceneInterpreter
     {

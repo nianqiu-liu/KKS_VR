@@ -2,14 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using HarmonyLib;
+using KKS_VR.Settings;
 using UnityEngine;
 using VRGIN.Core;
-using HarmonyLib;
-using KoikatuVR.Interpreters;
-using KoikatuVR.Settings;
 
-namespace KoikatuVR.Caress
+namespace KKS_VR.Caress
 {
     /// <summary>
     /// A component to be attached to the VR camera during an H scene.

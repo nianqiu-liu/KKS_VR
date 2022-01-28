@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
-using KoikatuVR.Interpreters;
+using KKS_VR.Interpreters;
 using UnityEngine;
 using VRGIN.Core;
 using Object = UnityEngine.Object;
 
-namespace KoikatuVR.Caress
+namespace KKS_VR.Caress
 {
     /// <summary>
     /// An object that tracks the set of aibu colliders that we are

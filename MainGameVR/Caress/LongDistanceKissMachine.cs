@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using VRGIN.Core;
+﻿using UnityEngine;
 
-namespace KoikatuVR.Caress
+namespace KKS_VR.Caress
 {
     /// <summary>
     /// A state machine for starting and finishing a kiss in the caress mode.

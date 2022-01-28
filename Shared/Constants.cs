@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Shared
+﻿namespace KKS_VR
 {
     internal static class Constants
     {

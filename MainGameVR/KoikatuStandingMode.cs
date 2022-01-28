@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using KKS_VR.Features;
 using UnityEngine.XR;
 using VRGIN.Controls;
 using VRGIN.Modes;
 
-namespace KoikatuVR
+namespace KKS_VR
 {
     /// <summary>
     /// Initialize controllers and custom tools

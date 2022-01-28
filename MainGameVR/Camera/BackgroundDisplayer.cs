@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 using VRGIN.Core;
-using HarmonyLib;
 
-namespace KoikatuVR
+namespace KKS_VR.Camera
 {
     /// <summary>
     /// A singleton object that is responsible for displaying the

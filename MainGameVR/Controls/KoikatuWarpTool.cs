@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ActionGame.Chara;
 using HarmonyLib;
-using KoikatuVR.Interpreters;
-using KoikatuVR.Settings;
+using KKS_VR.Camera;
+using KKS_VR.Interpreters;
+using KKS_VR.Settings;
 using UnityEngine;
 using Valve.VR;
 using VRGIN.Controls;
 using VRGIN.Controls.Tools;
 using VRGIN.Core;
 
-namespace KoikatuVR.Controls
+namespace KKS_VR.Controls
 {
     internal class KoikatuWarpTool : WarpTool
     {
