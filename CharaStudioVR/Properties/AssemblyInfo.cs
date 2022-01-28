@@ -1,9 +1,9 @@
 using System.Reflection;
-using KKSCharaStudioVR;
+using KKS_VR;
 
-[assembly: AssemblyTitle(KKSCharaStudioVRPlugin.NAME)]
+[assembly: AssemblyTitle(VRPlugin.Name)]
 [assembly: AssemblyDescription("Adds VR support. Launch the game with a --vr switch to enable the plugin.")]
 [assembly: AssemblyCompany("https://github.com/IllusionMods/KKS_VR")]
-[assembly: AssemblyProduct(KKSCharaStudioVRPlugin.NAME)]
+[assembly: AssemblyProduct(VRPlugin.Name)]
 [assembly: AssemblyCopyright("Copyright ©  2020, 2021")]
-[assembly: AssemblyVersion(KKSCharaStudioVRPlugin.VERSION)]
+[assembly: AssemblyVersion(VRPlugin.Version)]

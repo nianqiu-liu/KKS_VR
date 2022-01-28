@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using KKS_VR.Util;
 using Studio;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,7 +9,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using VRGIN.Core;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Controls
 {
     public class VRItemObjMoveHelper : MonoBehaviour
     {

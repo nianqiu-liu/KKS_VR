@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Studio;
 using UnityEngine;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Util
 {
     public class MoveableGUIObject : MonoBehaviour
     {

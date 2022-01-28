@@ -2,12 +2,13 @@ using System;
 using System.Reflection;
 using BepInEx.Logging;
 using HarmonyLib;
+using KKS_VR.Controls;
 using Manager;
 using Studio;
 using UnityEngine;
 using VRGIN.Core;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Fixes
 {
     public static class SaveLoadSceneHook
     {
@@ -17,7 +18,7 @@ namespace KKSCharaStudioVR
 
         public static void InstallHook()
         {
-            KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Info, "Install SaveLoadSceneHook");
+            VRPlugin.Logger.Log(LogLevel.Info, "Install SaveLoadSceneHook");
             new Harmony("KKSCharaStudioVR.SaveLoadSceneHook").PatchAll(typeof(SaveLoadSceneHook));
         }
 
@@ -25,13 +26,13 @@ namespace KKSCharaStudioVR
         [HarmonyPatch(typeof(global::Studio.Studio), "SaveScene", new Type[] { })]
         public static bool SaveScenePreHook(global::Studio.Studio __instance, ref Camera[] __state)
         {
-            KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "Update Camera position and rotation for Scene Capture and last Camera data.");
+            VRPlugin.Logger.Log(LogLevel.Debug, "Update Camera position and rotation for Scene Capture and last Camera data.");
             try
             {
                 VRCameraMoveHelper.Instance.CurrentToCameraCtrl();
                 var field = typeof(Studio.GameScreenShot).GetField("renderCam", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 var obj = field.GetValue(Singleton<global::Studio.Studio>.Instance.gameScreenShot) as Camera[];
-                KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "Backup Screenshot render cam.");
+                VRPlugin.Logger.Log(LogLevel.Debug, "Backup Screenshot render cam.");
                 backupRenderCam = obj;
                 var value = new Camera[1] { VR.Camera.SteamCam.camera };
                 __state = backupRenderCam;
@@ -50,7 +51,7 @@ namespace KKSCharaStudioVR
         [HarmonyPatch(typeof(global::Studio.Studio), "SaveScene", new Type[] { })]
         public static void SaveScenePostHook(global::Studio.Studio __instance, Camera[] __state)
         {
-            KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "Restore backup render cam.");
+            VRPlugin.Logger.Log(LogLevel.Debug, "Restore backup render cam.");
             try
             {
                 typeof(Studio.GameScreenShot).GetField("renderCam", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)

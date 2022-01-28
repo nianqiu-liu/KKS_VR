@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using KKS_VR.Settings;
+using KKS_VR.Util;
 using Studio;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -13,7 +15,7 @@ using VRGIN.Controls.Tools;
 using VRGIN.Core;
 using VRGIN.Visuals;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Controls
 {
     internal class GripMoveStudioNEOV2Tool : Tool
     {
@@ -37,7 +39,7 @@ namespace KKSCharaStudioVR
 
         private string moveSelfButtonName = "rgrip";
 
-        private KKSCharaStudioVRSettings _settings;
+        private CharaStudioSettings _settings;
 
         private float triggerDownTime;
 
@@ -137,7 +139,7 @@ namespace KKSCharaStudioVR
             try
             {
                 VRLog.Info("Loading GripMoveTool");
-                _settings = VR.Manager.Context.Settings as KKSCharaStudioVRSettings;
+                _settings = VR.Manager.Context.Settings as CharaStudioSettings;
                 internalGui = GUIQuad.Create(null);
                 internalGui.gameObject.AddComponent<MoveableGUIObject>();
                 internalGui.gameObject.AddComponent<BoxCollider>();

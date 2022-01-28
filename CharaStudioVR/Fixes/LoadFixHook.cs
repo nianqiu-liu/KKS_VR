@@ -1,17 +1,17 @@
 using System;
 using BepInEx.Logging;
 using HarmonyLib;
-using Manager;
+using KKS_VR.Interpreters;
 using Studio;
 using VRGIN.Core;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Fixes
 {
     public static class LoadFixHook
     {
-        public static bool forceSetStandingMode;
+        //public static bool forceSetStandingMode;
 
-        private static bool standingMode;
+        //private static bool standingMode;
 
         public static void InstallHook()
         {
@@ -24,8 +24,8 @@ namespace KKSCharaStudioVR
         {
             try
             {
-                KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "Start Scene Loading.");
-                if (VRManager.Instance.Mode is GenericStandingMode) (VR.Manager.Interpreter as KKSCharaStudioInterpreter).ForceResetVRMode();
+                VRPlugin.Logger.Log(LogLevel.Debug, "Start Scene Loading.");
+                if (VRManager.Instance.Mode is GenericStandingMode) ((KKSCharaStudioInterpreter)VR.Manager.Interpreter).ForceResetVRMode();
             }
             catch (Exception obj)
             {
@@ -35,23 +35,23 @@ namespace KKSCharaStudioVR
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Scene), "UnloadBaseScene", new Type[] { })]
-        public static void UnloadBaseScenePreHook()
-        {
-            try
-            {
-                KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "Start Scene or Map Unloading.");
-                if (VRManager.Instance.Mode is GenericStandingMode)
-                    standingMode = true;
-                else
-                    standingMode = false;
-            }
-            catch (Exception obj)
-            {
-                VRLog.Error(obj);
-            }
-        }
+        //[HarmonyPrefix]
+        //[HarmonyPatch(typeof(Scene), "UnloadBaseScene", new Type[] { })]
+        //public static void UnloadBaseScenePreHook()
+        //{
+        //    try
+        //    {
+        //        KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "Start Scene or Map Unloading.");
+        //        if (VRManager.Instance.Mode is GenericStandingMode)
+        //            standingMode = true;
+        //        else
+        //            standingMode = false;
+        //    }
+        //    catch (Exception obj)
+        //    {
+        //        VRLog.Error(obj);
+        //    }
+        //}
 
         // todo invalid patch target
         //[HarmonyPostfix]

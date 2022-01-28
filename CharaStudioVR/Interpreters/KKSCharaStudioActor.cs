@@ -1,9 +1,10 @@
 using System;
+using KKS_VR.Settings;
 using UnityEngine;
 using VRGIN.Core;
 using VRGIN.Helpers;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Interpreters
 {
     public class KKSCharaStudioActor : DefaultActorBehaviour<ChaControl>
     {
@@ -54,8 +55,8 @@ namespace KKSCharaStudioVR
             {
                 var asVoice = Actor.asVoice;
                 asVoice.gameObject.transform.position = Actor.objHeadBone.transform.position;
-                var minVoiceDistance = (VR.Settings as KKSCharaStudioVRSettings).MinVoiceDistance;
-                var maxVoiceDistance = (VR.Settings as KKSCharaStudioVRSettings).MaxVoiceDistance;
+                var minVoiceDistance = (VR.Settings as CharaStudioSettings).MinVoiceDistance;
+                var maxVoiceDistance = (VR.Settings as CharaStudioSettings).MaxVoiceDistance;
                 if (asVoice.minDistance != minVoiceDistance || asVoice.maxDistance != maxVoiceDistance)
                 {
                     VRLog.Debug(

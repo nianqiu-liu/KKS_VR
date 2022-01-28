@@ -1,10 +1,10 @@
 using System.Xml.Serialization;
 using VRGIN.Core;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Settings
 {
     [XmlRoot("Settings")]
-    public class KKSCharaStudioVRSettings : VRSettings
+    public class CharaStudioSettings : VRSettings
     {
         private bool _LockRotXZ = true;
 
@@ -52,15 +52,15 @@ namespace KKSCharaStudioVR
             protected set => base.Shortcuts = value;
         }
 
-        public KKSCharaStudioVRSettings()
+        public CharaStudioSettings()
         {
             IPDScale = 1f;
             GrabRotationImmediateMode = false;
         }
 
-        public static KKSCharaStudioVRSettings Load(string path)
+        public static CharaStudioSettings Load(string path)
         {
-            return VRSettings.Load<KKSCharaStudioVRSettings>(path);
+            return VRSettings.Load<CharaStudioSettings>(path);
         }
     }
 }

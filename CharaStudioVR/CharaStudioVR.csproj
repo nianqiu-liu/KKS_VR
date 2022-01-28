@@ -7,7 +7,7 @@
     <ProjectGuid>{07ECD6A8-61D0-4409-A009-C138E76DFA1F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CharaStudioVR</RootNamespace>
+    <RootNamespace>KKS_VR</RootNamespace>
     <AssemblyName>KKS_CharaStudioVR</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -17,24 +17,25 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>embedded</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;KKS CharaStudio</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>8</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>embedded</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;KKS CharaStudio</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>8</LangVersion>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.5.4.0, Culture=neutral, processorArchitecture=MSIL">
@@ -191,42 +192,37 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KKSCharaStudioVR\ConfigurableContext.cs" />
-    <Compile Include="KKSCharaStudioVR\GenericSeatedMode.cs" />
-    <Compile Include="KKSCharaStudioVR\GenericStandingMode.cs" />
-    <Compile Include="KKSCharaStudioVR\GripMenuHandler.cs" />
-    <Compile Include="KKSCharaStudioVR\GripMoveStudioNEOV2Tool.cs" />
-    <Compile Include="KKSCharaStudioVR\IKTool.cs" />
-    <Compile Include="KKSCharaStudioVR\KKSCharaStudioActor.cs" />
-    <Compile Include="KKSCharaStudioVR\KKSCharaStudioInterpreter.cs" />
-    <Compile Include="KKSCharaStudioVR\KKSCharaStudioVRGUI.cs" />
-    <Compile Include="KKSCharaStudioVR\KKSCharaStudioVRPlugin.cs" />
-    <Compile Include="KKSCharaStudioVR\KKSCharaStudioVRSettings.cs" />
-    <Compile Include="KKSCharaStudioVR\LoadFixHook.cs" />
-    <Compile Include="KKSCharaStudioVR\MaterialHelper.cs" />
-    <Compile Include="KKSCharaStudioVR\MoveableGUIObject.cs" />
-    <Compile Include="KKSCharaStudioVR\ObjMoveHelper.cs" />
-    <Compile Include="KKSCharaStudioVR\OpenVRHelperTempfixHook.cs" />
-    <Compile Include="KKSCharaStudioVR\Resource.cs" />
-    <Compile Include="KKSCharaStudioVR\SaveLoadSceneHook.cs" />
-    <Compile Include="KKSCharaStudioVR\TransientHead.cs" />
-    <Compile Include="KKSCharaStudioVR\VRCameraMoveHelper.cs" />
-    <Compile Include="KKSCharaStudioVR\VRControllerMgr.cs" />
-    <Compile Include="KKSCharaStudioVR\VRItemObjMoveHelper.cs" />
-    <Compile Include="KKSCharaStudioVR\VRLoader.cs" />
+    <Compile Include="Settings\CharaStudioContext.cs" />
+    <Compile Include="GenericStandingMode.cs" />
+    <Compile Include="Controls\GripMenuHandler.cs" />
+    <Compile Include="Controls\GripMoveStudioNEOV2Tool.cs" />
+    <Compile Include="Controls\IKTool.cs" />
+    <Compile Include="Interpreters\KKSCharaStudioActor.cs" />
+    <Compile Include="Interpreters\KKSCharaStudioInterpreter.cs" />
+    <Compile Include="VRPlugin.cs" />
+    <Compile Include="Settings\CharaStudioSettings.cs" />
+    <Compile Include="Fixes\LoadFixHook.cs" />
+    <Compile Include="Util\MaterialHelper.cs" />
+    <Compile Include="Util\MoveableGUIObject.cs" />
+    <Compile Include="Controls\ObjMoveHelper.cs" />
+    <Compile Include="Fixes\OpenVRHelperTempfixHook.cs" />
+    <Compile Include="Fixes\SaveLoadSceneHook.cs" />
+    <Compile Include="Interpreters\TransientHead.cs" />
+    <Compile Include="Controls\VRCameraMoveHelper.cs" />
+    <Compile Include="Controls\VRItemObjMoveHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="KKSCharaStudioVR.Resource.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="KKSCharaStudioVRShader" />
+    <EmbeddedResource Include="Util\ColorZOrderShader" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets" Condition="Exists('..\packages\IllusionLibs.BepInEx.Harmony.2.5.4\build\IllusionLibs.BepInEx.Harmony.targets')" />
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SolutionDir)\bin" ContinueOnError="true" />
+  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

@@ -1,31 +1,34 @@
 using System;
 using System.IO;
 using System.Reflection;
+using KKAPI.Utilities;
 using UnityEngine;
 using VRGIN.Core;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Util
 {
     internal class MaterialHelper
     {
-        private static AssetBundle _GripMovePluginResources;
-
-        private static Shader _ColorZOrderShader;
+        private static Shader _colorZOrderShader;
 
         public static Shader GetColorZOrderShader()
         {
-            if (_ColorZOrderShader != null) return _ColorZOrderShader;
-            try
+            if (_colorZOrderShader == null)
             {
-                if (_GripMovePluginResources == null) _GripMovePluginResources = AssetBundle.LoadFromMemory(Resource.KKSCharaStudioVRShader);
-                _ColorZOrderShader = _GripMovePluginResources.LoadAsset<Shader>("ColorZOrder");
-                return _ColorZOrderShader;
+                try
+                {
+                    var bundle = AssetBundle.LoadFromMemory(ResourceUtils.GetEmbeddedResource("ColorZOrderShader"));
+                    _colorZOrderShader = bundle.LoadAsset<Shader>("ColorZOrder");
+                    bundle.Unload(false);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    return null;
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                return null;
-            }
+
+            return _colorZOrderShader;
         }
 
         public static Texture2D LoadImage(string filePath)

@@ -2,7 +2,7 @@ using System;
 using HarmonyLib;
 using Unity.XR.OpenVR;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Fixes
 {
     public static class OpenVRHelperTempfixHook
     {

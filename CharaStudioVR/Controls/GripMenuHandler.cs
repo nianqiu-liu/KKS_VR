@@ -6,7 +6,7 @@ using VRGIN.Core;
 using VRGIN.Native;
 using VRGIN.Visuals;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Controls
 {
     public class GripMenuHandler : ProtectedBehaviour
     {

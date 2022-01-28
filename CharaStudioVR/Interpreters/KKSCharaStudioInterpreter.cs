@@ -5,12 +5,11 @@ using System.Linq;
 using System.Reflection;
 using BepInEx.Logging;
 using Manager;
-using Studio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using VRGIN.Core;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Interpreters
 {
     internal class KKSCharaStudioInterpreter : GameInterpreter
     {
@@ -129,7 +128,7 @@ namespace KKSCharaStudioVR
 
         private IEnumerator ForceResetVRModeCo()
         {
-            KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "Check and reset to StandingMode if not.");
+            VRPlugin.Logger.Log(LogLevel.Debug, "Check and reset to StandingMode if not.");
             yield return null;
             yield return null;
             yield return null;
@@ -137,12 +136,12 @@ namespace KKSCharaStudioVR
             yield return null;
             if (!VRManager.Instance.Mode)
             {
-                KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "Mode is not StandingMode. Force reset as Standing Mode.");
+                VRPlugin.Logger.Log(LogLevel.Debug, "Mode is not StandingMode. Force reset as Standing Mode.");
                 ForceResetAsStandingMode();
             }
             else
             {
-                KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "Is Standing Mode. Skip to setting force.");
+                VRPlugin.Logger.Log(LogLevel.Debug, "Is Standing Mode. Skip to setting force.");
             }
         }
 
@@ -164,7 +163,7 @@ namespace KKSCharaStudioVR
                 {
                     _ = VR.Camera.Blueprint;
                     var mainCmaera = Singleton<global::Studio.Studio>.Instance.cameraCtrl.mainCmaera;
-                    KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, $"Force replace blueprint camera with {mainCmaera}");
+                    VRPlugin.Logger.Log(LogLevel.Debug, $"Force replace blueprint camera with {mainCmaera}");
                     var camera = VR.Camera.SteamCam.camera;
                     var camera2 = mainCmaera;
                     camera.nearClipPlane = VR.Context.NearClipPlane;
@@ -192,7 +191,7 @@ namespace KKSCharaStudioVR
                 }
                 else
                 {
-                    KKSCharaStudioVRPlugin.PluginLogger.Log(LogLevel.Debug, "VR.Camera is null");
+                    VRPlugin.Logger.Log(LogLevel.Debug, "VR.Camera is null");
                 }
             }
             catch (Exception value)

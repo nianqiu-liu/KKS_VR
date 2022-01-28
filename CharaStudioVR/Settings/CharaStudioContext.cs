@@ -4,17 +4,17 @@ using UnityEngine;
 using VRGIN.Core;
 using VRGIN.Visuals;
 
-namespace KKSCharaStudioVR
+namespace KKS_VR.Settings
 {
     [XmlRoot("Context")]
-    public class ConfigurableContext : IVRManagerContext
+    public class CharaStudioContext : IVRManagerContext
     {
         private DefaultMaterialPalette _Materials;
 
-        public ConfigurableContext()
+        public CharaStudioContext()
         {
             _Materials = new DefaultMaterialPalette();
-            Settings = KKSCharaStudioVRSettings.Load("KKS_CharaStudioVRSettings.xml");
+            Settings = CharaStudioSettings.Load("KKS_CharaStudioVRSettings.xml");
             ConfineMouse = true;
             EnforceDefaultGUIMaterials = false;
             GUIAlternativeSortingMode = false;
