@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using KoikatuVR.Interpreters;
 using KoikatuVR.Settings;
+using KoikatuVR.Util;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Valve.VR;
@@ -99,7 +100,7 @@ namespace KoikatuVR.Controls
             _Settings.AddListener("KeySets", (_, _1) => ResetKeys());
             _Settings.AddListener("HKeySets", (_, _1) => ResetKeys());
         }
-        
+
         protected override void OnDestroy()
         {
             // nothing to do.
@@ -277,24 +278,6 @@ namespace KoikatuVR.Controls
                     _grab = new GrabAction(Owner, buttonMask);
                     break;
 
-                /* Proper way of doing it needs special handling for different H modes and to be inside _buttonsSubtool
-                 case AssignableFunction.SCROLLUP:
-                    if (_InHScene)
-                    {
-                        var f = FindObjectOfType<HFlag>();
-                        f.SpeedUpClick(-f.rateWheelSpeedUp, 1f);
-                        break;
-                    }
-                    goto default;
-                case AssignableFunction.SCROLLDOWN:
-                    if (_InHScene)
-                    {
-                        var f = FindObjectOfType<HFlag>();
-                        f.SpeedUpClick(f.rateWheelSpeedUp, 1f);
-                        break;
-                    }
-                    goto default;*/
-
                 case AssignableFunction.SCROLLUP:
                 case AssignableFunction.SCROLLDOWN:
                 case AssignableFunction.LBUTTON:
@@ -304,8 +287,8 @@ namespace KoikatuVR.Controls
                     // Extremely fiddly but what can you do
                     if (_InHScene) VR.Input.Mouse.MoveMouseBy(Screen.width - 10, Screen.height - 10);
 
-                    //todo maybe force focus the window here so the cursor doesn't go off into the desktop?
-                    //https://stackoverflow.com/questions/29092145/any-way-to-bring-unity3d-to-the-foreground
+                    // Force focus the window here so the cursor doesn't go off into the desktop or click the window that's currently on top of the game window
+                    WindowTools.BringWindowToFront();
                     goto default;
 
                 default:

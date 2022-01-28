@@ -236,6 +236,7 @@
     <Compile Include="Features\VRFade.cs" />
     <Compile Include="Features\HideMaleHead.cs" />
     <Compile Include="Camera\VRCameraMover.cs" />
+    <Compile Include="Util\WindowTools.cs" />
     <Compile Include="VRPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\SchoolTool.cs" />
