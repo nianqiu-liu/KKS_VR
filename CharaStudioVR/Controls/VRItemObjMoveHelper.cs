@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using KKS_VR.Util;
 using Studio;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using VRGIN.Core;
+using VRGIN.Helpers;
 
 namespace KKS_VR.Controls
 {
@@ -119,8 +119,8 @@ namespace KKS_VR.Controls
             if (transform != null)
             {
                 var num = transform3.localPosition.x - transform2.localPosition.x;
-                var sprite = Sprite.Create(MaterialHelper.LoadImage("icon_call.png"), new Rect(0f, 0f, 32f, 32f), Vector2.zero);
-                var sprite2 = Sprite.Create(MaterialHelper.LoadImage("icon_call_xz.png"), new Rect(0f, 0f, 32f, 32f), Vector2.zero);
+                var sprite = Sprite.Create(UnityHelper.LoadImage("icon_call.png"), new Rect(0f, 0f, 32f, 32f), Vector2.zero);
+                var sprite2 = Sprite.Create(UnityHelper.LoadImage("icon_call_xz.png"), new Rect(0f, 0f, 32f, 32f), Vector2.zero);
                 if (callButton == null)
                 {
                     var obj = Instantiate(transform.gameObject);

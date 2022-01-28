@@ -13,6 +13,7 @@ using VRGIN.Controls;
 using VRGIN.Controls.Handlers;
 using VRGIN.Controls.Tools;
 using VRGIN.Core;
+using VRGIN.Helpers;
 using VRGIN.Visuals;
 
 namespace KKS_VR.Controls
@@ -75,7 +76,7 @@ namespace KKS_VR.Controls
 
         private bool lockRotXZ = true;
 
-        public override Texture2D Image => MaterialHelper.LoadImage("icon_gripmove.png");
+        public override Texture2D Image => UnityHelper.LoadImage("icon_gripmove.png");
 
         public GUIQuad Gui { get; private set; }
 
@@ -122,7 +123,7 @@ namespace KKS_VR.Controls
                 component.enabled = true;
                 component.shadowCastingMode = ShadowCastingMode.Off;
                 component.receiveShadows = false;
-                var material2 = component.material = new Material(MaterialHelper.GetColorZOrderShader());
+                component.material = new Material(MaterialHelper.GetColorZOrderShader());
             }
         }
 
