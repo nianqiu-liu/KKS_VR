@@ -9,6 +9,7 @@
     <Import_RootNamespace>Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BetterMenuTool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BetterWarpTool.cs" />

@@ -11,12 +11,14 @@ namespace KKS_VR
     /// <summary>
     /// Initialize controllers and custom tools
     /// </summary>
-    internal class KoikatuStandingMode : StandingMode
+    internal class GameStandingMode : StandingMode
     {
-        public override IEnumerable<Type> Tools
+        public override IEnumerable<Type> Tools { get; } = new[]
         {
-            get { return new[] { typeof(Controls.BetterMenuTool), typeof(Controls.KoikatuWarpTool), typeof(Controls.SchoolTool) }; }
-        }
+            typeof(Controls.BetterMenuTool),
+            typeof(Controls.KoikatuWarpTool),
+            typeof(Controls.SchoolTool)
+        };
 
         protected override IEnumerable<IShortcut> CreateShortcuts()
         {

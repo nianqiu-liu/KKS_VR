@@ -158,7 +158,7 @@ namespace KKS_VR.Interpreters
         {
             try
             {
-                VR.Manager.SetMode<GenericStandingMode>();
+                VR.Manager.SetMode<StudioStandingMode>();
                 if ((bool)VR.Camera)
                 {
                     _ = VR.Camera.Blueprint;

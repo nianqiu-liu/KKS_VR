@@ -15,13 +15,13 @@ using VRGIN.Core;
 
 namespace KKS_VR
 {
-    [BepInPlugin(GUID, PluginName, Version)]
+    [BepInPlugin(GUID, Name, Version)]
     [BepInProcess(KoikatuAPI.GameProcessName)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
     public class VRPlugin : BaseUnityPlugin
     {
         public const string GUID = "KKS_MainGameVR";
-        public const string PluginName = "KKS Main Game VR";
+        public const string Name = "KKS Main Game VR";
         public const string Version = Constants.Version;
 
         internal static new ManualLogSource Logger;
@@ -110,7 +110,7 @@ namespace KKS_VR
             UpdateNearClipPlane(settings);
             settings.AddListener("NearClipPlane", (_, _1) => UpdateNearClipPlane(settings));
             
-            VR.Manager.SetMode<KoikatuStandingMode>();
+            VR.Manager.SetMode<GameStandingMode>();
             
             VRFade.Create();
             PrivacyScreen.Initialize();

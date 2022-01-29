@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using KKS_VR.Controls;
 using VRGIN.Modes;
 
 namespace KKS_VR
 {
-    internal class GenericStandingMode : StandingMode
+    internal class StudioStandingMode : StandingMode
     {
-        public override IEnumerable<Type> Tools => base.Tools.Concat(new Type[3]
+        public override IEnumerable<Type> Tools { get; } = new[]
         {
             typeof(BetterMenuTool),
             typeof(BetterWarpTool),
             typeof(GripMoveStudioNEOV2Tool)
-        });
+        };
     }
 }

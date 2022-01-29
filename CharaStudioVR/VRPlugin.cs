@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Xml.Serialization;
 using BepInEx;
 using BepInEx.Logging;
 using KKAPI;
@@ -111,9 +109,9 @@ namespace KKS_VR
 
             TopmostToolIcons.Patch();
 
-            VRManager.Create<KKSCharaStudioInterpreter>(CreateContext("KKS_CharaStudioVRContext.xml"));
+            VRManager.Create<KKSCharaStudioInterpreter>(CharaStudioContext.GetContext());
 
-            VR.Manager.SetMode<GenericStandingMode>();
+            VR.Manager.SetMode<StudioStandingMode>();
 
             var obj = new GameObject("KKSCharaStudioVR");
             DontDestroyOnLoad(obj);
@@ -128,37 +126,6 @@ namespace KKS_VR
             DontDestroyOnLoad(VRCamera.Instance.gameObject);
 
             base.Logger.LogInfo("Finished loading into VR mode!");
-        }
-
-        private static IVRManagerContext CreateContext(string path)
-        {
-            var xmlSerializer = new XmlSerializer(typeof(CharaStudioContext));
-            if (File.Exists(path))
-            {
-                using var stream = File.OpenRead(path);
-                try
-                {
-                    return xmlSerializer.Deserialize(stream) as CharaStudioContext;
-                }
-                catch (Exception)
-                {
-                    VRLog.Error("Failed to deserialize {0} -- using default", path);
-                }
-            }
-
-            var configurableContext = new CharaStudioContext();
-            try
-            {
-                using var streamWriter = new StreamWriter(path);
-                streamWriter.BaseStream.SetLength(0L);
-                xmlSerializer.Serialize(streamWriter, configurableContext);
-                return configurableContext;
-            }
-            catch (Exception)
-            {
-                VRLog.Error("Failed to write {0}", path);
-                return configurableContext;
-            }
         }
 
         private static class NativeMethods

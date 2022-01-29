@@ -25,7 +25,7 @@ namespace KKS_VR.Fixes
             try
             {
                 VRPlugin.Logger.Log(LogLevel.Debug, "Start Scene Loading.");
-                if (VRManager.Instance.Mode is GenericStandingMode) ((KKSCharaStudioInterpreter)VR.Manager.Interpreter).ForceResetVRMode();
+                if (VRManager.Instance.Mode is StudioStandingMode) ((KKSCharaStudioInterpreter)VR.Manager.Interpreter).ForceResetVRMode();
             }
             catch (Exception obj)
             {

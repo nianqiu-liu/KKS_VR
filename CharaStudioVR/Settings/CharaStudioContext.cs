@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Xml.Serialization;
 using UnityEngine;
 using VRGIN.Core;
@@ -9,12 +10,15 @@ namespace KKS_VR.Settings
     [XmlRoot("Context")]
     public class CharaStudioContext : IVRManagerContext
     {
+        private static string _contextSavePath = Path.Combine(BepInEx.Paths.ConfigPath, "KKS_CharaStudioVRContext.xml");
+        private static string _settingsSavePath = Path.Combine(BepInEx.Paths.ConfigPath, "KKS_CharaStudioVRSettings.xml");
+
         private DefaultMaterialPalette _Materials;
 
         public CharaStudioContext()
         {
             _Materials = new DefaultMaterialPalette();
-            Settings = CharaStudioSettings.Load("KKS_CharaStudioVRSettings.xml");
+            Settings = CharaStudioSettings.Load(_settingsSavePath);
             ConfineMouse = true;
             EnforceDefaultGUIMaterials = false;
             GUIAlternativeSortingMode = false;
@@ -75,5 +79,37 @@ namespace KKS_VR.Settings
         Type IVRManagerContext.VoiceCommandType { get; }
 
         public bool ForceIMGUIOnScreen { get; set; }
+
+        public static IVRManagerContext GetContext()
+        {
+            var path = _contextSavePath;
+            var xmlSerializer = new XmlSerializer(typeof(CharaStudioContext));
+            if (File.Exists(path))
+            {
+                using var stream = File.OpenRead(path);
+                try
+                {
+                    return xmlSerializer.Deserialize(stream) as CharaStudioContext;
+                }
+                catch (Exception)
+                {
+                    VRLog.Error("Failed to deserialize {0} -- using default", path);
+                }
+            }
+
+            var configurableContext = new CharaStudioContext();
+            try
+            {
+                using var streamWriter = new StreamWriter(path);
+                streamWriter.BaseStream.SetLength(0L);
+                xmlSerializer.Serialize(streamWriter, configurableContext);
+                return configurableContext;
+            }
+            catch (Exception)
+            {
+                VRLog.Error("Failed to write {0}", path);
+                return configurableContext;
+            }
+        }
     }
 }
