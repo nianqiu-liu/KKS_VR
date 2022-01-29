@@ -250,14 +250,14 @@ namespace KKS_VR.Controls
         /// When this function is assigned to trackpad, does it require a press
         /// or does a touch suffice?
         /// </summary>
-        /// <param name="fun"></param>
-        /// <returns></returns>
         private static bool RequiresPress(AssignableFunction fun)
         {
             switch (fun)
             {
                 case AssignableFunction.SCROLLDOWN:
                 case AssignableFunction.SCROLLUP:
+                case AssignableFunction.LROTATION:
+                case AssignableFunction.RROTATION:
                     return false;
                 default:
                     return true;
