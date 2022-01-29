@@ -1,4 +1,5 @@
-﻿using KKS_VR.Camera;
+﻿using Illusion.Extensions;
+using KKS_VR.Camera;
 using UnityEngine;
 using VRGIN.Core;
 
@@ -44,6 +45,7 @@ namespace KKS_VR.Interpreters
                 UnityEngine.Camera.main.clearFlags = CameraClearFlags.Skybox;
 
                 talkScene.backGround.visible = false;
+                talkScene.canvasBack.gameObject.SetActiveIfDifferent(false);
             };
 
             _canvasBack = talkScene.canvasBack;
