@@ -9,7 +9,7 @@ $solutionDir = $dir + "..\"
 
 $copy = $dir + "\copy\BepInEx\plugins\KKS_VR"
 
-$ver = "v" + (Get-ChildItem -Path ($dir) -Filter ("KKS_MainGameVR.dll") -Recurse -Force)[0].VersionInfo.FileVersion.ToString() -replace "^([\d+\.]+?\d+)[\.0]*$", '${1}'
+$ver = "v" + (Get-ChildItem -Path ($dir) -Filter ("KKS_MainGameVR.dll") -Recurse -Force)[0].VersionInfo.FileVersion.ToString() -replace "([\d+\.]+?\d+)[\.0]*$", '${1}'
 
 Remove-Item -Force -Path ($dir + "\copy") -Recurse -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force -Path $copy
