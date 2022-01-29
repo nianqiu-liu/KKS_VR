@@ -14,7 +14,7 @@ using VRGIN.Helpers;
 
 namespace KKS_VR.Controls
 {
-    public class SchoolTool : Tool
+    public class GameplayTool : Tool
     {
         private readonly Texture2D _hand1Texture = UnityHelper.LoadImage("icon_hand_1.png");
         private readonly Texture2D _hand2Texture = UnityHelper.LoadImage("icon_hand_2.png");

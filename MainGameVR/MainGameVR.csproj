@@ -235,7 +235,7 @@
     <Compile Include="Camera\VRCameraMover.cs" />
     <Compile Include="Util\WindowTools.cs" />
     <Compile Include="VRPlugin.cs" />
-    <Compile Include="Controls\SchoolTool.cs" />
+    <Compile Include="Controls\GameplayTool.cs" />
     <Compile Include="Settings\KoikatuSettings.cs" />
   </ItemGroup>
   <ItemGroup>

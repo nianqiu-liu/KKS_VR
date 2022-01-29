@@ -17,7 +17,7 @@ namespace KKS_VR
         {
             typeof(Controls.BetterMenuTool),
             typeof(Controls.KoikatuWarpTool),
-            typeof(Controls.SchoolTool)
+            typeof(Controls.GameplayTool)
         };
 
         protected override IEnumerable<IShortcut> CreateShortcuts()
