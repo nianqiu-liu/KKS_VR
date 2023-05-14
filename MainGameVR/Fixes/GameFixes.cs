@@ -216,4 +216,54 @@ namespace KKS_VR.Fixes
                 });
         }
     }
+
+    /// <summary>
+    /// Fix hscene killing the camera at end
+    /// </summary>
+    [HarmonyPatch]
+    public class HSceneFix1
+    {
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            yield return CoroutineUtils.GetMoveNext(AccessTools.Method(typeof(HScene), nameof(HScene.Start)));
+            yield return CoroutineUtils.GetMoveNext(AccessTools.Method(typeof(HScene), nameof(HScene.ResultTalk)));
+        }
+
+        private static UnityEngine.Camera GetOriginalMainCamera()
+        {
+            // vr camera doesn't have this component on it
+            var originalMainCamera = (Manager.Game.instance.cameraEffector ?? Object.FindObjectOfType<CameraEffector>()).GetComponent<UnityEngine.Camera>();
+            VRPlugin.Logger.LogDebug($"GetOriginalMainCamera called, cam found: {originalMainCamera?.GetFullPath()}\n{new StackTrace()}");
+            return originalMainCamera;
+        }
+
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts, MethodBase __originalMethod)
+        {
+            var targert = AccessTools.PropertyGetter(typeof(UnityEngine.Camera), nameof(UnityEngine.Camera.main));
+
+            VRPlugin.Logger.LogDebug("Patching Camera.main -> null in " + __originalMethod.GetNiceName());
+
+            // Change Camera.main property get to return null instead to skip code that messes with player camera.
+            // Only last instance needs to be patched or HScene.ResultTalk will break.
+            return new CodeMatcher(insts).End()
+                                         .MatchBack(false, new CodeMatch(OpCodes.Call, AccessTools.PropertyGetter(typeof(UnityEngine.Camera), nameof(UnityEngine.Camera.main))))
+                                         .ThrowIfInvalid("Camera.main not found in "+ __originalMethod.GetNiceName())
+                                         .Set(OpCodes.Ldnull, null)
+                                         .Instructions();
+        }
+    }
+    /// <summary>
+    /// Fix hscene killing the camera at end
+    /// </summary>
+    [HarmonyPatch(typeof(HScene))]
+    public class HSceneFix2
+    {
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(HScene.HResultADVCameraSetting), MethodType.Normal)]
+        private static bool SkipCameraSetup()
+        {
+            VRPlugin.Logger.LogDebug("Skipping HScene.HResultADVCameraSetting");
+            return false;
+        }
+    }
 }
