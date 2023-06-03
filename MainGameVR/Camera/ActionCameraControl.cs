@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
+using KKS_VR.Interpreters;
 using UnityEngine;
 using VRGIN.Core;
 
@@ -93,19 +95,51 @@ namespace KKS_VR.Camera
 
         public static void SetIdealPositionAndRotation(Transform t, Vector3 position, Quaternion rotation)
         {
+            if (position.Equals(Vector3.zero))
+            {
+                VRLog.Warn("position=0,0,0 in " + new StackTrace());
+                return;
+            }
+
             if (TalkScene.isPaly)
             {
                 // todo keep old height?
                 var heroine = TalkScene.instance.targetHeroine.transform;
-                GetIdealTransformFor(t).SetPositionAndRotation(heroine.TransformPoint(new Vector3(0, 1.4f, 0.70f)), heroine.rotation * Quaternion.Euler(0, 180f, 0));
+                var newPosition = heroine.TransformPoint(new Vector3(0, GetPlayerHeight(), TalkSceneInterpreter.TalkDistance));
+                if (HeadIsAwayFromPosition(newPosition))
+                    GetIdealTransformFor(t).SetPositionAndRotation(newPosition, heroine.rotation * Quaternion.Euler(0, 180f, 0));
             }
             else
             {
                 var add = rotation.eulerAngles.normalized * 1f;
                 add.y = 0;
                 var added = position + add;
+
+                // breaks position at talk scene start
+                //if (HeadIsAwayFromPosition(added))
                 GetIdealTransformFor(t).SetPositionAndRotation(added, rotation);
             }
+        }
+
+        public static float GetPlayerHeight()
+        {
+            //todo setting?
+            //var playerHeight = VR.Camera.Head.position.y - VR.Camera.Origin.position.y;
+            //Console.WriteLine("height: " + playerHeight);
+            //return playerHeight;
+            return 1.4f;
+        }
+
+        public static bool HeadIsAwayFromPosition(Vector3 targetPosition)
+        {
+            return GetDistanceFromCurrentHeadPos(targetPosition) > 0.35f;
+        }
+
+        public static float GetDistanceFromCurrentHeadPos(Vector3 targetPosition)
+        {
+            var dist = Vector3.Distance(targetPosition, VR.Camera.SteamCam.head.position);
+            VRLog.Debug("Distance of head from pos={0} is {1}", targetPosition, dist);
+            return dist;
         }
     }
 

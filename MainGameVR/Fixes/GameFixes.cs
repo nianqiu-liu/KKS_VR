@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using ActionGame;
 using ADV;
+using Cysharp.Threading.Tasks;
 using HarmonyLib;
 using KKAPI.Utilities;
 using KKS_VR.Interpreters;
@@ -183,6 +184,20 @@ namespace KKS_VR.Fixes
         private static void Postfix(ADVScene __instance)
         {
             Manager.Sound.Listener = UnityEngine.Camera.main.transform;
+        }
+    }
+
+    /// <summary>
+    /// Fix wrong position being sometimes set in TalkScene after introduction finishes
+    /// </summary>
+    [HarmonyPatch]
+    public class TalkScenePostAdvFix
+    {
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(TalkScene), nameof(TalkScene.Introduction), MethodType.Normal)]
+        private static void IntroductionPostfix(TalkScene __instance, UniTask __result)
+        {
+            __instance.StartCoroutine(__result.WaitForFinishCo().AppendCo(() => TalkSceneInterpreter.AdjustPosition(__instance)));
         }
     }
 

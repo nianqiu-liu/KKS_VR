@@ -8,6 +8,7 @@ namespace KKS_VR.Interpreters
     internal class TalkSceneInterpreter : SceneInterpreter
     {
         private Canvas _canvasBack;
+        public static float TalkDistance = 0.65f;
 
         public override void OnDisable()
         {
@@ -33,13 +34,7 @@ namespace KKS_VR.Interpreters
             {
                 VRLog.Warn("talkScene.otherInitialize");
 
-                // The default camera location is a bit too far for a friendly
-                // conversation.
-                var heroine = talkScene.targetHeroine.transform;
-                VRCameraMover.Instance.MoveTo(
-                    heroine.TransformPoint(new Vector3(0, 1.4f, 0.55f)),
-                    heroine.rotation * Quaternion.Euler(0, 180f, 0),
-                    true);
+                AdjustPosition(talkScene);
 
                 // talkscene messes with camera settings
                 UnityEngine.Camera.main.clearFlags = CameraClearFlags.Skybox;
@@ -49,6 +44,19 @@ namespace KKS_VR.Interpreters
             };
 
             _canvasBack = talkScene.canvasBack;
+        }
+
+        public static void AdjustPosition(TalkScene talkScene)
+        {
+            if (talkScene == null) return;
+
+            // The default camera location is a bit too far for a friendly
+            // conversation.
+            var heroine = talkScene.targetHeroine.transform;
+            VRCameraMover.Instance.MoveTo(
+                heroine.TransformPoint(new Vector3(0, ActionCameraControl.GetPlayerHeight(), TalkDistance)),
+                heroine.rotation * Quaternion.Euler(0, 180f, 0),
+                false);
         }
 
         public override void OnUpdate()
