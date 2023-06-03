@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using Funly.SkyStudio;
 using KKAPI.MainGame;
 using KKAPI.Maker;
 using KKS_VR.Camera;
@@ -55,8 +57,68 @@ namespace KKS_VR.Interpreters
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            VRLog.Info($"OnSceneLoaded {scene.name}");
             foreach (var reflection in FindObjectsOfType<MirrorReflection>()) _mirrorManager.Fix(reflection);
+
+            if (scene.name == "Title" || scene.name == "FreeH" || scene.name == "Uploader" || scene.name == "Downloader")
+                LoadTitleSkybox();
+        }
+
+        private static void LoadTitleSkybox()
+        {
+            if (GameObject.FindObjectOfType<TimeOfDayController>()) return;
+
+            try
+            {
+                var stockSkyProfiles = new string[]
+                {
+                    "_morning_stu",
+                    "_daytime_stu",
+                    "_evening_stu",
+                    "_night_stu",
+                };
+                // Use either day or night skybox depending on real world time to reduce eye abuse at night
+                // morning and evening skyboxes are not worth using for title screen
+                var timeNow = DateTime.Now;
+                var isNight = timeNow.Hour < 6 || timeNow.Hour > 20;
+                var skyType = isNight ? stockSkyProfiles[3] : stockSkyProfiles[1];
+                // var skyType = stockSkyProfiles[UnityEngine.Random.RandomRangeInt(0, stockSkyProfiles.Length)];
+
+                VRLog.Info($"Loading skybox {skyType}...");
+
+                var skyProfile = CommonLib.LoadAsset<SkyProfile>(@"studio\sky\01.unity3d", "SkyProfile" + skyType, true, null, true);
+                var skyMaterial = CommonLib.LoadAsset<Material>(@"studio\sky\01.unity3d", "SkyboxMaterial" + skyType, true, null, true);
+                if (skyProfile != null && skyMaterial != null)
+                {
+                    VRLog.Info($"SkyProfile: {skyProfile}   SkyboxMaterial: {skyMaterial}");
+
+                    var instanceGameObject = new GameObject("KKSVR_Skybox");
+                    var skyController = instanceGameObject.AddComponent<TimeOfDayController>();
+
+                    // Need to add dummy sun and mun objects or the controller will refuse to work
+                    var sun = new GameObject("Sun");
+                    sun.transform.parent = instanceGameObject.transform;
+                    new GameObject("Position", typeof(RotateBody)).transform.parent = sun.transform;
+                    skyController.sunOrbit = sun.AddComponent<OrbitingBody>();
+
+                    var mun = new GameObject("Moon");
+                    mun.transform.parent = instanceGameObject.transform;
+                    new GameObject("Position", typeof(RotateBody)).transform.parent = mun.transform;
+                    skyController.moonOrbit = mun.AddComponent<OrbitingBody>();
+
+                    // For some reason the profile doesn't come with the material, which is required
+                    skyProfile.skyboxMaterial = skyMaterial;
+                    // This applies the skybox right away
+                    skyController.skyProfile = skyProfile;
+                }
+                else
+                {
+                    VRLog.Warn("Skybox not found! Missing CharaStudio assets?");
+                }
+            }
+            catch (Exception e)
+            {
+                VRLog.Error("Failed to load Skybox! Error: " + e);
+            }
         }
 
         /// <summary>
