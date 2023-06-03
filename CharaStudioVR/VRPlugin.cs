@@ -38,6 +38,7 @@ namespace KKS_VR
             if (vrActivated)
             {
                 OpenVRHelperTempfixHook.Patch();
+                VRLogRedirectPatch.Patch();
                 StartCoroutine(LoadDevice());
             }
         }

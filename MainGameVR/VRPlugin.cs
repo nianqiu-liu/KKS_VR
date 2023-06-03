@@ -35,6 +35,7 @@ namespace KKS_VR
             if (vrActivated)
             {
                 OpenVRHelperTempfixHook.Patch();
+                VRLogRedirectPatch.Patch();
 
                 var settings = SettingsManager.Create(Config);
                 StartCoroutine(LoadDevice(settings));
