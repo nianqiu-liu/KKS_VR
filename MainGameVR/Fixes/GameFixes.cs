@@ -247,7 +247,7 @@ namespace KKS_VR.Fixes
             // Only last instance needs to be patched or HScene.ResultTalk will break.
             return new CodeMatcher(insts).End()
                                          .MatchBack(false, new CodeMatch(OpCodes.Call, AccessTools.PropertyGetter(typeof(UnityEngine.Camera), nameof(UnityEngine.Camera.main))))
-                                         .ThrowIfInvalid("Camera.main not found in "+ __originalMethod.GetNiceName())
+                                         .ThrowIfInvalid("Camera.main not found in " + __originalMethod.GetNiceName())
                                          .Set(OpCodes.Ldnull, null)
                                          .Instructions();
         }

@@ -182,10 +182,9 @@ namespace KKS_VR.Controls
         /// <summary>
         /// Rotate the camera. If we are in Roaming, rotate the protagonist as well.
         /// </summary>
-        /// <param name="degrees"></param>
         private void Rotate(float degrees)
         {
-            VRLog.Debug($"Rotating {degrees}");
+            VRLog.Debug("Rotating {0} degrees", degrees);
             var actInterpreter = _Interpreter.SceneInterpreter as ActionSceneInterpreter;
             if (actInterpreter != null) actInterpreter.MoveCameraToPlayer(true);
             var camera = VR.Camera.transform;

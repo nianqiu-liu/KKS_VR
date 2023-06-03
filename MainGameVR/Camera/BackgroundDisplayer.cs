@@ -38,8 +38,8 @@ namespace KKS_VR.Camera
 
         public void TakeCanvas(Canvas canvas)
         {
-            VRLog.Info($"Taking canvas: {canvas.name}");
-            if (_bgCanvas != null) VRLog.Warn("taking a second canvas?");
+            VRLog.Info("Taking canvas: {0}", canvas.name);
+            if (_bgCanvas != null) VRLog.Warn($"Taking a second canvas? {_bgCanvas}");
             canvas.renderMode = RenderMode.WorldSpace;
             canvas.worldCamera = null;
             canvas.gameObject.layer = 0;
