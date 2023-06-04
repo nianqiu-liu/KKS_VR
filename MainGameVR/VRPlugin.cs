@@ -18,6 +18,7 @@ namespace KKS_VR
     [BepInPlugin(GUID, Name, Version)]
     [BepInProcess(KoikatuAPI.GameProcessName)]
     [BepInDependency(KoikatuAPI.GUID, KoikatuAPI.VersionConst)]
+    [BepInIncompatibility("bero.crossfadervr")]
     public class VRPlugin : BaseUnityPlugin
     {
         public const string GUID = "KKS_MainGameVR";
@@ -30,7 +31,6 @@ namespace KKS_VR
         {
             Logger = base.Logger;
 
-            // could use SteamVRDetector.IsRunning and add Environment.CommandLine.Contains("--novr");
             var vrActivated = Environment.CommandLine.Contains("--vr");
             if (vrActivated)
             {
@@ -40,6 +40,8 @@ namespace KKS_VR
                 var settings = SettingsManager.Create(Config);
                 StartCoroutine(LoadDevice(settings));
             }
+
+            AnimationCrossFader.Initialize(Config, vrActivated);
         }
 
         private IEnumerator LoadDevice(KoikatuSettings settings)
@@ -116,7 +118,7 @@ namespace KKS_VR
             VRFade.Create();
             PrivacyScreen.Initialize();
             GraphicRaycasterPatches.Initialize();
-
+            
             // It's been reported in #28 that the game window defocues when
             // the game is under heavy load. We disable window ghosting in
             // an attempt to counter this.
