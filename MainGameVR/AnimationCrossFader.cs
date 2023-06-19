@@ -31,6 +31,13 @@ namespace KKS_VR
 
         public static void Initialize(ConfigFile config, bool vrActivated)
         {
+            // Avoid clashing with KKS_CrossFader
+            if (Chainloader.PluginInfos.ContainsKey("bero.crossfader"))
+            {
+                VRPlugin.Logger.LogWarning("Disabling the AnimationCrossFader feature because KKS_CrossFader is installed");
+                return;
+            }
+
             var enabled = config.Bind(SettingsManager.SectionGeneral, "Cross-fade character animations", CrossFaderMode.OnlyInVr,
                                       "Interpolate between animations/poses to make transitions look less jarring.\nChanges take effect after a scene change.");
 
@@ -65,9 +72,7 @@ namespace KKS_VR
                 {
                     _hi = new Harmony(typeof(AnimationCrossFader).FullName);
                     _hi.PatchAll(typeof(AdvHooks));
-                    // Avoid clashing with KKS_CrossFader
-                    if (!Chainloader.PluginInfos.ContainsKey("bero.crossfader"))
-                        _hi.PatchAll(typeof(HSceneHooks));
+                    _hi.PatchAll(typeof(HSceneHooks));
                 }
                 else if (!enable && _hi != null)
                 {
