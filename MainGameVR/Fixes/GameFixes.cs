@@ -12,6 +12,7 @@ using KKS_VR.Interpreters;
 using KKS_VR.Settings;
 using Sirenix.Serialization.Utilities;
 using StrayTech;
+using UnityEngine;
 using VRGIN.Core;
 using Object = UnityEngine.Object;
 
@@ -184,6 +185,41 @@ namespace KKS_VR.Fixes
         private static void Postfix(ADVScene __instance)
         {
             Manager.Sound.Listener = UnityEngine.Camera.main.transform;
+        }
+    }
+
+    /// <summary>
+    /// Fix vending machines and some other action points softlocking the game
+    /// </summary>
+    [HarmonyPatch(typeof(Manager.PlayerAction))]
+    public class VendingMachineFix
+    {
+        [HarmonyTranspiler]
+        [HarmonyPatch(nameof(Manager.PlayerAction.Action))]
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> insts)
+        {
+            // Multiple methods get this crossFade field and try to fade on it. Problem is, it doesn't exist.
+            // Instead of patching everything, create a dummy crossFade when it's being set
+            var target = AccessTools.Field(typeof(Manager.PlayerAction), nameof(Manager.PlayerAction.crossFade));
+            if (target == null) throw new ArgumentNullException(nameof(target));
+            return new CodeMatcher(insts).MatchForward(false, new CodeMatch(OpCodes.Stfld, target))
+                                         .ThrowIfInvalid("crossFade not found")
+                                         .Insert(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(VendingMachineFix), nameof(VendingMachineFix.GiveDummyCrossFade))))
+                                         .Instructions();
+        }
+        
+        private static CrossFade _dummyCrossFade;
+        private static CrossFade GiveDummyCrossFade(CrossFade existing)
+        {
+            if (existing) return existing;
+
+            // To disable the fade texBase has to be null. texBase is set in Start so it's delayed from creation.
+            if (!_dummyCrossFade)
+                _dummyCrossFade = new GameObject("DummyCrossFade").AddComponent<CrossFade>();
+            else
+                _dummyCrossFade.texBase = null;
+
+            return _dummyCrossFade;
         }
     }
 
