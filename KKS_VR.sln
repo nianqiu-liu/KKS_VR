@@ -4,8 +4,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainGameVR", "MainGameVR\MainGameVR.csproj", "{1F634B93-F4C6-45E9-894D-2F3556A74D67}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B6E4305-C95A-4274-94A6-B04A1B01989D} = {4B6E4305-C95A-4274-94A6-B04A1B01989D}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharaStudioVR", "CharaStudioVR\CharaStudioVR.csproj", "{07ECD6A8-61D0-4409-A009-C138E76DFA1F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B6E4305-C95A-4274-94A6-B04A1B01989D} = {4B6E4305-C95A-4274-94A6-B04A1B01989D}
+	EndProjectSection
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared", "Shared\Shared.shproj", "{C21C1A1B-5045-4BBE-818B-8574756D1F34}"
 EndProject

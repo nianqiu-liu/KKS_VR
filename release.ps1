@@ -23,13 +23,13 @@ New-Item -ItemType Directory -Force -Path ($copy + "\Images")
 Copy-Item -Path ($solutionDir + "\Images\*") -Destination ($copy + "\Images") -Recurse -Force
 
 
-Copy-Item -Path ($solutionDir + "\lib\*.dll") -Destination $copy -Force
+Copy-Item -Path ($solutionDir + "\VRGIN_OpenXR\Libs\*.dll") -Destination $copy -Force
 
 New-Item -ItemType Directory -Force -Path ($dir + "\copy\CharaStudio_Data")
-Copy-Item -Path ($solutionDir + "\lib\_Data\*") -Destination ($dir + "\copy\CharaStudio_Data") -Recurse -Force
+Copy-Item -Path ($solutionDir + "\VRGIN_OpenXR\Libs\_Data\*") -Destination ($dir + "\copy\CharaStudio_Data") -Recurse -Force
 
 New-Item -ItemType Directory -Force -Path ($dir + "\copy\KoikatsuSunshine_Data")
-Copy-Item -Path ($solutionDir + "\lib\_Data\*") -Destination ($dir + "\copy\KoikatsuSunshine_Data") -Recurse -Force
+Copy-Item -Path ($solutionDir + "\VRGIN_OpenXR\Libs\_Data\*") -Destination ($dir + "\copy\KoikatsuSunshine_Data") -Recurse -Force
 
 
 Compress-Archive -Path ($dir + "\copy\*") -Force -CompressionLevel "Optimal" -DestinationPath ($dir +"KKS_VR_" + $ver + ".zip")
