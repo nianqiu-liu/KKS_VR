@@ -16,6 +16,8 @@ New-Item -ItemType Directory -Force -Path $copy
 
 Copy-Item -Path ($dir + "\KKS_*.dll") -Destination $copy -Recurse -Force
 
+Copy-Item -Path ($solutionDir + "\VRGIN_OpenXR\bin\*.dll") -Destination $copy -Force
+
 Copy-Item -Path ($solutionDir + "\README.md") -Destination $copy -Recurse -Force
 Copy-Item -Path ($solutionDir + "\LICENSE") -Destination $copy -Recurse -Force
 
