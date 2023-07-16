@@ -194,6 +194,25 @@ The following button assignments are needed:
 
 In addition, you need to make it "pretend to be Vive controllers".
 
+## Common issues
+
+### Can't click on the vertual screen
+
+This plugin requires that the game window on the Winodws desktop is visible and
+not covered by something else.
+
+### Framerate is low
+
+If you experience a framerate drop when the camera approaches a character,
+particularly in an H scene, then the bottleneck is likely your GPU. I'd suggest
+turning down the antialiasing setting using the
+[GraphicsSettings](https://github.com/BepInEx/BepInEx.GraphicsSettings) plugin.
+If that is not enough, consider disabling some visual effects or reducing the rendering
+resolution in SteamVR.
+
+If you experience a low framerate when roaming in main game, try disabling expensive plugins 
+or reducing the number of characters that can be loaded at the same time (on left in roster).
+
 ## Building (for developers)
 
 You should be able to open the solution in Visual Studio 2019 and just hit Build to build everything.
