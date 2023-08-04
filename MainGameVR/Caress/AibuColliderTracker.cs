@@ -67,28 +67,6 @@ namespace KKS_VR.Caress
         public HSceneProc Proc { get; }
 
         /// <summary>
-        /// Create or destroy an AibuColliderTracker instance as necessary.
-        /// </summary>
-        /// <param name="prev">The current instance. May be null.</param>
-        /// <param name="interpreter"></param>
-        /// <returns>The new instance. May be the same instance as prev. May be null.</returns>
-        public static AibuColliderTracker CreateOrDestroy(AibuColliderTracker prev, KoikatuInterpreter interpreter, Transform referencePoint)
-        {
-            if (interpreter.CurrentScene == KoikatuInterpreter.SceneType.HScene)
-            {
-                if (prev == null)
-                {
-                    var hSceneProc = Object.FindObjectOfType<HSceneProc>();
-                    if (hSceneProc != null && hSceneProc.enabled) return new AibuColliderTracker(hSceneProc, referencePoint);
-                }
-
-                return prev;
-            }
-
-            return null;
-        }
-
-        /// <summary>
         /// If the given collider is an aibu collider, start tracking it.
         /// </summary>
         /// <param name="other"></param>

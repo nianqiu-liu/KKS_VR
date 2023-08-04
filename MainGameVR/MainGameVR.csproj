@@ -197,6 +197,7 @@
     <Compile Include="Camera\ActionCameraControl.cs" />
     <Compile Include="Camera\BackgroundDisplayer.cs" />
     <Compile Include="AnimationCrossFader.cs" />
+    <Compile Include="Camera\VREffector.cs" />
     <Compile Include="Fixes\ReduceAssetUnloads.cs" />
     <Compile Include="Features\VRBoop.cs" />
     <Compile Include="Controls\ButtonsSubtool.cs" />

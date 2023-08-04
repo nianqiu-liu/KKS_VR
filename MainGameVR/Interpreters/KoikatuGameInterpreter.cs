@@ -39,6 +39,7 @@ namespace KKS_VR.Interpreters
             SceneInterpreter = new OtherSceneInterpreter();
             SceneManager.sceneLoaded += OnSceneLoaded;
             _mirrorManager = new Fixes.Mirror.Manager();
+            VR.Camera.gameObject.AddComponent<VREffector>();
         }
 
         protected override void OnUpdate()

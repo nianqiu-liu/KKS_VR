@@ -13,6 +13,7 @@ using KKS_VR.Settings;
 using Sirenix.Serialization.Utilities;
 using StrayTech;
 using UnityEngine;
+using UnityStandardAssets.ImageEffects;
 using VRGIN.Core;
 using Object = UnityEngine.Object;
 
@@ -207,7 +208,7 @@ namespace KKS_VR.Fixes
                                          .Insert(new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(VendingMachineFix), nameof(VendingMachineFix.GiveDummyCrossFade))))
                                          .Instructions();
         }
-        
+
         private static CrossFade _dummyCrossFade;
         private static CrossFade GiveDummyCrossFade(CrossFade existing)
         {
@@ -334,5 +335,31 @@ namespace KKS_VR.Fixes
             GameObject.Destroy(__instance);
             return false;
         }
+    }
+
+    /// <summary>
+    /// The game includes an old version of GlobalFog, which assumes that the
+    /// viewing frustum is always centered at the camera. This assumption is
+    /// invalid in VR, so we fix it up here.
+    /// </summary>
+    [HarmonyPatch(typeof(GlobalFog))]
+    public class GlobalFogPatches
+    {
+        [HarmonyPatch(nameof(GlobalFog.CustomGraphicsBlit))]
+        [HarmonyPrefix]
+        private static void PreCustomGraphicsBlit(Material fxMaterial)
+        {
+            UnityEngine.Camera camera = UnityEngine.Camera.current;
+            camera.CalculateFrustumCorners(
+                new Rect(0, 0, 1, 1), camera.farClipPlane, camera.stereoActiveEye, _frustumBuffer);
+            Matrix4x4 corners = Matrix4x4.zero;
+            corners.SetRow(0, camera.transform.TransformDirection(_frustumBuffer[1]));
+            corners.SetRow(1, camera.transform.TransformDirection(_frustumBuffer[2]));
+            corners.SetRow(2, camera.transform.TransformDirection(_frustumBuffer[3]));
+            corners.SetRow(3, camera.transform.TransformDirection(_frustumBuffer[0]));
+            fxMaterial.SetMatrix("_FrustumCornersWS", corners);
+        }
+
+        static readonly Vector3[] _frustumBuffer = new Vector3[4];
     }
 }
