@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityStandardAssets.ImageEffects;
 using VRGIN.Core;
 
@@ -40,6 +41,7 @@ namespace KKS_VR.Camera
             {
                 _sunShafts.mirror.sunColor = _sunShafts.source.sunColor;
                 _sunShafts.mirror.sunTransform = _sunShafts.source.sunTransform;
+                TweakSunShaftSettings(_sunShafts.mirror);
             }
             _vignette.UpdateEnabled();
             _blur.UpdateEnabled();
@@ -71,7 +73,7 @@ namespace KKS_VR.Camera
         private void HandleNewGameCamera(UnityEngine.Camera gameCamera)
         {
             void Copy<T>(ref Mirrored<T> m) where
-                T: Behaviour
+                T : Behaviour
             {
                 if (m.mirror != null)
                 {
@@ -99,8 +101,20 @@ namespace KKS_VR.Camera
             Copy(ref _flareLayer);
         }
 
+        /// <summary>
+        /// Make sun shafts less obnoxious in VR
+        /// </summary>
+        private static void TweakSunShaftSettings(SunShafts sunShafts)
+        {
+            sunShafts.sunThreshold = new Color(0.74f, 0.74f, 0.74f, 0);
+            sunShafts.maxRadius = 0.2f;
+            sunShafts.radialBlurIterations = 3;
+            sunShafts.sunShaftBlurRadius = 3;
+            sunShafts.sunShaftIntensity = 0.6f;
+        }
+
         struct Mirrored<T>
-            where T: Behaviour
+            where T : Behaviour
         {
             public T mirror;
             public T source;
