@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using ActionGame;
 using UnityEngine;
 using Valve.VR;
 using VRGIN.Core;
@@ -16,7 +17,6 @@ namespace KKS_VR.Features
         /// </summary>
         private CanvasGroup _vanillaFade;
 
-        private readonly Color _fadeColor = Color.white;
         private readonly float _gridFadeTime = 1;
         private readonly float _fadeAlphaThresholdHigh = 0.9999f;
         private readonly float _fadeAlphaThresholdLow = 0.0001f;
@@ -53,7 +53,7 @@ namespace KKS_VR.Features
             _isFading = true;
 
             // Make the world outside of the game the same color as the loading screen instead of the headset default skybox
-            SetCompositorSkyboxOverride(_fadeColor);
+            SetCompositorSkyboxOverride(GetFadeColor());
 
             var compositor = OpenVR.Compositor;
             if (compositor != null)
@@ -104,6 +104,33 @@ namespace KKS_VR.Features
             SteamVR_Skybox.ClearOverride();
 
             _isFading = false;
+        }
+
+        private static Color GetFadeColor()
+        {
+            try
+            {
+                var cycle = FindObjectOfType<Cycle>();
+                switch (cycle?.nowType)
+                {
+                    default:
+                    case Cycle.Type.WakeUp:
+                    case Cycle.Type.Morning:
+                    case Cycle.Type.Daytime:
+                        return new Color(0.44f, 0.78f, 1f);
+                    case Cycle.Type.Evening:
+                        return new Color(0.85f, 0.50f, 0.37f);
+                    case Cycle.Type.Night:
+                    case Cycle.Type.GotoMyHouse:
+                    case Cycle.Type.MyHouse:
+                        return new Color(0.12f, 0.2f, 0.5f);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Color.white;
+            }
         }
 
         private static void SetCompositorSkyboxOverride(Color fadeColor)
