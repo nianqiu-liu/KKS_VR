@@ -49,8 +49,13 @@ namespace KKS_VR.Camera
             }
             if (!quiet)
             {
+#if DEBUG
+                VRLog.Debug("Moving camera to pos={0} rot={1} Trace:\n{2}", position, rotation.eulerAngles, new StackTrace(1));
+#else
                 VRLog.Debug("Moving camera to pos={0} rot={1}", position, rotation.eulerAngles);
+#endif
             }
+
 
             _lastPosition = position;
             _lastRotation = rotation;
@@ -83,6 +88,8 @@ namespace KKS_VR.Camera
             var advFade = new Traverse(textScenario).Field<ADVFade>("advFade").Value;
 
             var closerPosition = AdjustAdvPosition(textScenario, position, rotation);
+
+            AdjustBasedOnMap(ref closerPosition, ref rotation);
 
             MoveWithHeuristics(closerPosition, rotation, keepHeight, !advFade.IsEnd);
         }
@@ -167,11 +174,30 @@ namespace KKS_VR.Camera
             {
                 var target = ActionCameraControl.GetIdealTransformFor(textScenario.AdvCamera);
                 var targetPosition = target.position;
+                var targetRotation = target.rotation;
 
                 targetPosition = AdjustAdvPosition(textScenario, targetPosition, target.rotation);
 
+                AdjustBasedOnMap(ref targetPosition, ref targetRotation);
+
                 if (ActionCameraControl.HeadIsAwayFromPosition(targetPosition))
-                    MoveWithHeuristics(targetPosition, target.rotation, false, isFadingOut);
+                    MoveWithHeuristics(targetPosition, targetRotation, false, isFadingOut);
+            }
+        }
+
+        private static void AdjustBasedOnMap(ref Vector3 targetPosition, ref Quaternion targetRotation)
+        {
+            var insideMyRoom = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "GasyukuMyroom";
+            if (insideMyRoom)
+            {
+                var middleOfRoom = new Vector3(1.3f, 1.6f, 1.2f);
+
+                if (Vector3.Distance(targetPosition, middleOfRoom) > 10)
+                {
+                    targetPosition = middleOfRoom;
+                    var middleOfRoomRotation = Quaternion.Euler(0, 180, 0);
+                    targetRotation = middleOfRoomRotation;
+                }
             }
         }
 
