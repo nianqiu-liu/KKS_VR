@@ -52,15 +52,21 @@ namespace KKS_VR.Settings
             protected set => base.Shortcuts = value;
         }
 
-        public CharaStudioSettings()
+        public float NearClipPlane
         {
-            IPDScale = 1f;
-            GrabRotationImmediateMode = false;
+            get => _NearClipPlane;
+            set
+            {
+                _NearClipPlane = value;
+                TriggerPropertyChanged("NearClipPlane");
+            }
         }
 
-        public static CharaStudioSettings Load(string path)
+        private float _NearClipPlane;
+
+        public CharaStudioSettings()
         {
-            return VRSettings.Load<CharaStudioSettings>(path);
+            GrabRotationImmediateMode = false;
         }
     }
 }

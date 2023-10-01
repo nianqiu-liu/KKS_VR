@@ -39,11 +39,12 @@ namespace KKS_VR
             {
                 BepInExVrLogBackend.ApplyYourself();
                 OpenVRHelperTempfixHook.Patch();
-                StartCoroutine(LoadDevice());
+                var settings = CharaStudioSettingsManager.Create(Config);
+                StartCoroutine(LoadDevice(settings));
             }
         }
 
-        private IEnumerator LoadDevice()
+        private IEnumerator LoadDevice(CharaStudioSettings settings)
         {
             // For some reason using Scene.LoadSceneName instead of SceneManager will break the background color, probably some timing issue
             yield return new WaitUntil(() => Manager.Scene.initialized && SceneManager.GetActiveScene().name == "Studio");
@@ -110,7 +111,11 @@ namespace KKS_VR
 
             TopmostToolIcons.Patch();
 
-            VRManager.Create<KKSCharaStudioInterpreter>(CharaStudioContext.GetContext());
+            VRManager.Create<KKSCharaStudioInterpreter>(new CharaStudioContext(settings));
+
+            // VRGIN doesn't update the near clip plane until a first "main" camera is created, so we set it here.
+            UpdateNearClipPlane(settings);
+            settings.AddListener("NearClipPlane", (_, _1) => UpdateNearClipPlane(settings));
 
             VR.Manager.SetMode<StudioStandingMode>();
 
@@ -127,6 +132,11 @@ namespace KKS_VR
             DontDestroyOnLoad(VRCamera.Instance.gameObject);
 
             base.Logger.LogInfo("Finished loading into VR mode!");
+        }
+
+        private void UpdateNearClipPlane(CharaStudioSettings settings)
+        {
+            VR.Camera.gameObject.GetComponent<UnityEngine.Camera>().nearClipPlane = settings.NearClipPlane;
         }
 
         private static class NativeMethods
