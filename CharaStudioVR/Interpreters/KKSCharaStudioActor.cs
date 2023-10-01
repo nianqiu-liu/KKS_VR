@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using KKS_VR.Settings;
 using UnityEngine;
 using VRGIN.Core;
@@ -49,8 +50,8 @@ namespace KKS_VR.Interpreters
             {
                 var asVoice = Actor.asVoice;
                 asVoice.gameObject.transform.position = Actor.objHeadBone.transform.position;
-                var minVoiceDistance = (VR.Settings as CharaStudioSettings).MinVoiceDistance;
-                var maxVoiceDistance = (VR.Settings as CharaStudioSettings).MaxVoiceDistance;
+                var minVoiceDistance = CharaStudioSettingsManager.MinVoiceDistance.Value;
+                var maxVoiceDistance = CharaStudioSettingsManager.MaxVoiceDistance.Value;
                 if (asVoice.minDistance != minVoiceDistance || asVoice.maxDistance != maxVoiceDistance)
                 {
                     VRLog.Debug(

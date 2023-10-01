@@ -35,7 +35,7 @@ namespace KKS_VR.Settings
         Type IVRManagerContext.VoiceCommandType { get; }
         public bool ForceIMGUIOnScreen { get; set; }
 
-        public CharaStudioContext(CharaStudioSettings settings)
+        public CharaStudioContext(VRSettings settings)
         {
             _Materials = new DefaultMaterialPalette();
             _Settings = settings;

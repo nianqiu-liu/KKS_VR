@@ -20,10 +20,8 @@ namespace KKS_VR.Controls
     internal class GripMoveStudioNEOV2Tool : Tool
     {
         private GUIQuad internalGui;
-        private EVRButtonId moveSelfButton = EVRButtonId.k_EButton_Grip;
-        private EVRButtonId grabScreenButton = EVRButtonId.k_EButton_Axis1;
-        private string moveSelfButtonName = "rgrip";
-        private CharaStudioSettings _settings;
+        private readonly EVRButtonId moveSelfButton = EVRButtonId.k_EButton_Grip;
+        private readonly EVRButtonId grabScreenButton = EVRButtonId.k_EButton_Axis1;
         private GameObject mirror1;
         private GameObject pointer;
         private MenuHandler menuHandlder;
@@ -106,7 +104,6 @@ namespace KKS_VR.Controls
             try
             {
                 VRLog.Info("Loading GripMoveTool");
-                _settings = VR.Manager.Context.Settings as CharaStudioSettings;
 
                 internalGui = GUIQuad.Create(null);
                 internalGui.gameObject.AddComponent<MoveableGUIObject>();
@@ -130,13 +127,6 @@ namespace KKS_VR.Controls
                 marker.transform.parent = transform.parent;
                 marker.transform.position = transform.position;
                 marker.transform.rotation = transform.rotation;
-            }
-
-            if (_settings != null)
-            {
-                moveSelfButton = EVRButtonId.k_EButton_Grip;
-                moveSelfButtonName = "rgrip";
-                grabScreenButton = EVRButtonId.k_EButton_Axis1;
             }
 
             menuHandlder = GetComponent<MenuHandler>();

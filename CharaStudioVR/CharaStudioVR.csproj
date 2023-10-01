@@ -193,7 +193,6 @@
     <Compile Include="Interpreters\KKSCharaStudioActor.cs" />
     <Compile Include="Interpreters\KKSCharaStudioInterpreter.cs" />
     <Compile Include="VRPlugin.cs" />
-    <Compile Include="Settings\CharaStudioSettings.cs" />
     <Compile Include="Fixes\LoadFixHook.cs" />
     <Compile Include="Util\MaterialHelper.cs" />
     <Compile Include="Util\MoveableGUIObject.cs" />

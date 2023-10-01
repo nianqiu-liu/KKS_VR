@@ -20,9 +20,14 @@ namespace KKS_VR.Settings
     ///   are code paths where VRGIN tries to modify it. We simply attempt
     ///   to avoid executing those code paths.
     /// </summary>
-    internal class CharaStudioSettingsManager
+    public static class CharaStudioSettingsManager
     {
-        public const string SectionGeneral = "0. General";
+        private const string SectionGeneral = "General";
+
+        public static ConfigEntry<float> NearClipPlane { get; private set; }
+        public static ConfigEntry<bool> LockRotXZ { get; private set; }
+        public static ConfigEntry<float> MaxVoiceDistance { get; private set; }
+        public static ConfigEntry<float> MinVoiceDistance { get; private set; }
 
         /// <summary>
         /// Create config entries under the given ConfigFile. Also create a fresh
@@ -30,9 +35,9 @@ namespace KKS_VR.Settings
         /// entries.
         /// </summary>
         /// <returns>The new CharaStudioSettings object.</returns>
-        public static CharaStudioSettings Create(ConfigFile config)
+        public static VRSettings Create(ConfigFile config)
         {
-            var settings = new CharaStudioSettings();
+            var settings = new VRSettings();
 
             var ipdScale = config.Bind(SectionGeneral, "IPD Scale", 1f,
                 new ConfigDescription(
@@ -58,28 +63,20 @@ namespace KKS_VR.Settings
                     new ConfigurationManagerAttributes { IsAdvanced = true }));
             Tie(logLevel, v => VRLog.Level = v);
 
-            var nearClipPlane = config.Bind(SectionGeneral, "Near clip plane", 0.002f,
+            NearClipPlane = config.Bind(SectionGeneral, "Near clip plane", 0.002f,
                 new ConfigDescription(
                     "Minimum distance from camera for an object to be shown (causes visual glitches on some maps when set too small)",
                     new AcceptableValueRange<float>(0.001f, 0.2f)));
-            Tie(nearClipPlane, v => settings.NearClipPlane = v);
 
-            // not used for anything
-            var lockRotXZ = config.Bind(SectionGeneral, "Lock XZ Axis rotation", true,
-                new ConfigDescription("Lock XZ Axis (pitch / roll) rotation."));
-            Tie(lockRotXZ, v => settings.LockRotXZ = v);
-
-            var maxVoiceDistance = config.Bind(SectionGeneral, "Max Voice distance", 300f,
+            MaxVoiceDistance = config.Bind(SectionGeneral, "Max Voice distance", 300f,
                 new ConfigDescription(
                     "Max Voice distance (in unit. 300 = 30m in real (HS2 uses 10 unit = 1m scale).",
                     new AcceptableValueRange<float>(100f, 600f)));
-            Tie(maxVoiceDistance, v => settings.MaxVoiceDistance = v);
 
-            var minVoiceDistance = config.Bind(SectionGeneral, "Min Voice distance", 7f,
+            MinVoiceDistance = config.Bind(SectionGeneral, "Min Voice distance", 7f,
                 new ConfigDescription(
                     "Min Voice distance (in unit. 7 = 70 cm in real (HS2 uses 10 unit = 1m scale).",
                     new AcceptableValueRange<float>(1f, 70f)));
-            Tie(minVoiceDistance, v => settings.MinVoiceDistance = v);
 
             return settings;
         }
