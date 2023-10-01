@@ -39,7 +39,7 @@ namespace KKS_VR
             {
                 BepInExVrLogBackend.ApplyYourself();
                 OpenVRHelperTempfixHook.Patch();
-                var settings = CharaStudioSettingsManager.Create(Config);
+                var settings = StudioSettings.Create(Config);
                 StartCoroutine(LoadDevice(settings));
             }
         }
@@ -115,7 +115,7 @@ namespace KKS_VR
 
             // VRGIN doesn't update the near clip plane until a first "main" camera is created, so we set it here.
             UpdateNearClipPlane();
-            CharaStudioSettingsManager.NearClipPlane.SettingChanged += (sender, args) => UpdateNearClipPlane();
+            StudioSettings.NearClipPlane.SettingChanged += (sender, args) => UpdateNearClipPlane();
 
             VR.Manager.SetMode<StudioStandingMode>();
 
@@ -136,7 +136,7 @@ namespace KKS_VR
 
         private void UpdateNearClipPlane()
         {
-            VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = CharaStudioSettingsManager.NearClipPlane.Value;
+            VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = StudioSettings.NearClipPlane.Value;
         }
 
         private static class NativeMethods

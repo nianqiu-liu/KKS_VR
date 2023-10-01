@@ -50,8 +50,8 @@ namespace KKS_VR.Interpreters
             {
                 var asVoice = Actor.asVoice;
                 asVoice.gameObject.transform.position = Actor.objHeadBone.transform.position;
-                var minVoiceDistance = CharaStudioSettingsManager.MinVoiceDistance.Value;
-                var maxVoiceDistance = CharaStudioSettingsManager.MaxVoiceDistance.Value;
+                var minVoiceDistance = StudioSettings.MinVoiceDistance.Value;
+                var maxVoiceDistance = StudioSettings.MaxVoiceDistance.Value;
                 if (asVoice.minDistance != minVoiceDistance || asVoice.maxDistance != maxVoiceDistance)
                 {
                     VRLog.Debug(

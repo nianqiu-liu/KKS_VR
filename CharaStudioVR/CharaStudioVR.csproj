@@ -185,7 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Settings\CharaStudioContext.cs" />
-    <Compile Include="Settings\CharaStudioSettingsManager.cs" />
+    <Compile Include="Settings\StudioSettings.cs" />
     <Compile Include="StudioStandingMode.cs" />
     <Compile Include="Controls\GripMenuHandler.cs" />
     <Compile Include="Controls\GripMoveStudioNEOV2Tool.cs" />

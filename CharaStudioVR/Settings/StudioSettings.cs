@@ -5,22 +5,7 @@ using VRGIN.Core;
 
 namespace KKS_VR.Settings
 {
-    /// <summary>
-    /// Manages configuration and keeps it up to date.
-    /// 
-    /// BepInEx wants us to store the config in a bunch of ConfigEntry objects,
-    /// but VRGIN wants it stored inside a class inheriting VRSettings. So
-    /// our plan is:
-    /// 
-    /// * We have both ConfigEntry objects and CharaStudioSettings around.
-    /// * The ConfigEntry objects are the master copy and the CharaStudioSettings
-    ///   object is a mirror.
-    /// * CharaStudioSettingsManager is responsible for keeping CharaStudioSettings up to date.
-    /// * No other parts of code should modify CharaStudioSettings. In fact, there
-    ///   are code paths where VRGIN tries to modify it. We simply attempt
-    ///   to avoid executing those code paths.
-    /// </summary>
-    public static class CharaStudioSettingsManager
+    public static class StudioSettings
     {
         private const string SectionGeneral = "General";
 
@@ -29,12 +14,6 @@ namespace KKS_VR.Settings
         public static ConfigEntry<float> MaxVoiceDistance { get; private set; }
         public static ConfigEntry<float> MinVoiceDistance { get; private set; }
 
-        /// <summary>
-        /// Create config entries under the given ConfigFile. Also create a fresh
-        /// CharaStudioSettings object and arrange that it be synced with the config
-        /// entries.
-        /// </summary>
-        /// <returns>The new CharaStudioSettings object.</returns>
         public static VRSettings Create(ConfigFile config)
         {
             var settings = new VRSettings();
