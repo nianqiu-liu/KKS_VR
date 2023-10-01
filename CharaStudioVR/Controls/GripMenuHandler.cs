@@ -10,24 +10,13 @@ namespace KKS_VR.Controls
 {
     public class GripMenuHandler : ProtectedBehaviour
     {
-        private const float RANGE = 0.25f;
-
-        private const int MOUSE_STABILIZER_THRESHOLD = 30;
-
         private Controller _Controller;
-
         private ResizeHandler _ResizeHandler;
-
         private Vector3 _ScaleVector;
-
         private GUIQuad _Target;
-
         private LineRenderer Laser;
-
         private Vector2? mouseDownPosition;
-
         private float scaledRange = 0.25f;
-
         protected DeviceLegacyAdapter Device => _Controller.Input;
 
         private bool IsResizing
@@ -75,6 +64,7 @@ namespace KKS_VR.Controls
             InitLaser();
         }
 
+        #pragma warning disable CS0618
         private void InitLaser()
         {
             Laser = new GameObject().AddComponent<LineRenderer>();
@@ -89,6 +79,7 @@ namespace KKS_VR.Controls
             var num = 0.002f * VR.Context.Settings.IPDScale;
             Laser.SetWidth(num, num);
         }
+        #pragma warning restore CS0618
 
         protected override void OnUpdate()
         {
@@ -117,21 +108,6 @@ namespace KKS_VR.Controls
         private void OnDisable()
         {
             LaserVisible = false;
-        }
-
-        private void EnsureResizeHandler()
-        {
-            if (!_ResizeHandler)
-            {
-                _ResizeHandler = _Target.GetComponent<ResizeHandler>();
-                if (!_ResizeHandler) _ResizeHandler = _Target.gameObject.AddComponent<ResizeHandler>();
-            }
-        }
-
-        private void EnsureNoResizeHandler()
-        {
-            if ((bool)_ResizeHandler) DestroyImmediate(_ResizeHandler);
-            _ResizeHandler = null;
         }
 
         protected void CheckInput()
@@ -164,8 +140,7 @@ namespace KKS_VR.Controls
 
         private bool IsLaserable(GUIQuad quad)
         {
-            RaycastHit hit;
-            if (IsWithinRange(quad)) return Raycast(quad, out hit);
+            if (IsWithinRange(quad)) return Raycast(quad, out var _);
             return false;
         }
 
@@ -178,7 +153,6 @@ namespace KKS_VR.Controls
         {
             if (quad.transform.parent == transform) return false;
             var lhs = -quad.transform.forward;
-            _ = quad.transform.position;
             var position = Laser.transform.position;
             var forward = Laser.transform.forward;
             var num = (0f - quad.transform.InverseTransformPoint(position).z) * quad.transform.localScale.magnitude;
@@ -239,21 +213,13 @@ namespace KKS_VR.Controls
         private class ResizeHandler : ProtectedBehaviour
         {
             private GUIQuad _Gui;
-
             private Vector3? _OffsetFromCenter;
-
             private Vector3? _StartLeft;
-
             private Vector3? _StartPosition;
-
             private Vector3? _StartRight;
-
             private Quaternion? _StartRotation;
-
             private Quaternion _StartRotationController;
-
             private Vector3? _StartScale;
-
             public bool IsDragging { get; private set; }
 
             protected override void OnStart()

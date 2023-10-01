@@ -9,20 +9,13 @@ namespace KKS_VR.Interpreters
 {
     public class TransientHead : ProtectedBehaviour
     {
-        private List<Renderer> rendererList = new List<Renderer>();
-
+        private readonly List<Renderer> rendererList = new List<Renderer>();
         private bool hidden;
-
         private Transform root;
-
         private Renderer[] m_tongues;
-
         private ChaControl avatar;
-
         private Transform headTransform;
-
         private Transform eyesTransform;
-
         public Transform Eyes => eyesTransform;
 
         public bool Visible
@@ -30,10 +23,7 @@ namespace KKS_VR.Interpreters
             get => !hidden;
             set
             {
-                if (value)
-                    Console.WriteLine("SHOW");
-                else
-                    Console.WriteLine("HIDE");
+                VRLog.Info(value ? "Show head" : "Hide head");
                 SetVisibility(value);
             }
         }
@@ -105,6 +95,7 @@ namespace KKS_VR.Interpreters
                     where tongue.enabled
                     select tongue).ToArray();
                 rendererList.Clear();
+
                 foreach (var item in from renderer in headTransform.GetComponentsInChildren<Renderer>()
                     where renderer.enabled
                     select renderer)
@@ -114,7 +105,8 @@ namespace KKS_VR.Interpreters
                 }
 
                 tongues = m_tongues;
-                for (var i = 0; i < tongues.Length; i++) tongues[i].enabled = false;
+                for (var i = 0; i < tongues.Length; i++)
+                    tongues[i].enabled = false;
             }
 
             hidden = !visible;

@@ -13,16 +13,8 @@ namespace KKS_VR.Interpreters
 {
     internal class KKSCharaStudioInterpreter : GameInterpreter
     {
-        private List<KKSCharaStudioActor> _Actors = new List<KKSCharaStudioActor>();
-
-        private Camera _SubCamera;
-
-        private StudioScene studioScene;
-
-        private int additionalCullingMask;
-
+        private readonly List<KKSCharaStudioActor> _Actors = new List<KKSCharaStudioActor>();
         private GameObject CommonSpaceGo;
-
         public override IEnumerable<IActor> Actors => _Actors.Cast<IActor>();
 
         protected override void OnAwake()
@@ -40,7 +32,6 @@ namespace KKS_VR.Interpreters
         protected override void OnStart()
         {
             base.OnStart();
-            studioScene = FindObjectOfType<StudioScene>();
             FixMenuCanvasLayers();
         }
 
@@ -69,8 +60,9 @@ namespace KKS_VR.Interpreters
                     FixMissingMode();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                VRLog.Error(e);
             }
         }
 
@@ -93,9 +85,10 @@ namespace KKS_VR.Interpreters
             var component = VR.Camera.SteamCam.GetComponent<Camera>();
             var list = new List<string>();
             var obj = new List<string> { "Studio/Col", "Studio/Select" };
-            if (Singleton<global::Studio.Studio>.Instance.workInfo.visibleAxis)
+
+            if (Singleton<Studio.Studio>.Instance.workInfo.visibleAxis)
             {
-                if (global::Studio.Studio.optionSystem.selectedState == 0) list.Add("Studio/Col");
+                if (Studio.Studio.optionSystem.selectedState == 0) list.Add("Studio/Col");
                 list.Add("Studio/Select");
             }
 
@@ -108,6 +101,7 @@ namespace KKS_VR.Interpreters
         private void RefreshActors()
         {
             _Actors.Clear();
+
             foreach (var value in Character.dictEntryChara.Values)
                 if ((bool)value.objBodyBone)
                     AddActor(DefaultActorBehaviour<ChaControl>.Create<KKSCharaStudioActor>(value));
@@ -129,11 +123,13 @@ namespace KKS_VR.Interpreters
         private IEnumerator ForceResetVRModeCo()
         {
             VRPlugin.Logger.Log(LogLevel.Debug, "Check and reset to StandingMode if not.");
+            
             yield return null;
             yield return null;
             yield return null;
             yield return null;
             yield return null;
+
             if (!VRManager.Instance.Mode)
             {
                 VRPlugin.Logger.Log(LogLevel.Debug, "Mode is not StandingMode. Force reset as Standing Mode.");
@@ -161,8 +157,7 @@ namespace KKS_VR.Interpreters
                 VR.Manager.SetMode<StudioStandingMode>();
                 if ((bool)VR.Camera)
                 {
-                    _ = VR.Camera.Blueprint;
-                    var mainCmaera = Singleton<global::Studio.Studio>.Instance.cameraCtrl.mainCmaera;
+                    var mainCmaera = Singleton<Studio.Studio>.Instance.cameraCtrl.mainCmaera;
                     VRPlugin.Logger.Log(LogLevel.Debug, $"Force replace blueprint camera with {mainCmaera}");
                     var camera = VR.Camera.SteamCam.camera;
                     var camera2 = mainCmaera;
@@ -177,6 +172,7 @@ namespace KKS_VR.Interpreters
                     camera.useOcclusionCulling = camera2.useOcclusionCulling;
                     camera.allowHDR = camera2.allowHDR;
                     camera.backgroundColor = camera2.backgroundColor;
+
                     var component = camera2.GetComponent<Skybox>();
                     if (component != null)
                     {
@@ -194,9 +190,9 @@ namespace KKS_VR.Interpreters
                     VRPlugin.Logger.Log(LogLevel.Debug, "VR.Camera is null");
                 }
             }
-            catch (Exception value)
+            catch (Exception e)
             {
-                Console.WriteLine(value);
+                VRLog.Error(e);
             }
         }
 

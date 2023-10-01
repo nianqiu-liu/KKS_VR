@@ -10,7 +10,6 @@ namespace KKS_VR.Fixes
     public static class LoadFixHook
     {
         //public static bool forceSetStandingMode;
-
         //private static bool standingMode;
 
         public static void InstallHook()
@@ -20,7 +19,7 @@ namespace KKS_VR.Fixes
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(SceneLoadScene), "OnClickLoad", new Type[] { })]
-        public static bool LoadScenePreHook(global::Studio.Studio __instance)
+        public static bool LoadScenePreHook(Studio.Studio __instance)
         {
             try
             {

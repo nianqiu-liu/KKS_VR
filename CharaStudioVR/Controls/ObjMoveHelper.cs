@@ -7,7 +7,6 @@ namespace KKS_VR.Controls
     internal class ObjMoveHelper
     {
         public Vector3 moveAlongBasePos;
-
         public Quaternion moveAlongBaseRot;
 
         public void SetBasePos(Vector3 basePos)
@@ -17,11 +16,12 @@ namespace KKS_VR.Controls
 
         public ObjectCtrlInfo GetFirstObject()
         {
-            var instance = Singleton<global::Studio.Studio>.Instance;
+            var instance = Singleton<Studio.Studio>.Instance;
             if (instance != null)
             {
                 var selectObjectCtrl = instance.treeNodeCtrl.selectObjectCtrl;
-                if (selectObjectCtrl != null && selectObjectCtrl.Length != 0) return selectObjectCtrl[0];
+                if (selectObjectCtrl != null && selectObjectCtrl.Length != 0)
+                    return selectObjectCtrl[0];
             }
 
             return null;
@@ -29,11 +29,12 @@ namespace KKS_VR.Controls
 
         public void MoveAllCharaAndItemsHere(Vector3 newPos, bool keepY = true)
         {
-            var instance = Singleton<global::Studio.Studio>.Instance;
+            var instance = Singleton<Studio.Studio>.Instance;
             if (instance == null) return;
+
             var vector = newPos - moveAlongBasePos;
             if (keepY) vector.y = 0f;
-            new Dictionary<Transform, Transform>();
+            
             var list = new List<GuideCommand.EqualsInfo>();
             var selectObjectCtrl = instance.treeNodeCtrl.selectObjectCtrl;
             for (var i = 0; i < selectObjectCtrl.Length; i++)
@@ -62,7 +63,9 @@ namespace KKS_VR.Controls
 
         public void MoveObject(ObjectCtrlInfo oci, Vector3 newPos, bool keepY)
         {
-            if (keepY) newPos.y = oci.guideObject.transformTarget.position.y;
+            if (keepY)
+                newPos.y = oci.guideObject.transformTarget.position.y;
+
             var guideObject = oci.guideObject;
             if (guideObject != null)
             {

@@ -10,27 +10,12 @@ namespace KKS_VR.Controls
 {
     public class IKTool : MonoBehaviour
     {
-        private bool markerShowOverlay = true;
-
-        private float markerOverlayAlpha = 0.4f;
-
-        private float markerSize = 0.06f;
-
-        private float markerSizeBend = 0.05f;
-
-        private Material markerSharedMaterial;
-
-        private Material markerSharedMaterial_IKTarget;
-
-        private Material markerSharedMaterial_IKBendTarget;
-
-        private GameObject handle;
-
         public static IKTool instance;
 
-        private const float DEFAUTL_SCALE_POS = 0.25f;
+        private readonly float markerOverlayAlpha = 0.4f;
+        private readonly float DEFAULT_SCALE_POS_XYZ_DIST = Mathf.Sqrt(0.1875f);
 
-        private float DEFAULT_SCALE_POS_XYZ_DIST = Mathf.Sqrt(0.1875f);
+        private GameObject handle;
 
         public static IKTool Create(GameObject container)
         {
@@ -51,9 +36,9 @@ namespace KKS_VR.Controls
 
         private IEnumerator InstallMoveableObjectCo()
         {
-            var studio = Singleton<global::Studio.Studio>.Instance;
-            _ = Singleton<GuideObjectManager>.Instance;
+            var studio = Singleton<Studio.Studio>.Instance;
             if (studio == null) yield break;
+
             while (true)
             {
                 yield return new WaitForSeconds(1f);
@@ -87,6 +72,7 @@ namespace KKS_VR.Controls
         {
             StopAllCoroutines();
             StartCoroutine(InstallMoveableObjectCo());
+
             if (handle == null)
             {
                 handle = new GameObject("handle");
@@ -264,7 +250,6 @@ namespace KKS_VR.Controls
         private void OnScaleMove(MonoBehaviour marker)
         {
             var component = marker.GetComponent<MoveableGUIObject>();
-            _ = marker.transform.parent;
             var guideObject = component.guideObject;
             var guideScale = component.guideScale;
             if (!guideObject.enableScale || !component.guideScale) return;
@@ -301,7 +286,8 @@ namespace KKS_VR.Controls
             var component = marker.GetComponent<MoveableGUIObject>();
             var guideObject = component.guideObject;
             var guideScale = component.guideScale;
-            if (guideObject.enableScale && (bool)guideScale) marker.transform.localPosition = CalcScaleHandleDefaultPos(guideScale);
+            if (guideObject.enableScale && (bool)guideScale)
+                marker.transform.localPosition = CalcScaleHandleDefaultPos(guideScale);
         }
 
         private Vector3 CalcScaleHandleDefaultPos(GuideScale guideScale)

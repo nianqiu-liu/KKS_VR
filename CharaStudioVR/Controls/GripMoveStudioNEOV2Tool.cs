@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using KKS_VR.Settings;
 using KKS_VR.Util;
 using Studio;
@@ -21,66 +20,31 @@ namespace KKS_VR.Controls
     internal class GripMoveStudioNEOV2Tool : Tool
     {
         private GUIQuad internalGui;
-
-        private float pressDownTime;
-
-        private Vector2 touchDownPosition;
-
-        private float menuDownTime;
-
-        private float touchpadDownTime;
-
-        private double _DeltaX;
-
-        private double _DeltaY;
-
         private EVRButtonId moveSelfButton = EVRButtonId.k_EButton_Grip;
-
         private EVRButtonId grabScreenButton = EVRButtonId.k_EButton_Axis1;
-
         private string moveSelfButtonName = "rgrip";
-
         private CharaStudioSettings _settings;
-
-        private float triggerDownTime;
-
-        private float gripDownTime;
-
         private GameObject mirror1;
-
-        private GameObject grabHandle;
-
         private GameObject pointer;
-
-        private bool screenGrabbed;
-
-        private GameObject lastGrabbedObject;
-
-        private GameObject grabbingObject;
-
         private MenuHandler menuHandlder;
-
         private GripMenuHandler gripMenuHandler;
-
         private IKTool ikTool;
-
-        private float nearestGrabable = float.MaxValue;
-
-        private string[] FINGER_KEYS = new string[5] { "cf_J_Hand_Thumb", "cf_J_Hand_Index", "cf_J_Hand_Middle", "cf_J_Hand_Ring", "cf_J_Hand_Little" };
-
-        private static FieldInfo f_dicGuideObject = typeof(GuideObjectManager).GetField("dicGuideObject", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
+        private readonly string[] FINGER_KEYS = new string[5] { "cf_J_Hand_Thumb", "cf_J_Hand_Index", "cf_J_Hand_Middle", "cf_J_Hand_Ring", "cf_J_Hand_Little" };
         private GameObject marker;
-
         public GameObject target;
-
         private bool lockRotXZ = true;
-
         public override Texture2D Image => UnityHelper.LoadImage("icon_gripmove.png");
 
-        public GUIQuad Gui { get; private set; }
-
-        private DeviceLegacyAdapter controller => Controller;
+        private bool screenGrabbed;
+        private GameObject lastGrabbedObject;
+        private GameObject grabbingObject;
+        private GameObject grabHandle;
+        private float nearestGrabable = float.MaxValue;
+        
+        private float menuDownTime;
+        private float touchpadDownTime;
+        private float triggerDownTime;
+        private float gripDownTime;
 
         protected override void OnAwake()
         {
@@ -89,11 +53,12 @@ namespace KKS_VR.Controls
             Setup();
         }
 
-        private void resetGUIPosition()
+        private void ResetGUIPosition()
         {
             var head = VR.Camera.Head;
             internalGui.transform.parent = transform;
             internalGui.transform.localScale = Vector3.one * 0.4f;
+
             if (head != null)
             {
                 internalGui.transform.position = head.TransformPoint(new Vector3(0f, 0f, 0.3f));
@@ -119,6 +84,7 @@ namespace KKS_VR.Controls
                 pointer.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f) * VR.Context.Settings.IPDScale;
                 pointer.transform.parent = transform;
                 pointer.transform.localPosition = new Vector3(0f, -0.03f, 0.03f);
+
                 var component = pointer.GetComponent<Renderer>();
                 component.enabled = true;
                 component.shadowCastingMode = ShadowCastingMode.Off;
@@ -141,12 +107,15 @@ namespace KKS_VR.Controls
             {
                 VRLog.Info("Loading GripMoveTool");
                 _settings = VR.Manager.Context.Settings as CharaStudioSettings;
+
                 internalGui = GUIQuad.Create(null);
                 internalGui.gameObject.AddComponent<MoveableGUIObject>();
                 internalGui.gameObject.AddComponent<BoxCollider>();
                 internalGui.IsOwned = true;
                 DontDestroyOnLoad(internalGui.gameObject);
+
                 CreatePointer();
+
                 gripMenuHandler = gameObject.AddComponent<GripMenuHandler>();
                 gripMenuHandler.enabled = false;
             }
@@ -183,7 +152,7 @@ namespace KKS_VR.Controls
         private IEnumerator ResetGUIPositionCo()
         {
             yield return new WaitForSeconds(0.1f);
-            resetGUIPosition();
+            ResetGUIPosition();
         }
 
         protected override void OnDisable()
@@ -210,28 +179,33 @@ namespace KKS_VR.Controls
         protected override void OnUpdate()
         {
             base.OnUpdate();
-            if (controller == null) return;
-            if (controller.GetPressDown(EVRButtonId.k_EButton_Axis1)) triggerDownTime = Time.time;
-            if (controller.GetPressDown(EVRButtonId.k_EButton_Grip)) gripDownTime = Time.time;
-            if (controller.GetPressDown(EVRButtonId.k_EButton_ApplicationMenu)) menuDownTime = Time.time;
-            if (controller.GetPressDown(EVRButtonId.k_EButton_Axis0) || controller.GetPressDown(EVRButtonId.k_EButton_A)) touchpadDownTime = Time.time;
-            if (controller.GetPress(EVRButtonId.k_EButton_Axis1) && controller.GetPress(EVRButtonId.k_EButton_Grip) && controller.GetPress(EVRButtonId.k_EButton_ApplicationMenu) &&
+            
+            if (Controller == null) return;
+            
+            if (Controller.GetPressDown(EVRButtonId.k_EButton_Axis1)) triggerDownTime = Time.time;
+            if (Controller.GetPressDown(EVRButtonId.k_EButton_Grip)) gripDownTime = Time.time;
+            if (Controller.GetPressDown(EVRButtonId.k_EButton_ApplicationMenu)) menuDownTime = Time.time;
+            if (Controller.GetPressDown(EVRButtonId.k_EButton_Axis0) || Controller.GetPressDown(EVRButtonId.k_EButton_A)) touchpadDownTime = Time.time;
+
+            if (Controller.GetPress(EVRButtonId.k_EButton_Axis1) &&
+                Controller.GetPress(EVRButtonId.k_EButton_Grip) &&
+                Controller.GetPress(EVRButtonId.k_EButton_ApplicationMenu) &&
                 Time.time - menuDownTime > 0.5f)
             {
                 lockRotXZ = !lockRotXZ;
                 if (lockRotXZ) ResetRotation();
             }
 
-            if (controller.GetPress(EVRButtonId.k_EButton_ApplicationMenu) && Time.time - menuDownTime > 1.5f)
+            if (Controller.GetPress(EVRButtonId.k_EButton_ApplicationMenu) && Time.time - menuDownTime > 1.5f)
             {
-                resetGUIPosition();
+                ResetGUIPosition();
                 menuDownTime = Time.time;
             }
 
-            if (controller.GetPressDown(EVRButtonId.k_EButton_Axis0) || controller.GetPressDown(EVRButtonId.k_EButton_A)) controller.GetPress(EVRButtonId.k_EButton_Grip);
-            var pressDown = controller.GetPressDown(grabScreenButton);
-            var press = controller.GetPress(grabScreenButton);
-            var pressUp = controller.GetPressUp(grabScreenButton);
+            var pressDown = Controller.GetPressDown(grabScreenButton);
+            var press = Controller.GetPress(grabScreenButton);
+            var pressUp = Controller.GetPressUp(grabScreenButton);
+            
             if (grabHandle == null)
             {
                 grabHandle = new GameObject("__GripMoveGrabHandle__");
@@ -245,9 +219,9 @@ namespace KKS_VR.Controls
                 grabbingObject = lastGrabbedObject;
                 grabHandle.transform.position = lastGrabbedObject.transform.position;
                 grabHandle.transform.rotation = lastGrabbedObject.transform.rotation;
+
                 if (lastGrabbedObject.GetComponent<MoveableGUIObject>() != null)
                 {
-                    _ = lastGrabbedObject.transform.parent;
                     var component = lastGrabbedObject.GetComponent<MoveableGUIObject>();
                     if (component.guideObject != null)
                     {
@@ -260,8 +234,8 @@ namespace KKS_VR.Controls
             }
 
             var flag = false;
-            if ((controller.GetPressDown(EVRButtonId.k_EButton_Axis0) || controller.GetPressDown(EVRButtonId.k_EButton_A)) && lastGrabbedObject != null &&
-                lastGrabbedObject.GetComponent<MoveableGUIObject>() != null)
+            if ((Controller.GetPressDown(EVRButtonId.k_EButton_Axis0) || Controller.GetPressDown(EVRButtonId.k_EButton_A)) &&
+                lastGrabbedObject != null && lastGrabbedObject.GetComponent<MoveableGUIObject>() != null)
             {
                 var guideObject = lastGrabbedObject.GetComponent<MoveableGUIObject>().guideObject;
                 if (guideObject != null)
@@ -274,22 +248,26 @@ namespace KKS_VR.Controls
                 }
             }
 
-            if ((controller.GetPressDown(EVRButtonId.k_EButton_Axis0) || controller.GetPressDown(EVRButtonId.k_EButton_A) && !flag) && (bool)gripMenuHandler &&
-                gripMenuHandler.LaserVisible) VRItemObjMoveHelper.Instance.VRToggleObjectSelectOnCursor();
+            if ((Controller.GetPressDown(EVRButtonId.k_EButton_Axis0) || Controller.GetPressDown(EVRButtonId.k_EButton_A) && !flag) &&
+                (bool)gripMenuHandler && gripMenuHandler.LaserVisible)
+            {
+                VRItemObjMoveHelper.Instance.VRToggleObjectSelectOnCursor();
+            }
+            
             if (press && grabbingObject != null)
             {
                 grabbingObject.transform.position = grabHandle.transform.position;
                 grabbingObject.transform.rotation = grabHandle.transform.rotation;
-                if (grabbingObject.GetComponent<MoveableGUIObject>() != null) grabbingObject.GetComponent<MoveableGUIObject>().OnMoved();
+                grabbingObject.GetComponent<MoveableGUIObject>()?.OnMoved();
             }
 
             if (screenGrabbed && grabbingObject != null && pressUp)
             {
-                if (grabbingObject.GetComponent<MoveableGUIObject>() != null) grabbingObject.GetComponent<MoveableGUIObject>().OnReleased();
+                grabbingObject.GetComponent<MoveableGUIObject>()?.OnReleased();
                 grabbingObject = null;
             }
 
-            if (controller.GetPress(moveSelfButton) && grabbingObject == null)
+            if (Controller.GetPress(moveSelfButton) && grabbingObject == null)
             {
                 target = VR.Camera.SteamCam.origin.gameObject;
                 if (target != null)
@@ -322,16 +300,16 @@ namespace KKS_VR.Controls
 
         private void ApplyFingerFKIfNeeded(GuideObject guideObject)
         {
-            new List<Transform>();
             var list = new List<GuideObject>();
-            if (IsFinger(guideObject.transformTarget)) list.Add(guideObject);
-            foreach (var item in list) item.transformTarget.localEulerAngles = item.changeAmount.rot;
+            if (IsFinger(guideObject.transformTarget))
+                list.Add(guideObject);
+            foreach (var item in list)
+                item.transformTarget.localEulerAngles = item.changeAmount.rot;
         }
 
         private bool IsFinger(Transform t)
         {
-            var fINGER_KEYS = FINGER_KEYS;
-            foreach (var value in fINGER_KEYS)
+            foreach (var value in FINGER_KEYS)
                 if (t.name.Contains(value))
                     return true;
             return false;
@@ -356,13 +334,6 @@ namespace KKS_VR.Controls
                 eulerAngles.z = 0f;
                 target.transform.rotation = Quaternion.Euler(eulerAngles);
             }
-        }
-
-        private IEnumerator UpdateMarkerPos()
-        {
-            yield return new WaitForEndOfFrame();
-            marker.transform.position = transform.position;
-            marker.transform.rotation = transform.rotation;
         }
 
         private Quaternion RemoveLockedAxisRot(Quaternion q)
@@ -404,11 +375,8 @@ namespace KKS_VR.Controls
                 }
             }
 
-            if (screenGrabbed && lastGrabbedObject != null && pointer != null) pointer.GetComponent<MeshRenderer>().material.color = Color.red;
-        }
-
-        private void OnTriggerEnter(Collider collider)
-        {
+            if (screenGrabbed && lastGrabbedObject != null && pointer != null)
+                pointer.GetComponent<MeshRenderer>().material.color = Color.red;
         }
 
         private void OnTriggerExit(Collider collider)

@@ -7,10 +7,9 @@ namespace KKS_VR.Settings
     public class CharaStudioSettings : VRSettings
     {
         private bool _LockRotXZ = true;
-
         private float _MaxVoiceDistance = 300f;
-
         private float _MinVoiceDistance = 7f;
+        private float _NearClipPlane;
 
         [XmlComment("Lock XZ Axis (pitch / roll) rotation.")]
         public bool LockRotXZ
@@ -61,8 +60,6 @@ namespace KKS_VR.Settings
                 TriggerPropertyChanged("NearClipPlane");
             }
         }
-
-        private float _NearClipPlane;
 
         public CharaStudioSettings()
         {

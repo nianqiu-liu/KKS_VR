@@ -10,37 +10,19 @@ namespace KKS_VR.Controls
     public class VRCameraMoveHelper : MonoBehaviour
     {
         public bool showGUI = true;
-
         public RectTransform menuRect;
-
         private static VRCameraMoveHelper _instance;
-
         public bool keepY = true;
-
         public bool moveAlong;
-
         public Vector3 moveAlongBasePos;
-
         public Quaternion moveAlongBaseRot;
-
-        private float DEFAULT_DISTANCE = 3f;
-
+        private readonly float DEFAULT_DISTANCE = 3f;
         private float DISTANCE_RATIO = 1f;
-
-        private global::Studio.Studio studio;
-
+        private Studio.Studio studio;
         private GameObject moveDummy;
-
-        private int windowID = 8752;
-
-        private const int panelWidth = 200;
-
-        private const int panelHeight = 100;
-
+        private readonly int windowID = 8752;
         private Rect windowRect = new Rect(-1f, -1f, 0f, 0f);
-
-        private string windowTitle = "VR Move";
-
+        private readonly string windowTitle = "VR Move";
         public static VRCameraMoveHelper Instance => _instance;
 
         public static void Install(GameObject container)
@@ -54,13 +36,9 @@ namespace KKS_VR.Controls
             DISTANCE_RATIO = VR.Context.Settings.IPDScale;
         }
 
-        private void Start()
-        {
-        }
-
         private void OnSceneWasLoaded(Scene scene, LoadSceneMode mode)
         {
-            studio = Singleton<global::Studio.Studio>.Instance;
+            studio = Singleton<Studio.Studio>.Instance;
             if (!(studio == null))
             {
                 var cameraMenuRootT = studio.transform.Find("Canvas System Menu/02_Camera");
@@ -71,6 +49,7 @@ namespace KKS_VR.Controls
         private void OnGUI()
         {
             if (!showGUI || !(menuRect != null) || !menuRect.gameObject.activeInHierarchy) return;
+
             var skin = GUI.skin;
             try
             {
@@ -102,7 +81,7 @@ namespace KKS_VR.Controls
             }
             catch (Exception value)
             {
-                Console.WriteLine(value);
+                VRLog.Error(value);
             }
         }
 
@@ -152,11 +131,10 @@ namespace KKS_VR.Controls
 
         public void MoveTo(Vector3 tobeHeadPos, Quaternion tobeHeadRot)
         {
-            Transform transform = null;
             var vROrigin = GetVROrigin();
             if (!(vROrigin == null))
             {
-                transform = vROrigin.transform.parent;
+                var transform = vROrigin.transform.parent;
                 moveDummy.transform.position = VR.Camera.Head.position;
                 moveDummy.transform.rotation = GripMoveStudioNEOV2Tool.RemoveXZRot(VR.Camera.Head.rotation);
                 vROrigin.transform.parent = moveDummy.transform;
@@ -175,7 +153,7 @@ namespace KKS_VR.Controls
 
         public void MoveToSelectedObject(bool lockY)
         {
-            var selectObjectCtrl = Singleton<global::Studio.Studio>.Instance.treeNodeCtrl.selectObjectCtrl;
+            var selectObjectCtrl = Singleton<Studio.Studio>.Instance.treeNodeCtrl.selectObjectCtrl;
             if (selectObjectCtrl != null && selectObjectCtrl.Length != 0)
             {
                 var objectCtrlInfo = selectObjectCtrl[0];

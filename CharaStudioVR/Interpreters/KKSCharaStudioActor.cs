@@ -9,9 +9,7 @@ namespace KKS_VR.Interpreters
     public class KKSCharaStudioActor : DefaultActorBehaviour<ChaControl>
     {
         private LookTargetController _TargetController;
-
         public TransientHead Head { get; private set; }
-
         public override Transform Eyes => Head.Eyes;
 
         public override bool HasHead
@@ -32,10 +30,6 @@ namespace KKS_VR.Interpreters
         {
             base.OnStart();
             _TargetController = LookTargetController.AttachTo(this, gameObject);
-        }
-
-        private void InitializeDynamicBoneColliders()
-        {
         }
 
         protected override void OnLateUpdate()
@@ -66,15 +60,16 @@ namespace KKS_VR.Interpreters
                     asVoice.rolloffMode = AudioRolloffMode.Logarithmic;
                 }
             }
-            catch (Exception obj)
+            catch (Exception e)
             {
-                VRLog.Error(obj);
+                VRLog.Error(e);
             }
         }
 
         internal void OnVRModeChanged(bool newMode)
         {
             if (!(_TargetController != null) || newMode) return;
+
             var eyeLookCtrl = Actor.eyeLookCtrl;
             var neckLookCtrl = Actor.neckLookCtrl;
             var transform = Camera.main.transform;

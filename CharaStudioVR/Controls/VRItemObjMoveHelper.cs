@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using Studio;
 using UnityEngine;
@@ -14,49 +13,20 @@ namespace KKS_VR.Controls
     public class VRItemObjMoveHelper : MonoBehaviour
     {
         public bool showGUI = true;
-
         public RectTransform menuRect;
-
-        private Canvas workspaceCanvas;
-
         private static VRItemObjMoveHelper _instance;
-
         public bool keepY = true;
-
         public bool moveAlong;
-
         public Vector3 moveAlongBasePos;
-
         public Quaternion moveAlongBaseRot;
-
-        private ObjMoveHelper helper = new ObjMoveHelper();
-
-        private GameObject steamVRHeadOrigin;
-
-        private global::Studio.Studio studio;
-
+        private readonly ObjMoveHelper helper = new ObjMoveHelper();
+        private Studio.Studio studio;
         private GameObject moveDummy;
-
-        private int windowID = 8751;
-
-        private const int panelWidth = 300;
-
-        private const int panelHeight = 150;
-
-        private Rect windowRect = new Rect(0f, 0f, 300f, 150f);
-
-        private string windowTitle = "";
-
         private Texture2D bgTex;
-
         private Button callButton;
-
         private Button callXZButton;
 
-        private static FieldInfo f_m_TreeNodeObject =
-            typeof(TreeNodeCtrl).GetField("m_TreeNodeObject", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.GetField);
-
-        private static MethodInfo m_AddSelectNode =
+        private static readonly MethodInfo m_AddSelectNode =
             typeof(TreeNodeCtrl).GetMethod("AddSelectNode", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.InvokeMethod);
 
         public static VRItemObjMoveHelper Instance => _instance;
@@ -73,7 +43,7 @@ namespace KKS_VR.Controls
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            studio = Singleton<global::Studio.Studio>.Instance;
+            studio = Singleton<Studio.Studio>.Instance;
             if (!(studio == null))
             {
                 var objectListCanvas = studio.gameObject.transform.Find("Canvas Object List");
@@ -84,18 +54,10 @@ namespace KKS_VR.Controls
             }
         }
 
-        private Texture2D LoadImage(string path)
-        {
-            var texture2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-            var data = File.ReadAllBytes(path);
-            texture2D.LoadImage(data);
-            return texture2D;
-        }
-
         public static Rect RectTransformToScreenSpace(RectTransform transform)
         {
             var vector = Vector2.Scale(transform.rect.size, transform.lossyScale);
-            var result = new Rect(transform.position.x, (float)Screen.height - transform.position.y, vector.x, vector.y);
+            var result = new Rect(transform.position.x, Screen.height - transform.position.y, vector.x, vector.y);
             result.x -= transform.pivot.x * vector.x;
             result.y -= (1f - transform.pivot.y) * vector.y;
             return result;
@@ -103,9 +65,8 @@ namespace KKS_VR.Controls
 
         private void Init(Transform objectListCanvas)
         {
-            workspaceCanvas = objectListCanvas.gameObject.GetComponent<Canvas>();
             menuRect = objectListCanvas.Find("Image Bar/Scroll View").gameObject.GetComponent<RectTransform>();
-            steamVRHeadOrigin = VR.Camera.SteamCam.origin.gameObject;
+
             if (moveDummy == null)
             {
                 moveDummy = new GameObject("MoveDummy");
@@ -128,6 +89,7 @@ namespace KKS_VR.Controls
                     obj.transform.SetParent(transform.transform.parent);
                     obj.transform.localPosition = new Vector3(transform2.localPosition.x - num * 2f, transform2.localPosition.y, transform2.localPosition.z);
                     obj.transform.localScale = Vector3.one;
+
                     var component = obj.GetComponent<Button>();
                     component.spriteState = new SpriteState
                     {
@@ -139,6 +101,7 @@ namespace KKS_VR.Controls
                     component.onClick.AddListener(OnCallClick);
                     component.interactable = true;
                     callButton = component;
+
                     DestroyImmediate(obj.GetComponent<Image>());
                     var image = obj.AddComponent<Image>();
                     image.sprite = sprite;
@@ -153,6 +116,7 @@ namespace KKS_VR.Controls
                     obj2.transform.SetParent(transform.transform.parent);
                     obj2.transform.localPosition = new Vector3(transform2.localPosition.x - num, transform2.localPosition.y, transform2.localPosition.z);
                     obj2.transform.localScale = Vector3.one;
+
                     var component2 = obj2.GetComponent<Button>();
                     component2.spriteState = new SpriteState
                     {
@@ -164,6 +128,7 @@ namespace KKS_VR.Controls
                     component2.onClick.AddListener(OnCallClickYLock);
                     component2.interactable = true;
                     callXZButton = component2;
+
                     DestroyImmediate(obj2.GetComponent<Image>());
                     var image2 = obj2.AddComponent<Image>();
                     image2.sprite = sprite2;
@@ -214,10 +179,12 @@ namespace KKS_VR.Controls
 
         public void VRToggleObjectSelectOnCursor()
         {
-            var instance = Singleton<global::Studio.Studio>.Instance;
+            var instance = Singleton<Studio.Studio>.Instance;
             if (instance == null) return;
+
             var pointerEventData = new PointerEventData(EventSystem.current);
             pointerEventData.position = Input.mousePosition;
+
             var list = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointerEventData, list);
             foreach (var item in list)

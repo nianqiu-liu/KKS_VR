@@ -23,20 +23,20 @@ namespace KKS_VR.Fixes
         }
 
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(global::Studio.Studio), "SaveScene", new Type[] { })]
-        public static bool SaveScenePreHook(global::Studio.Studio __instance, ref Camera[] __state)
+        [HarmonyPatch(typeof(Studio.Studio), "SaveScene", new Type[] { })]
+        public static bool SaveScenePreHook(Studio.Studio __instance, ref Camera[] __state)
         {
             VRPlugin.Logger.Log(LogLevel.Debug, "Update Camera position and rotation for Scene Capture and last Camera data.");
             try
             {
                 VRCameraMoveHelper.Instance.CurrentToCameraCtrl();
                 var field = typeof(Studio.GameScreenShot).GetField("renderCam", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                var obj = field.GetValue(Singleton<global::Studio.Studio>.Instance.gameScreenShot) as Camera[];
+                var obj = field.GetValue(Singleton<Studio.Studio>.Instance.gameScreenShot) as Camera[];
                 VRPlugin.Logger.Log(LogLevel.Debug, "Backup Screenshot render cam.");
                 backupRenderCam = obj;
                 var value = new Camera[1] { VR.Camera.SteamCam.camera };
                 __state = backupRenderCam;
-                field.SetValue(Singleton<global::Studio.Studio>.Instance.gameScreenShot, value);
+                field.SetValue(Singleton<Studio.Studio>.Instance.gameScreenShot, value);
             }
             catch (Exception obj2)
             {
@@ -48,14 +48,14 @@ namespace KKS_VR.Fixes
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(global::Studio.Studio), "SaveScene", new Type[] { })]
-        public static void SaveScenePostHook(global::Studio.Studio __instance, Camera[] __state)
+        [HarmonyPatch(typeof(Studio.Studio), "SaveScene", new Type[] { })]
+        public static void SaveScenePostHook(Studio.Studio __instance, Camera[] __state)
         {
             VRPlugin.Logger.Log(LogLevel.Debug, "Restore backup render cam.");
             try
             {
                 typeof(Studio.GameScreenShot).GetField("renderCam", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .SetValue(Singleton<global::Studio.Studio>.Instance.gameScreenShot, __state);
+                    .SetValue(Singleton<Studio.Studio>.Instance.gameScreenShot, __state);
             }
             catch (Exception obj)
             {
