@@ -269,7 +269,7 @@ namespace KKS_VR.Controls
                         mirror1.transform.rotation = transform.rotation;
                     }
 
-                    var vector = marker.transform.position - transform.position;
+                    var vector = (marker.transform.position - transform.position) * StudioSettings.GrabMovementMult.Value;
                     var q = marker.transform.rotation * Quaternion.Inverse(transform.rotation);
                     var quaternion = RemoveLockedAxisRot(q);
                     var parent = target.transform.parent;

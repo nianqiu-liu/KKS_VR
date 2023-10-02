@@ -13,6 +13,7 @@ namespace KKS_VR.Settings
         public static ConfigEntry<bool> LockRotXZ { get; private set; }
         public static ConfigEntry<float> MaxVoiceDistance { get; private set; }
         public static ConfigEntry<float> MinVoiceDistance { get; private set; }
+        public static ConfigEntry<float> GrabMovementMult { get; private set; }
 
         public static VRSettings Create(ConfigFile config)
         {
@@ -30,7 +31,7 @@ namespace KKS_VR.Settings
 
             var rotationMultiplier = config.Bind(SectionGeneral, "Rotation multiplier", 1f,
                 new ConfigDescription(
-                    "How quickly the the view should rotate when doing so with the controllers.",
+                    "How quickly the the view should rotate when doing so with the controllers (only applies to WarpTool).",
                     new AcceptableValueRange<float>(-4f, 4f),
                     new ConfigurationManagerAttributes { Order = -1 }));
             Tie(rotationMultiplier, v => settings.RotationMultiplier = v);
@@ -44,7 +45,7 @@ namespace KKS_VR.Settings
 
             NearClipPlane = config.Bind(SectionGeneral, "Near clip plane", 0.002f,
                 new ConfigDescription(
-                    "Minimum distance from camera for an object to be shown (causes visual glitches on some maps when set too small)",
+                    "Minimum distance from camera for an object to be shown (causes visual glitches on some maps when set too small).",
                     new AcceptableValueRange<float>(0.001f, 0.2f)));
 
             MaxVoiceDistance = config.Bind(SectionGeneral, "Max Voice distance", 300f,
@@ -56,6 +57,11 @@ namespace KKS_VR.Settings
                 new ConfigDescription(
                     "Min Voice distance (in unit. 7 = 70 cm in real (HS2 uses 10 unit = 1m scale).",
                     new AcceptableValueRange<float>(1f, 70f)));
+
+            GrabMovementMult = config.Bind(SectionGeneral, "Grab Movement Multiplier", 1f,
+                new ConfigDescription(
+                    "Adjust how fast you can drag the camera around (only applies to the studio tool).",
+                    new AcceptableValueRange<float>(0.5f, 10f)));
 
             return settings;
         }
