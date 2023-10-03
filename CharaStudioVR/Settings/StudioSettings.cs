@@ -59,12 +59,12 @@ namespace KKS_VR.Settings
                     "Min Voice distance (in unit. 7 = 70 cm in real (HS2 uses 10 unit = 1m scale).",
                     new AcceptableValueRange<float>(1f, 70f)));
 
-            GrabMovementMult = config.Bind(SectionGeneral, "Grab Movement Multiplier", 1f,
+            GrabMovementMult = config.Bind(SectionGeneral, "Grab Movement Multiplier", 1.5f,
                 new ConfigDescription(
                     "Adjust how fast you can drag the camera around (only applies to the studio tool).",
                     new AcceptableValueRange<float>(0.5f, 10f)));
 
-            MaxLaserRange = config.Bind(SectionGeneral, "Laser Range", 0.25f,
+            MaxLaserRange = config.Bind(SectionGeneral, "Laser Range", 0.3f,
                 new ConfigDescription(
                     "The maximum length of the UI cursor laser.",
                     new AcceptableValueRange<float>(0.1f, 1f)));
