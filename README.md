@@ -196,9 +196,9 @@ In addition, you need to make it "pretend to be Vive controllers".
 
 ## Common issues
 
-### Can't click on the vertual screen
+### Can't click on the virtual screen
 
-This plugin requires that the game window on the Winodws desktop is visible and
+This plugin requires that the game window on the Windows desktop is visible and
 not covered by something else.
 
 ### Framerate is low

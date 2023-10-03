@@ -1,6 +1,7 @@
 ﻿using System;
 using BepInEx.Configuration;
 using KKAPI.Utilities;
+using UnityEngine;
 using VRGIN.Core;
 
 namespace KKS_VR.Settings
@@ -8,8 +9,8 @@ namespace KKS_VR.Settings
     public static class StudioSettings
     {
         private const string SectionGeneral = "General";
+        private const string SectionStudioTool = "Studio Tool";
 
-        public static ConfigEntry<float> NearClipPlane { get; private set; }
         public static ConfigEntry<bool> LockRotXZ { get; private set; }
         public static ConfigEntry<float> MaxVoiceDistance { get; private set; }
         public static ConfigEntry<float> MinVoiceDistance { get; private set; }
@@ -44,10 +45,15 @@ namespace KKS_VR.Settings
                     new ConfigurationManagerAttributes { IsAdvanced = true }));
             Tie(logLevel, v => VRLog.Level = v);
 
-            NearClipPlane = config.Bind(SectionGeneral, "Near clip plane", 0.002f,
+            var nearClipPlane = config.Bind(SectionGeneral, "Near clip plane", 0.002f,
                 new ConfigDescription(
                     "Minimum distance from camera for an object to be shown (causes visual glitches on some maps when set too small).",
                     new AcceptableValueRange<float>(0.001f, 0.2f)));
+
+            // VRGIN doesn't update the near clip plane until a first "main" camera is created, so we set it here.
+            UpdateNearClipPlane();
+            nearClipPlane.SettingChanged += (sender, args) => UpdateNearClipPlane();
+            void UpdateNearClipPlane() => VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = nearClipPlane.Value;
 
             MaxVoiceDistance = config.Bind(SectionGeneral, "Max Voice distance", 300f,
                 new ConfigDescription(
@@ -59,14 +65,14 @@ namespace KKS_VR.Settings
                     "Min Voice distance (in unit. 7 = 70 cm in real (HS2 uses 10 unit = 1m scale).",
                     new AcceptableValueRange<float>(1f, 70f)));
 
-            GrabMovementMult = config.Bind(SectionGeneral, "Grab Movement Multiplier", 1.5f,
+            GrabMovementMult = config.Bind(SectionStudioTool, "Grab Movement Multiplier", 1.5f,
                 new ConfigDescription(
                     "Adjust how fast you can drag the camera around (only applies to the studio tool).",
                     new AcceptableValueRange<float>(0.5f, 10f)));
 
-            MaxLaserRange = config.Bind(SectionGeneral, "Laser Range", 0.3f,
+            MaxLaserRange = config.Bind(SectionStudioTool, "Laser Range", 0.3f,
                 new ConfigDescription(
-                    "The maximum length of the UI cursor laser.",
+                    "The maximum range of the UI cursor laser.",
                     new AcceptableValueRange<float>(0.1f, 1f)));
 
             return settings;
