@@ -1,4 +1,5 @@
 using System.Linq;
+using KKS_VR.Settings;
 using UnityEngine;
 using Valve.VR;
 using VRGIN.Controls;
@@ -16,7 +17,6 @@ namespace KKS_VR.Controls
         private GUIQuad _Target;
         private LineRenderer Laser;
         private Vector2? mouseDownPosition;
-        private float scaledRange = 0.25f;
         protected DeviceLegacyAdapter Device => _Controller.Input;
 
         private bool IsResizing
@@ -59,7 +59,6 @@ namespace KKS_VR.Controls
         {
             base.OnStart();
             _Controller = gameObject.GetComponentInChildren<Controller>(true);
-            scaledRange = 0.25f * VR.Context.Settings.IPDScale;
             _ScaleVector = new Vector2(VRGUI.Width / (float)Screen.width, VRGUI.Height / (float)Screen.height);
             InitLaser();
         }
@@ -146,6 +145,7 @@ namespace KKS_VR.Controls
 
         private float GetRange(GUIQuad quad)
         {
+            var scaledRange = StudioSettings.MaxLaserRange.Value * VR.Context.Settings.IPDScale;
             return Mathf.Clamp(quad.transform.localScale.magnitude * scaledRange, scaledRange, scaledRange * 5f);
         }
 

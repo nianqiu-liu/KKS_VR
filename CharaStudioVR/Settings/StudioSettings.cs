@@ -14,6 +14,7 @@ namespace KKS_VR.Settings
         public static ConfigEntry<float> MaxVoiceDistance { get; private set; }
         public static ConfigEntry<float> MinVoiceDistance { get; private set; }
         public static ConfigEntry<float> GrabMovementMult { get; private set; }
+        public static ConfigEntry<float> MaxLaserRange { get; private set; }
 
         public static VRSettings Create(ConfigFile config)
         {
@@ -62,6 +63,11 @@ namespace KKS_VR.Settings
                 new ConfigDescription(
                     "Adjust how fast you can drag the camera around (only applies to the studio tool).",
                     new AcceptableValueRange<float>(0.5f, 10f)));
+
+            MaxLaserRange = config.Bind(SectionGeneral, "Laser Range", 0.25f,
+                new ConfigDescription(
+                    "The maximum length of the UI cursor laser.",
+                    new AcceptableValueRange<float>(0.1f, 1f)));
 
             return settings;
         }
