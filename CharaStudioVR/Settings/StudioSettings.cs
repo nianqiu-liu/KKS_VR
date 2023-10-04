@@ -1,7 +1,6 @@
 ﻿using System;
 using BepInEx.Configuration;
 using KKAPI.Utilities;
-using UnityEngine;
 using VRGIN.Core;
 
 namespace KKS_VR.Settings
@@ -11,6 +10,7 @@ namespace KKS_VR.Settings
         private const string SectionGeneral = "General";
         private const string SectionStudioTool = "Studio Tool";
 
+        public static ConfigEntry<float> NearClipPlane { get; private set; }
         public static ConfigEntry<bool> LockRotXZ { get; private set; }
         public static ConfigEntry<float> MaxVoiceDistance { get; private set; }
         public static ConfigEntry<float> MinVoiceDistance { get; private set; }
@@ -45,15 +45,10 @@ namespace KKS_VR.Settings
                     new ConfigurationManagerAttributes { IsAdvanced = true }));
             Tie(logLevel, v => VRLog.Level = v);
 
-            var nearClipPlane = config.Bind(SectionGeneral, "Near clip plane", 0.002f,
+            NearClipPlane = config.Bind(SectionGeneral, "Near clip plane", 0.002f,
                 new ConfigDescription(
                     "Minimum distance from camera for an object to be shown (causes visual glitches on some maps when set too small).",
                     new AcceptableValueRange<float>(0.001f, 0.2f)));
-
-            // VRGIN doesn't update the near clip plane until a first "main" camera is created, so we set it here.
-            UpdateNearClipPlane();
-            nearClipPlane.SettingChanged += (sender, args) => UpdateNearClipPlane();
-            void UpdateNearClipPlane() => VR.Camera.gameObject.GetComponent<Camera>().nearClipPlane = nearClipPlane.Value;
 
             MaxVoiceDistance = config.Bind(SectionGeneral, "Max Voice distance", 300f,
                 new ConfigDescription(
