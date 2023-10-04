@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Fixes\OpenVRHelperTempfixHook.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fixes\TopmostToolIcons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Fixes\BepInExVrLogBackend.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Features\VRBoop.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Fixes\topmostguishader" />
