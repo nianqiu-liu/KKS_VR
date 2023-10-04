@@ -63,7 +63,6 @@ namespace KKS_VR.Controls
             InitLaser();
         }
 
-        #pragma warning disable CS0618
         private void InitLaser()
         {
             Laser = new GameObject().AddComponent<LineRenderer>();
@@ -78,7 +77,6 @@ namespace KKS_VR.Controls
             var num = 0.002f * VR.Context.Settings.IPDScale;
             Laser.SetWidth(num, num);
         }
-        #pragma warning restore CS0618
 
         protected override void OnUpdate()
         {
