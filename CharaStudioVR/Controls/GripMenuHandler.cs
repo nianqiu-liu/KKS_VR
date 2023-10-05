@@ -12,7 +12,7 @@ namespace KKS_VR.Controls
     public class GripMenuHandler : ProtectedBehaviour
     {
         private Controller _Controller;
-        private ResizeHandler _ResizeHandler;
+        //private ResizeHandler _ResizeHandler;
         private Vector3 _ScaleVector;
         private GUIQuad _Target;
         private LineRenderer Laser;
@@ -23,7 +23,7 @@ namespace KKS_VR.Controls
         {
             get
             {
-                if ((bool)_ResizeHandler) return _ResizeHandler.IsDragging;
+                //if ((bool)_ResizeHandler) return _ResizeHandler.IsDragging;
                 return false;
             }
         }
@@ -69,13 +69,12 @@ namespace KKS_VR.Controls
             Laser.transform.SetParent(transform, false);
             Laser.material = new Material(VR.Context.Materials.Sprite);
             Laser.material.renderQueue += 5000;
-            Laser.SetColors(Color.cyan, Color.cyan);
+            Laser.startColor = Laser.endColor = Color.cyan;
             Laser.transform.localRotation = Quaternion.Euler(60f, 0f, 0f);
             Laser.transform.position += Laser.transform.forward * 0.07f * VR.Context.Settings.IPDScale;
-            Laser.SetVertexCount(2);
+            Laser.positionCount = 2;
             Laser.useWorldSpace = true;
-            var num = 0.002f * VR.Context.Settings.IPDScale;
-            Laser.SetWidth(num, num);
+            Laser.startWidth = Laser.endWidth = 0.002f * VR.Context.Settings.IPDScale;
         }
 
         protected override void OnUpdate()

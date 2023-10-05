@@ -7,7 +7,6 @@ namespace KKS_VR.Controls
     internal class ObjMoveHelper
     {
         public Vector3 moveAlongBasePos;
-        public Quaternion moveAlongBaseRot;
 
         public void SetBasePos(Vector3 basePos)
         {
