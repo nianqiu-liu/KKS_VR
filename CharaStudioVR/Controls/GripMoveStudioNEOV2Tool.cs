@@ -20,8 +20,6 @@ namespace KKS_VR.Controls
     internal class GripMoveStudioNEOV2Tool : Tool
     {
         private GUIQuad internalGui;
-        private readonly EVRButtonId moveSelfButton = EVRButtonId.k_EButton_Grip;
-        private readonly EVRButtonId grabScreenButton = EVRButtonId.k_EButton_Axis1;
         private GameObject mirror1;
         private GameObject pointer;
         private MenuHandler menuHandlder;
@@ -32,6 +30,10 @@ namespace KKS_VR.Controls
         public GameObject target;
         private bool lockRotXZ = true;
         public override Texture2D Image => UnityHelper.LoadImage("icon_gripmove.png");
+
+        private EVRButtonId gripButton = EVRButtonId.k_EButton_Grip;
+        private EVRButtonId triggerButton = EVRButtonId.k_EButton_Axis1;
+        private EVRButtonId menuButton = EVRButtonId.k_EButton_ApplicationMenu;
 
         private bool screenGrabbed;
         private GameObject lastGrabbedObject;
@@ -172,29 +174,29 @@ namespace KKS_VR.Controls
             
             if (Controller == null) return;
             
-            if (Controller.GetPressDown(EVRButtonId.k_EButton_Axis1)) triggerDownTime = Time.time;
-            if (Controller.GetPressDown(EVRButtonId.k_EButton_Grip)) gripDownTime = Time.time;
-            if (Controller.GetPressDown(EVRButtonId.k_EButton_ApplicationMenu)) menuDownTime = Time.time;
+            if (Controller.GetPressDown(triggerButton)) triggerDownTime = Time.time;
+            if (Controller.GetPressDown(gripButton)) gripDownTime = Time.time;
+            if (Controller.GetPressDown(menuButton)) menuDownTime = Time.time;
             if (Controller.GetPressDown(EVRButtonId.k_EButton_Axis0) || Controller.GetPressDown(EVRButtonId.k_EButton_A)) touchpadDownTime = Time.time;
 
-            if (Controller.GetPress(EVRButtonId.k_EButton_Axis1) &&
-                Controller.GetPress(EVRButtonId.k_EButton_Grip) &&
-                Controller.GetPress(EVRButtonId.k_EButton_ApplicationMenu) &&
+            if (Controller.GetPress(triggerButton) &&
+                Controller.GetPress(gripButton) &&
+                Controller.GetPress(menuButton) &&
                 Time.time - menuDownTime > 0.5f)
             {
                 lockRotXZ = !lockRotXZ;
                 if (lockRotXZ) ResetRotation();
             }
 
-            if (Controller.GetPress(EVRButtonId.k_EButton_ApplicationMenu) && Time.time - menuDownTime > 1.5f)
+            if (Controller.GetPress(menuButton) && Time.time - menuDownTime > 1.5f)
             {
                 ResetGUIPosition();
                 menuDownTime = Time.time;
             }
 
-            var pressDown = Controller.GetPressDown(grabScreenButton);
-            var press = Controller.GetPress(grabScreenButton);
-            var pressUp = Controller.GetPressUp(grabScreenButton);
+            var pressDown = Controller.GetPressDown(triggerButton);
+            var press = Controller.GetPress(triggerButton);
+            var pressUp = Controller.GetPressUp(triggerButton);
             
             if (grabHandle == null)
             {
@@ -257,7 +259,7 @@ namespace KKS_VR.Controls
                 grabbingObject = null;
             }
 
-            if (Controller.GetPress(moveSelfButton) && grabbingObject == null)
+            if (Controller.GetPress(gripButton) && grabbingObject == null)
             {
                 target = VR.Camera.SteamCam.origin.gameObject;
                 if (target != null)
