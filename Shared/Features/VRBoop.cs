@@ -20,13 +20,10 @@ namespace KKS_VR.Features
         private static DynamicBoneCollider _leftCollider;
         private static DynamicBoneCollider _rightCollider;
 
-        private static Harmony _hi;
-
         public static void Initialize(Controller controller, EyeSide controllerSide)
         {
             // Hooks in here don't get patched by the whole assembly PatchAll since the class has no HarmonyPatch attribute
-            if (_hi == null)
-                _hi = Harmony.CreateAndPatchAll(typeof(VRBoop), typeof(VRBoop).FullName);
+            Harmony.CreateAndPatchAll(typeof(VRBoop), typeof(VRBoop).FullName);
 
             switch (controllerSide)
             {
@@ -90,14 +87,14 @@ namespace KKS_VR.Features
 
         private static List<DynamicBoneCollider> GetColliderList(MonoBehaviour dynamicBone)
         {
-            switch (dynamicBone)
+            return dynamicBone switch
             {
-                case DynamicBone d: return d.m_Colliders;
-                case DynamicBone_Ver01 d: return d.m_Colliders;
-                case DynamicBone_Ver02 d: return d.Colliders;
-                case null: throw new ArgumentNullException(nameof(dynamicBone));
-                default: throw new ArgumentException(@"Not a DynamicBone - " + dynamicBone.GetType(), nameof(dynamicBone));
-            }
+                DynamicBone d => d.m_Colliders,
+                DynamicBone_Ver01 d => d.m_Colliders,
+                DynamicBone_Ver02 d => d.Colliders,
+                null => throw new ArgumentNullException(nameof(dynamicBone)),
+                _ => throw new ArgumentException(@"Not a DynamicBone - " + dynamicBone.GetType(), nameof(dynamicBone)),
+            };
         }
 
         private static DynamicBoneCollider GetOrAttachCollider(GameObject controllerGameObject, string colliderName)
