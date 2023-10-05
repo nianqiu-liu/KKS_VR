@@ -16,6 +16,7 @@ namespace KKS_VR.Settings
         public static ConfigEntry<float> MinVoiceDistance { get; private set; }
         public static ConfigEntry<float> GrabMovementMult { get; private set; }
         public static ConfigEntry<float> MaxLaserRange { get; private set; }
+        public static ConfigEntry<bool> EnableBoop { get; private set; }
 
         public static VRSettings Create(ConfigFile config)
         {
@@ -69,6 +70,9 @@ namespace KKS_VR.Settings
                 new ConfigDescription(
                     "The maximum range of the UI cursor laser.",
                     new AcceptableValueRange<float>(0.1f, 1f)));
+
+            EnableBoop = config.Bind(SectionGeneral, "Enable Boop", true,
+                "Adds colliders to the controllers so you can boop things.\nGame restart required for change to take effect.");
 
             return settings;
         }

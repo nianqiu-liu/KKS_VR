@@ -21,12 +21,14 @@ namespace KKS_VR.Settings
     ///   are code paths where VRGIN tries to modify it. We simply attempt
     ///   to avoid executing those code paths.
     /// </summary>
-    internal class SettingsManager
+    public class SettingsManager
     {
         public const string SectionGeneral = "0. General";
         public const string SectionRoaming = "1. Roaming";
         public const string SectionCaress = "1. Caress";
         public const string SectionEventScenes = "1. Event scenes";
+
+        public static ConfigEntry<bool> EnableBoop { get; private set; }
 
         /// <summary>
         /// Create config entries under the given ConfigFile. Also create a fresh
@@ -154,6 +156,9 @@ namespace KKS_VR.Settings
             var firstPersonADV = config.Bind(SectionEventScenes, "First person", true,
                 "Prefer first person view in event scenes");
             Tie(firstPersonADV, v => settings.FirstPersonADV = v);
+
+            EnableBoop = config.Bind(SectionGeneral, "Enable Boop", true,
+                "Adds colliders to the controllers so you can boop things.\nGame restart required for change to take effect.");
 
             KeySetsConfig keySetsConfig = null;
 

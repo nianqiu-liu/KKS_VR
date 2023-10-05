@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using KKS_VR.Features;
+using KKS_VR.Settings;
 using UnityEngine.XR;
 using VRGIN.Controls;
 using VRGIN.Modes;
@@ -45,7 +46,8 @@ namespace KKS_VR
         private static void AddComponents(Controller controller, EyeSide controllerSide)
         {
             controller.gameObject.AddComponent<Controls.LocationPicker>();
-            VRBoop.Initialize(controller, controllerSide);
+            if (SettingsManager.EnableBoop.Value)
+                VRBoop.Initialize(controller, controllerSide);
         }
 
         protected override void SyncCameras()

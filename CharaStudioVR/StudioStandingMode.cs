@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using KKS_VR.Controls;
 using KKS_VR.Features;
+using KKS_VR.Settings;
 using UnityEngine.XR;
 using VRGIN.Controls;
 using VRGIN.Modes;
@@ -34,7 +35,8 @@ namespace KKS_VR
 
         private static void AddComponents(Controller controller, EyeSide controllerSide)
         {
-            VRBoop.Initialize(controller, controllerSide);
+            if (StudioSettings.EnableBoop.Value)
+                VRBoop.Initialize(controller, controllerSide);
         }
     }
 }
