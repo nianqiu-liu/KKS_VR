@@ -33,18 +33,12 @@ namespace KKS_VR.Controls
 
         private EVRButtonId gripButton = EVRButtonId.k_EButton_Grip;
         private EVRButtonId triggerButton = EVRButtonId.k_EButton_Axis1;
-        private EVRButtonId menuButton = EVRButtonId.k_EButton_ApplicationMenu;
 
         private bool screenGrabbed;
         private GameObject lastGrabbedObject;
         private GameObject grabbingObject;
         private GameObject grabHandle;
         private float nearestGrabable = float.MaxValue;
-        
-        private float menuDownTime;
-        private float touchpadDownTime;
-        private float triggerDownTime;
-        private float gripDownTime;
 
         protected override void OnAwake()
         {
@@ -172,31 +166,12 @@ namespace KKS_VR.Controls
         {
             base.OnUpdate();
             
-            if (Controller == null) return;
-            
-            if (Controller.GetPressDown(triggerButton)) triggerDownTime = Time.time;
-            if (Controller.GetPressDown(gripButton)) gripDownTime = Time.time;
-            if (Controller.GetPressDown(menuButton)) menuDownTime = Time.time;
-            if (Controller.GetPressDown(EVRButtonId.k_EButton_Axis0) || Controller.GetPressDown(EVRButtonId.k_EButton_A)) touchpadDownTime = Time.time;
+            if (Controller == null)
+                return;
 
-            if (Controller.GetPress(triggerButton) &&
-                Controller.GetPress(gripButton) &&
-                Controller.GetPress(menuButton) &&
-                Time.time - menuDownTime > 0.5f)
-            {
-                lockRotXZ = !lockRotXZ;
-                if (lockRotXZ) ResetRotation();
-            }
-
-            if (Controller.GetPress(menuButton) && Time.time - menuDownTime > 1.5f)
-            {
-                ResetGUIPosition();
-                menuDownTime = Time.time;
-            }
-
-            var pressDown = Controller.GetPressDown(triggerButton);
-            var press = Controller.GetPress(triggerButton);
-            var pressUp = Controller.GetPressUp(triggerButton);
+            var triggerPressDown = Controller.GetPressDown(triggerButton);
+            var triggerPress = Controller.GetPress(triggerButton);
+            var triggerPressUp = Controller.GetPressUp(triggerButton);
             
             if (grabHandle == null)
             {
@@ -206,7 +181,7 @@ namespace KKS_VR.Controls
                 grabHandle.transform.rotation = transform.rotation;
             }
 
-            if (pressDown && screenGrabbed && lastGrabbedObject != null && grabHandle != null)
+            if (triggerPressDown && screenGrabbed && lastGrabbedObject != null && grabHandle != null)
             {
                 grabbingObject = lastGrabbedObject;
                 grabHandle.transform.position = lastGrabbedObject.transform.position;
@@ -246,14 +221,14 @@ namespace KKS_VR.Controls
                 VRItemObjMoveHelper.Instance.VRToggleObjectSelectOnCursor();
             }
             
-            if (press && grabbingObject != null)
+            if (triggerPress && grabbingObject != null)
             {
                 grabbingObject.transform.position = grabHandle.transform.position;
                 grabbingObject.transform.rotation = grabHandle.transform.rotation;
                 grabbingObject.GetComponent<MoveableGUIObject>()?.OnMoved();
             }
 
-            if (screenGrabbed && grabbingObject != null && pressUp)
+            if (screenGrabbed && grabbingObject != null && triggerPressUp)
             {
                 grabbingObject.GetComponent<MoveableGUIObject>()?.OnReleased();
                 grabbingObject = null;
