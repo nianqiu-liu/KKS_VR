@@ -17,6 +17,7 @@ namespace KKS_VR.Settings
         public static ConfigEntry<float> GrabMovementMult { get; private set; }
         public static ConfigEntry<float> MaxLaserRange { get; private set; }
         public static ConfigEntry<bool> EnableBoop { get; private set; }
+        public static ConfigEntry<float> WheelRepeatTime { get; private set; }
 
         public static VRSettings Create(ConfigFile config)
         {
@@ -73,6 +74,11 @@ namespace KKS_VR.Settings
 
             EnableBoop = config.Bind(SectionGeneral, "Enable Boop", true,
                 "Adds colliders to the controllers so you can boop things.\nGame restart required for change to take effect.");
+
+            WheelRepeatTime = config.Bind(SectionGeneral, "WheelRepeatTime", 0.3f,
+                new ConfigDescription(
+                    "Defines how often the wheel input repeats when scrolling.",
+                    new AcceptableValueRange<float>(0.01f, 0.5f)));
 
             return settings;
         }

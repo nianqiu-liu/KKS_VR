@@ -19,6 +19,11 @@ namespace KKS_VR.Controls
         private Vector2? mouseDownPosition;
         protected DeviceLegacyAdapter Device => _Controller.Input;
 
+        private readonly EVRButtonId leftClickButton = EVRButtonId.k_EButton_Axis1;
+        private readonly EVRButtonId wheelAxis = EVRButtonId.k_EButton_Axis0;
+        private readonly float wheelDeadzone = 0.001f;
+        private float wheelTime = 0f;
+
         private bool IsResizing
         {
             get
@@ -125,7 +130,34 @@ namespace KKS_VR.Controls
                     MouseOperations.MouseEvent(WindowsInterop.MouseEventFlags.LeftUp);
                     mouseDownPosition = null;
                 }
+
+                if (Device.GetTouch(wheelAxis))
+                {
+                    var axis = Device.GetAxis(wheelAxis);
+                    if (Mathf.Abs(axis.y) > wheelDeadzone)
+                    {
+                        wheelTime += Time.deltaTime;
+                        if (wheelTime > StudioSettings.WheelRepeatTime.Value)
+                        {
+                            wheelTime = 0f;
+                            if (axis.y > wheelDeadzone)
+                                MouseWheelEvent(120);
+                            else if (axis.y < -wheelDeadzone)
+                                MouseWheelEvent(-120);
+                        }
+        }
+                    else
+                    {
+                        wheelTime = 0f;
+                    }
+                }
             }
+        }
+
+        public static void MouseWheelEvent(int amount)
+        {
+            var cursorPosition = MouseOperations.GetCursorPosition();
+            WindowsInterop.mouse_event(0x0800, cursorPosition.X, cursorPosition.Y, amount, 0);
         }
 
         private void CheckForNearMenu()
