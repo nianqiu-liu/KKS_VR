@@ -116,15 +116,23 @@ namespace KKS_VR.Controls
             IsPressing = false;
             if (LaserVisible && (bool)_Target && !IsResizing)
             {
-                if (Device.GetPressDown(EVRButtonId.k_EButton_Axis1))
+                if (StudioSettings.EnableHairTriggerClick.Value && Device.GetHairTriggerDown())
+                {
+                    MouseOperations.MouseEvent(WindowsInterop.MouseEventFlags.LeftDown);
+                    MouseOperations.MouseEvent(WindowsInterop.MouseEventFlags.LeftUp);
+                }
+
+                if (Device.GetPressDown(leftClickButton))
                 {
                     IsPressing = true;
                     MouseOperations.MouseEvent(WindowsInterop.MouseEventFlags.LeftDown);
                     mouseDownPosition = Vector2.Scale(new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y), _ScaleVector);
                 }
 
-                if (Device.GetPress(EVRButtonId.k_EButton_Axis1)) IsPressing = true;
-                if (Device.GetPressUp(EVRButtonId.k_EButton_Axis1))
+                if (Device.GetPress(leftClickButton))
+                    IsPressing = true;
+
+                if (Device.GetPressUp(leftClickButton))
                 {
                     IsPressing = true;
                     MouseOperations.MouseEvent(WindowsInterop.MouseEventFlags.LeftUp);
@@ -145,7 +153,7 @@ namespace KKS_VR.Controls
                             else if (axis.y < -wheelDeadzone)
                                 MouseWheelEvent(-120);
                         }
-        }
+                    }
                     else
                     {
                         wheelTime = 0f;

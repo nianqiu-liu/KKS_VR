@@ -18,6 +18,7 @@ namespace KKS_VR.Settings
         public static ConfigEntry<float> MaxLaserRange { get; private set; }
         public static ConfigEntry<bool> EnableBoop { get; private set; }
         public static ConfigEntry<float> WheelRepeatTime { get; private set; }
+        public static ConfigEntry<bool> EnableHairTriggerClick { get; private set; }
 
         public static VRSettings Create(ConfigFile config)
         {
@@ -79,6 +80,9 @@ namespace KKS_VR.Settings
                 new ConfigDescription(
                     "Defines how often the wheel input repeats when scrolling.",
                     new AcceptableValueRange<float>(0.01f, 0.5f)));
+
+            EnableHairTriggerClick = config.Bind(SectionGeneral, "Enable Hair Trigger Click", false,
+                "Allow left clicking in menus without fully depressing the trigger on your controller.");
 
             return settings;
         }
