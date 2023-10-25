@@ -31,8 +31,10 @@ namespace KKS_VR.Controls
         private bool lockRotXZ = true;
         public override Texture2D Image => UnityHelper.LoadImage("icon_gripmove.png");
 
-        private EVRButtonId gripButton = EVRButtonId.k_EButton_Grip;
-        private EVRButtonId triggerButton = EVRButtonId.k_EButton_Axis1;
+        private readonly EVRButtonId gripButton = EVRButtonId.k_EButton_Grip;
+        private readonly EVRButtonId triggerButton = EVRButtonId.k_EButton_Axis1;
+        private readonly EVRButtonId menuButton = EVRButtonId.k_EButton_ApplicationMenu;
+        private readonly EVRButtonId axis0Button = EVRButtonId.k_EButton_Axis0;
 
         private bool screenGrabbed;
         private GameObject lastGrabbedObject;
@@ -172,7 +174,19 @@ namespace KKS_VR.Controls
             var triggerPressDown = Controller.GetPressDown(triggerButton);
             var triggerPress = Controller.GetPress(triggerButton);
             var triggerPressUp = Controller.GetPressUp(triggerButton);
-            
+
+            if (Controller.GetPress(menuButton) && triggerPressDown)
+                ResetGUIPosition();
+
+            if (Controller.GetPress(gripButton) && triggerPressDown)
+                internalGui.gameObject.SetActive(!internalGui.gameObject.activeSelf);
+
+            if (Controller.GetPressDown(axis0Button))
+            {
+                lockRotXZ = !lockRotXZ;
+                if (lockRotXZ) ResetRotation();
+            }
+
             if (grabHandle == null)
             {
                 grabHandle = new GameObject("__GripMoveGrabHandle__");
