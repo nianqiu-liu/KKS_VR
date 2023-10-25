@@ -29,7 +29,6 @@ namespace KKS_VR
         {
             var controller = base.CreateRightController();
             AddComponents(controller, EyeSide.Right);
-            controller.ToolIndex = 1;
             return controller;
         }
 
