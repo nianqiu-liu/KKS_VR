@@ -81,8 +81,8 @@ namespace KKS_VR.Settings
                     "Defines how often the wheel input repeats when scrolling.",
                     new AcceptableValueRange<float>(0.01f, 0.5f)));
 
-            EnableHairTriggerClick = config.Bind(SectionGeneral, "Enable Hair Trigger Click", false,
-                "Allow left clicking in menus without fully depressing the trigger on your controller.");
+            EnableHairTriggerClick = config.Bind(SectionStudioTool, "Enable Hair Trigger Click", false,
+                "Allow left clicking the UI without fully depressing the trigger.");
 
             return settings;
         }
